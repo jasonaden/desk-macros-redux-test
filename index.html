@@ -1,0 +1,39 @@
+<html>
+
+  <head>
+    <title>Desk Macros</title>
+
+    <!-- 1. Load libraries -->
+    <script src="node_modules/angular2/bundles/angular2-polyfills.js"></script>
+    <script src="node_modules/systemjs/dist/system.src.js"></script>
+    <script src="node_modules/rxjs/bundles/Rx.js"></script>
+    <script src="node_modules/angular2/bundles/angular2.dev.js"></script>
+    <script src="node_modules/redux/dist/redux.js"></script>
+
+    <!-- 2. Configure SystemJS -->
+    <script>
+      System.config({
+        packages: {        
+          app: {
+            format: 'register',
+            defaultExtension: 'js'
+          }
+        },
+        map: {
+          redux: '/node_modules/redux/dist/redux.js',
+          'redux-logger': '/node_modules/redux-logger/dist/index.js',
+          reselect: '/node_modules/reselect/lib/index.js'
+        }
+      });
+      System.import('app/boot')
+            .then(null, console.error.bind(console));
+    </script>
+
+  </head>
+
+  <!-- 3. Display the application -->
+  <body>
+    <DeskMacros>Loading...</DeskMacros>
+  </body>
+
+</html>
