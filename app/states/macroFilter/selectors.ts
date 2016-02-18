@@ -3,20 +3,24 @@ import {createSelector} from 'reselect';
 
 // Simple selectors
 export const macros = (state): Object[] => state.macros;
-export const macroFilters = (state): string[] => state.macroFilters;
+export const macroFilter = (state): string[] => state.macroFilter;
+
 
 // Composed selectors
 export const macrosByFolder = createSelector(macros, groupByFolder);
 
-export const filteredMacros = createSelector(macros, macroFilters, filterMacros);
+export const filteredMacros: (state) => Object[] = createSelector(macros, macroFilter, filterMacros);
 
-export const filteredFolders = createSelector(macrosByFolder, macroFilters, (folders, macroFilters) =>
-  folders.filter(f => f.name.toLowerCase().indexOf(macroFilters.toLowerCase()) > -1)
-)
+export const filteredFolders = createSelector(macrosByFolder, macroFilter, filterFolders);
+
 
 // Helper functions
-function filterMacros (macros, macroFilters) { 
-  return macros.filter(macro => macro.name.toLowerCase().indexOf(macroFilters.toLowerCase()) > -1);
+function filterMacros (macros, macroFilter) { 
+  return macros.filter(macro => macro.name.toLowerCase().indexOf(macroFilter.toLowerCase()) > -1);
+}
+
+function filterFolders (folders, macroFilter) {
+  return folders.filter(f => f.name.toLowerCase().indexOf(macroFilter.toLowerCase()) > -1);
 }
 
 function groupByFolder (macros): Object[] {

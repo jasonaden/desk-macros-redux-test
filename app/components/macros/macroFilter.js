@@ -34,13 +34,17 @@ System.register(['angular2/core', 'angular2/common'], function(exports_1) {
                     __metadata('design:type', Object)
                 ], MacroFilter.prototype, "form", void 0);
                 __decorate([
+                    core_1.Input(), 
+                    __metadata('design:type', Object)
+                ], MacroFilter.prototype, "placeholder", void 0);
+                __decorate([
                     core_1.Output(), 
                     __metadata('design:type', Object)
                 ], MacroFilter.prototype, "filterChange", void 0);
                 MacroFilter = __decorate([
                     core_1.Component({
                         selector: 'MacroFilter',
-                        template: "\n  <form>\n    <input ngControl=\"filter\">\n  </form>\n\t"
+                        template: "\n  <form>\n    <input class=\"form-control\" [placeholder]=\"placeholder || 'Filter'\" ngControl=\"filter\">\n  </form>\n\t"
                     }), 
                     __metadata('design:paramtypes', [])
                 ], MacroFilter);

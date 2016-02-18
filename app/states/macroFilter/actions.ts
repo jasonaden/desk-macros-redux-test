@@ -1,5 +1,4 @@
 
-
 export const SET_MACROS = "SET_MACROS";
 export function setMacros(data: Object[]) {
   return {
@@ -17,13 +16,10 @@ export function selectMacro(data: number) {
 }
 
 export const SET_MACRO_FILTER = "SET_MACRO_FILTER";
-export function setMacroFilter(data: string, index: number) {
+export function setMacroFilter(data: string) {
   return {
     type: SET_MACRO_FILTER,
-    data: {
-      value: data,
-      index
-    }
+    data
   }
 }
 

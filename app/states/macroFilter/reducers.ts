@@ -15,17 +15,10 @@ function selectedMacro(state = null, action): number {
   }
 }
 
-function macroFilters (state = [], action): string[] {
+function macroFilter (state = '', action): string {
   switch (action.type) {
-    case ADD_MACRO_FILTER:
-      return [...state, ''];
     case SET_MACRO_FILTER:
-      let idx = action.data.index;
-      return [
-        ...state.slice(0, idx),
-        action.data.filter,
-        ...state.slice(idx + 1)
-      ];
+      return action.data;
     default:
       return state;
   }
@@ -40,11 +33,7 @@ function macros (state = [], action): Object[] {
 	}
 }
 
-const macroData = combineReducers({
-  macros
-})
-
 export const rootReducer = combineReducers({
-  macroFilters,
+  macroFilter,
   macros
 })
