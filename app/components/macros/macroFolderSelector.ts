@@ -1,39 +1,36 @@
-import {Component, Input} from 'angular2/core';
-import {MacroFilter} from './macroFilter';
-import {setMacroFilter} from '../../states/macroFilter/actions';
-import {filteredFolders} from '../../states/macroFilter/selectors';
-import {AppStore} from '../../states/store';
 
-@Component({
-	selector: 'MacroFolderSelector',
-  directives: [MacroFilter],
-	template: `
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <MacroFilter placeholder="Filter Folders" (filterChange)="onFilterChange($event)"></MacroFilter>
-      </div>
-      <div class="panel-body">
-        <ul>
-          <li *ngFor="#folder of folders">{{folder.name}}</li>
-        </ul>
-      </div>
-	`
-})
+import {Store} from 'redux';
+import {setFolderFilter} from '../../states/macroFilter/actions';
+import {filteredFolders} from '../../states/macroFilter/selectors';
+
 export class MacroFolderSelector {
-  folders: Object[];
-  @Input() macros: Object[];
+  store: Store;
   
-  constructor(public store: AppStore) {
-    this.filterFolders();
+  constructor(AppStore) {
+    this.store = AppStore;
   }
   
-  filterFolders() {
-    this.folders = filteredFolders(this.store.getState());
+  get filteredFolders () {
+    return filteredFolders(this.store.getState())
   }
-  
+    
   onFilterChange (filter: string) {
-    this.store.dispatch(setMacroFilter(filter))
-    this.filterFolders();
+    setFolderFilter(filter)
   }
   
 };
+export const MacroFolderSelectorComponent = {
+  selector: 'macro-folder-selector',
+  template: `
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <macro-filter placeholder="Filter Folders" filter-change="$ctrl.onFilterChange(filter)"></macro-filter>
+      </div>
+      <div class="panel-body">
+        <ul>
+          <li ng-repeat="folder in $ctrl.filteredFolders">{{folder.name}}</li>
+        </ul>
+      </div>
+	`,
+  controller: MacroFolderSelector
+}

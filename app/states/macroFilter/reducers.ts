@@ -2,6 +2,7 @@ import {combineReducers} from 'redux';
 import {
   SELECT_MACRO, 
   SET_MACRO_FILTER,
+  SET_FOLDER_FILTER,
   ADD_MACRO_FILTER,
   SET_MACROS
 } from './actions';
@@ -24,6 +25,15 @@ function macroFilter (state = '', action): string {
   }
 }
 
+function folderFilter (state = '', action): string {
+  switch (action.type) {
+    case SET_FOLDER_FILTER:
+      return action.data;
+    default:
+      return state;
+  }
+}
+
 function macros (state = [], action): Object[] {
   switch (action.type) {
 		case SET_MACROS:
@@ -35,5 +45,6 @@ function macros (state = [], action): Object[] {
 
 export const rootReducer = combineReducers({
   macroFilter,
+  folderFilter,
   macros
 })

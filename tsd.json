@@ -10,6 +10,12 @@
     },
     "redux/redux.d.ts": {
       "commit": "7fffbd3e040a93c244777e3be04cd6223ac69301"
+    },
+    "jquery/jquery.d.ts": {
+      "commit": "99c4fb76b5d941939ba53e61d0daee4bd74f150f"
+    },
+    "angularjs/angular.d.ts": {
+      "commit": "99c4fb76b5d941939ba53e61d0daee4bd74f150f"
     }
   }
 }

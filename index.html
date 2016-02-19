@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"></link>
 
     <!-- 1. Load libraries -->
+    <script src="node_modules/angular/angular.js"></script>
     <script src="node_modules/angular2/bundles/angular2-polyfills.js"></script>
     <script src="node_modules/systemjs/dist/system.src.js"></script>
     <script src="node_modules/rxjs/bundles/Rx.js"></script>
@@ -24,10 +25,11 @@
         map: {
           redux: '/node_modules/redux/dist/redux.js',
           'redux-logger': '/node_modules/redux-logger/dist/index.js',
-          reselect: '/node_modules/reselect/lib/index.js'
+          reselect: '/node_modules/reselect/lib/index.js',
+          angular: '/node_modules/angular/angular.js'
         }
       });
-      System.import('app/boot')
+      System.import('app/app')
             .then(null, console.error.bind(console));
     </script>
 
@@ -36,7 +38,7 @@
   <!-- 3. Display the application -->
   <body>
     <div class="content">
-      <DeskMacros>Loading...</DeskMacros>
+      <desk-macros>Loading...</desk-macros>
     </div>
   </body>
 

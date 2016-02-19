@@ -1,37 +1,35 @@
-import {Component} from 'angular2/core';
+
+import {Store} from 'redux';
 import {macroList} from './data/macros';
+import {setMacros} from './states/macroFilter/actions';
 
-import {AppStore} from './states/store';
+import {macros} from './states/macroFilter/selectors';
 
-import {MacroSelector, MacroFolderSelector} from './components/macros';
-import {setMacros, setMacroFilter, addMacroFilter} from './states/macroFilter/actions';
-
-import {macros, macroFilter, filteredMacros, filteredFolders} from './states/macroFilter/selectors';
-
-@Component({
-	selector: 'DeskMacros',
-  providers: [AppStore],
-  directives: [MacroSelector, MacroFolderSelector],
-  template: `
-    <div class="row">
-      <div class="col-md-3">
-        <MacroSelector [macros]="macros"></MacroSelector>
-      </div>
-      <div class="col-md-3">
-        <MacroFolderSelector [macros]="macros"></MacroFolderSelector>
-      </div>
-    </div>
-	`
-})
-export class DeskMacrosComponent {
-  macros: Object[];
-  constructor (store: AppStore) {
+export class DeskMacros {
+  macros;
+  
+  constructor (AppStore) {
+    let store = AppStore;
+    
     store.subscribe(() => {
       let state = store.getState();
       this.macros = macros(state);
     });
-    
-    store.dispatch(setMacros(macroList));
-    
-	}
+    setMacros(macroList);
+  };
+  
+}
+
+export const DeskMacrosComponent = {
+  template: `
+    <div class="row">
+      <div class="col-md-3">
+        <macro-selector macros="$ctrl.macros"></macro-selector>
+      </div>
+      <div class="col-md-3">
+        <macro-folder-selector macros="$ctrl.macros"></macro-folder-selector>
+      </div>
+    </div>
+	`,
+  controller: DeskMacros
 };
