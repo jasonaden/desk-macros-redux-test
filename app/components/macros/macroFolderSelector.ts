@@ -11,11 +11,11 @@ export class MacroFolderSelector {
   }
   
   get filteredFolders () {
-    return filteredFolders(this.store.getState())
+    return filteredFolders(this.store.getState());
   }
     
   onFilterChange (filter: string) {
-    setFolderFilter(filter)
+    this.store.dispatch(setFolderFilter(filter));
   }
   
 };

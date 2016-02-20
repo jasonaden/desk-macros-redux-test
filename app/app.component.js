@@ -21,7 +21,7 @@ System.register(['./data/macros', './states/macroFilter/actions', './states/macr
                         var state = store.getState();
                         _this.macros = selectors_1.macros(state);
                     });
-                    actions_1.setMacros(macros_1.macroList);
+                    store.dispatch(actions_1.setMacros(macros_1.macroList));
                 }
                 ;
                 return DeskMacros;

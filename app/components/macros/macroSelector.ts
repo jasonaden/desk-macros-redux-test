@@ -15,7 +15,7 @@ export class MacroSelector {
   }
   
   onFilterChange (filter: string) {
-    setMacroFilter(filter);
+    this.store.dispatch(setMacroFilter(filter));
   }
   
 };

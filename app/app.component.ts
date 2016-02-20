@@ -1,5 +1,5 @@
 
-import {Store} from 'redux';
+import {Store} from '@ngrx/store';
 import {macroList} from './data/macros';
 import {setMacros} from './states/macroFilter/actions';
 
@@ -15,7 +15,7 @@ export class DeskMacros {
       let state = store.getState();
       this.macros = macros(state);
     });
-    setMacros(macroList);
+    store.dispatch(setMacros(macroList));
   };
   
 }

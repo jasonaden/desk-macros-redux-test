@@ -12,7 +12,7 @@
     <script src="node_modules/rxjs/bundles/Rx.js"></script>
     <script src="node_modules/angular2/bundles/angular2.dev.js"></script>
     <script src="node_modules/redux/dist/redux.js"></script>
-
+    
     <!-- 2. Configure SystemJS -->
     <script>
       System.config({
@@ -26,7 +26,8 @@
           redux: '/node_modules/redux/dist/redux.js',
           'redux-logger': '/node_modules/redux-logger/dist/index.js',
           reselect: '/node_modules/reselect/lib/index.js',
-          angular: '/node_modules/angular/angular.js'
+          angular: '/node_modules/angular/angular.js',
+          '@ngrx/store': '/node_modules/@ngrx/store/dist/store.js'
         }
       });
       System.import('app/app')
