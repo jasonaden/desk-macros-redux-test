@@ -1,4 +1,4 @@
 
-export {CaseSelector} from './caseSelector';
-export {CaseFilter} from './caseFilter';
-export {CaseList} from './caseList';
+export {CaseSelectorComponent} from './caseSelector';
+export {CaseFilterComponent} from './caseFilter';
+export {CaseListComponent} from './caseList';

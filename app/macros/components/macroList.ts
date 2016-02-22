@@ -1,7 +1,12 @@
-import {Component, Input} from 'angular2/core';
+export class MacroList {
+  constructor () {}
+}
 
-@Component({
-	selector: 'MacroList',
+export const MacroListComponent = {
+  controller: MacroList,
+  bindings: {
+    macros: '<'
+  },
 	template: `
     <ul>
       <li *ngFor="#macro of macros">
@@ -9,7 +14,4 @@ import {Component, Input} from 'angular2/core';
       </li>
     </ul>
 	`
-})
-export class MacroList {
-  @Input() macros: Object[];
-};
+}

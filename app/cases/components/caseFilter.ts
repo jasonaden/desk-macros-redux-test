@@ -2,6 +2,7 @@
 export class CaseFilter {
   constructor () { }
 };
+
 export const CaseFilterComponent = {
   bindings: {
     placeholder: '@',

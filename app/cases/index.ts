@@ -1,7 +1,7 @@
 export const caseMod = angular.module('case', []);
 
-import {CaseSelector, CaseFilter} from './components/';
+import {CaseSelectorComponent, CaseFilterComponent} from './components/index.js';
 
 caseMod
-  .component('CaseSelector', CaseSelector)
-  .component('CaseFilter', CaseFilter);
+  .component('caseSelector', CaseSelectorComponent)
+  .component('caseFilter', CaseFilterComponent);

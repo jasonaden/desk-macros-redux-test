@@ -1,7 +1,13 @@
-import {Component, Input} from 'angular2/core';
 
-@Component({
-	selector: 'CaseList',
+export class CaseList {
+  constructor () {}
+};
+
+export const CaseListComponent = {
+  controller: CaseList,
+  bindings: {
+    cases: '<'
+  },
 	template: `
     <ul>
       <li *ngFor="#kase of cases">
@@ -9,7 +15,4 @@ import {Component, Input} from 'angular2/core';
       </li>
     </ul>
 	`
-})
-export class CaseList {
-  @Input() cases: Object[];
-};
+}

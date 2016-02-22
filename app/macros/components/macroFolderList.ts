@@ -1,7 +1,14 @@
-import {Component, Input} from 'angular2/core';
 
-@Component({
+export class MacroFolderList {
+  constructor () {}
+};
+
+export const MacroFolderListComponent = {
 	selector: 'MacroFolderList',
+  controller: MacroFolderList,
+  bindings: {
+    folders: '<'
+  },
 	template: `
     <ul>
       <li *ngFor="#folder of folders">
@@ -9,7 +16,4 @@ import {Component, Input} from 'angular2/core';
       </li>
     </ul>
 	`
-})
-export class MacroFolderList {
-  @Input() folders: Object[];
-};
+}
