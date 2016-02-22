@@ -1,10 +1,10 @@
 
-import {Store} from 'redux';
-import {setMacroFilter} from '../../states/macroFilter/actions';
-import {filteredMacros} from '../../states/macroFilter/selectors';
+import {Store} from '@ngrx/store';
+import {setMacroFilter} from '../states/actions';
+import {filteredMacros} from '../states/selectors';
 
 export class MacroSelector {
-  store: Store;
+  store: Store<Object>;
   
   constructor(AppStore) {
     this.store = AppStore;

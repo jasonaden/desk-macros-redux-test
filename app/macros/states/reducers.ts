@@ -46,7 +46,7 @@ const macros:Reducer<Object[]> = (state:Object[] = [], action:Action) => {
 	}
 }
 
-export const rootReducer = combineReducers({
+export const macroReducers = combineReducers({
   macroFilter,
   folderFilter,
   macros

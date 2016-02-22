@@ -1,7 +1,8 @@
+<!doctype html>
 <html>
 
   <head>
-    <title>Desk Macros</title>
+    <title>Desk App</title>
     <!-- 0. Load CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"></link>
 
@@ -11,8 +12,7 @@
     <script src="node_modules/systemjs/dist/system.src.js"></script>
     <script src="node_modules/rxjs/bundles/Rx.js"></script>
     <script src="node_modules/angular2/bundles/angular2.dev.js"></script>
-    <script src="node_modules/redux/dist/redux.js"></script>
-    
+
     <!-- 2. Configure SystemJS -->
     <script>
       System.config({
@@ -23,7 +23,6 @@
           }
         },
         map: {
-          redux: '/node_modules/redux/dist/redux.js',
           'redux-logger': '/node_modules/redux-logger/dist/index.js',
           reselect: '/node_modules/reselect/lib/index.js',
           angular: '/node_modules/angular/angular.js',
@@ -39,7 +38,7 @@
   <!-- 3. Display the application -->
   <body>
     <div class="content">
-      <desk-macros>Loading...</desk-macros>
+      <desk-app>Loading...</desk-app>
     </div>
   </body>
 

@@ -7,10 +7,10 @@
 // const createStoreWithMiddleware = applyMiddleware(logger)(createStore);
 
 
-import {Reducer, Store, createStore} from '@ngrx/store';
+import {Store, createStore} from '@ngrx/store';
 
 // Reducers
-import {rootReducer} from './macroFilter/reducers';
+import {rootReducer} from './rootReducer';
 
 export const AppStore:Store<Object> = createStore(rootReducer).useValue;
 

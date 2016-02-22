@@ -1,18 +1,13 @@
+import './cases/';
+import './macros/';
 
-export const app = angular.module('app', []);
+import {DeskAppComponent} from './app.component';
+import {AppStore} from './store';
 
-import {DeskMacrosComponent} from './app.component';
-import {AppStore} from './states/store';
-import {MacroSelectorComponent} from './components/macros/macroSelector';
-import {MacroFolderSelectorComponent} from './components/macros/macroFolderSelector';
-import {MacroFilterComponent} from './components/macros/macroFilter';
-
+export const app = angular.module('app', ['case', 'macro']);
 
 app
-  .component('deskMacros', DeskMacrosComponent)
-  .component('macroSelector', MacroSelectorComponent)
-  .component('macroFolderSelector', MacroFolderSelectorComponent)
-  .component('macroFilter', MacroFilterComponent)
+  .component('deskApp', DeskAppComponent)
   .value('AppStore', AppStore);
 
 angular.element(document).ready(function() {

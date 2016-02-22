@@ -1,10 +1,10 @@
 
-import {Store} from 'redux';
-import {setFolderFilter} from '../../states/macroFilter/actions';
-import {filteredFolders} from '../../states/macroFilter/selectors';
+import {Store} from '@ngrx/store';
+import {setFolderFilter} from '../states/actions';
+import {filteredFolders} from '../states/selectors';
 
 export class MacroFolderSelector {
-  store: Store;
+  store: Store<Object>;
   
   constructor(AppStore) {
     this.store = AppStore;

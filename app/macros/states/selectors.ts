@@ -11,9 +11,9 @@ interface IFolder {
 }
 
 // Simple selectors
-export const macros = (state): IMacro[] => state.macros;
-export const macroFilter = (state): string => state.macroFilter;
-export const folderFilter = (state): string => state.folderFilter;
+export const macros = (state): IMacro[] => state.macroReducers.macros;
+export const macroFilter = (state): string => state.macroReducers.macroFilter;
+export const folderFilter = (state): string => state.macroReducers.folderFilter;
 
 
 // Composed selectors
