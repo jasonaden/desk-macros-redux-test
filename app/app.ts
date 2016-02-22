@@ -1,5 +1,5 @@
-import './cases/index.js';
-import './macros/index.js';
+import './cases/module';
+import './macros/module';
 
 import {DeskAppComponent} from './app.component';
 import {AppStore} from './store';
