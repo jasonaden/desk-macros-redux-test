@@ -1,6 +1,6 @@
 export const macroMod = angular.module('macro', []);
 
-import {MacroSelectorComponent, MacroFolderSelectorComponent, MacroFilterComponent} from './components/';
+import {MacroSelectorComponent, MacroFolderSelectorComponent, MacroFilterComponent} from './components';
 
 macroMod
   .component('macroSelector', MacroSelectorComponent)
