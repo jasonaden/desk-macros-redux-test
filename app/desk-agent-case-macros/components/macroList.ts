@@ -1,12 +1,12 @@
 import {Store} from '@ngrx/store';
 import {selectedMacro} from '../states/selectors';
-import {selectMacro} from '../states/actions';
+//import {selectMacro} from '../states/actions';
 
 export class MacroList {
   store: Store<Object>;
   
-  constructor (AppStore) {
-    this.store = AppStore;
+  constructor (DeskStore) {
+    this.store = DeskStore;
   }
   
   get selectedMacro () {

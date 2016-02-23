@@ -6,8 +6,8 @@ import {filteredMacros, selectedMacroId} from '../states/selectors';
 export class MacroSelector {
   store: Store<Object>;
   
-  constructor(AppStore) {
-    this.store = AppStore;
+  constructor(DeskStore) {
+    this.store = DeskStore;
   }
   
 };
@@ -23,6 +23,7 @@ export const MacroSelectorComponent = {
   template: `
     <div class="panel panel-default">
       <div class="panel-heading">
+        <h3>Select a macro</h3>
         <macro-filter placeholder="Filter Macros" filter-change="$ctrl.filterChange({filter: filter})"></macro-filter>
       </div>
       <div class="panel-body">

@@ -1,0 +1,1 @@
+export {DeskComponent} from './components/desk';

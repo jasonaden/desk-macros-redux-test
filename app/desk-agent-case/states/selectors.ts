@@ -3,9 +3,9 @@ import {createSelector} from 'reselect';
 import {ICase} from './interfaces';
 
 // Simple selectors
-export const cases = (state): ICase[] => state.cases.cases;
-export const caseFilter = (state): string => state.cases.caseFilter;
-export const selectedCaseId = (state): number => state.cases.selectedCaseId;
+export const cases = (state): ICase[] => state.deskAgentCase.cases;
+export const caseFilter = (state): string => state.deskAgentCase.caseFilter;
+export const selectedCaseId = (state): number => state.deskAgentCase.selectedCaseId;
 
 // Composed selectors
 export const filteredCases: (state) => ICase[] = createSelector(cases, caseFilter, filterCases);

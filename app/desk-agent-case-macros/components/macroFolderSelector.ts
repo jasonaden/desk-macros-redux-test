@@ -6,8 +6,8 @@ import {filteredFolders} from '../states/selectors';
 export class MacroFolderSelector {
   store: Store<Object>;
   
-  constructor(AppStore) {
-    this.store = AppStore;
+  constructor(DeskStore) {
+    this.store = DeskStore;
   }
   
   get filteredFolders () {

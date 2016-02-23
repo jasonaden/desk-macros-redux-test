@@ -1,8 +1,7 @@
 import '../desk-agent-case/module';
-import '../desk-agent-case-macros/module';
 
-export const deskAgent = angular.module('desk.agent', ['case', 'macro']);
+export const deskAgent = angular.module('desk.agent', ['desk.agent.case']);
 import * as comp from './components';
-console.log('here');
+
 deskAgent
   .component('deskAgent', comp.DeskAgentComponent);

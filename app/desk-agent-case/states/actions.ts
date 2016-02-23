@@ -24,3 +24,11 @@ export function setCaseFilter(payload: string): Action {
     payload
   }
 }
+
+export const APPLY_MACRO_TO_CASE = "APPLY_MACRO_TO_CASE";
+export function applyMacroToCase (payload: Object): Action {
+  return {
+    type: APPLY_MACRO_TO_CASE,
+    payload
+  }
+}

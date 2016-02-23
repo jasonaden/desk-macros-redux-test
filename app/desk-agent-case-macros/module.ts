@@ -1,5 +1,5 @@
 
-export const macroMod = angular.module('macro', []);
+export const macroMod = angular.module('desk.agent.case.macros', []);
 import * as comp from './components';
 
 macroMod

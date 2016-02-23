@@ -12,10 +12,10 @@ interface IFolder {
 }
 
 // Simple selectors
-export const macros = (state): IMacro[] => state.macros.macros;
-export const macroFilter = (state): string => state.macros.macroFilter;
-export const folderFilter = (state): string => state.macros.folderFilter;
-export const selectedMacroId = (state): number => state.macros.selectedMacroId;
+export const macros = (state): IMacro[] => state.deskAgentCaseMacros.macros;
+export const macroFilter = (state): string => state.deskAgentCaseMacros.macroFilter;
+export const folderFilter = (state): string => state.deskAgentCaseMacros.folderFilter;
+export const selectedMacroId = (state): number => state.deskAgentCaseMacros.selectedMacroId;
 
 // Composed selectors
 export const macrosByFolder = createSelector(macros, groupByFolder);

@@ -17,14 +17,6 @@ export function setSelectedMacro (payload: number): Action {
   }
 }
 
-export const APPLY_MACRO_TO_CASE = "APPLY_MACRO_TO_CASE";
-export function applyMacroToCase (payload: Object): Action {
-  return {
-    type: APPLY_MACRO_TO_CASE,
-    payload
-  }
-}
-
 export const SET_MACRO_FILTER = "SET_MACRO_FILTER";
 export function setMacroFilter(payload: string): Action {
   return {
