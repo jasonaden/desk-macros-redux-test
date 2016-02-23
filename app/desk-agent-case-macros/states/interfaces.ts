@@ -3,7 +3,3 @@ export interface IMacro {
   name: string,
   folders: String[]
 }
-
-export interface IFolder {
-  name: string
-}

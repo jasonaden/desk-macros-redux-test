@@ -14,6 +14,8 @@ const selectedCaseId:Reducer<number> = (state:number = -1, action:Action) => {
   switch (action.type) {
     case SELECT_CASE:
       return action.payload;
+    case SET_CASE_FILTER:
+      return -1;
     default:
       return state;
   }

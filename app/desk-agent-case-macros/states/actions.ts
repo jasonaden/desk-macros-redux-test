@@ -25,14 +25,6 @@ export function setMacroFilter(payload: string): Action {
   }
 }
 
-export const SET_FOLDER_FILTER = "SET_FOLDER_FILTER";
-export function setFolderFilter(payload: string): Action {
-  return {
-    type: SET_FOLDER_FILTER,
-    payload
-  }
-}
-
 export const ADD_MACRO_FILTER = "ADD_MACRO_FILTER";
 export function addMacroFilter(payload: string): Action {
   return {

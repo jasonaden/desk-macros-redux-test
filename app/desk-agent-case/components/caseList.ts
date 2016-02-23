@@ -1,5 +1,9 @@
 import {Store} from '@ngrx/store';
 
+// INTERFACES
+import {ICase} from '../states/interfaces';
+import {IMacro} from '../../desk-agent-case-macros/states/interfaces';
+
 // ACTIONS
 import {setSelectedMacro, setMacroFilter} from '../../desk-agent-case-macros/states/actions';
 import {applyMacroToCase, setSelectedCase, setCaseFilter} from '../states/actions';
@@ -28,6 +32,10 @@ export class CaseList {
     return filteredCases(this.store.getState());
   }
   
+  getCaseDisplay (kase: ICase) {
+    return '(' + kase.macros.length + ' macros): ' + kase.subject;
+  }
+
   onSelectCase (caseId:number) {
     this.store.dispatch(setSelectedCase(caseId));
   }
@@ -45,6 +53,9 @@ export class CaseList {
     return filteredMacros(this.store.getState());
   }
   
+  getMacroDisplay (macro: IMacro) {
+    return macro.name;
+  }
   onSelectMacro (macroId:number) {
     this.store.dispatch(setSelectedMacro(macroId))
   }
@@ -72,18 +83,24 @@ export const CaseListComponent = {
 	template: `
     <div class="row">
       <div class="col-md-3">
-        <case-selector
-          selected-case-id="$ctrl.selectedCaseId"
-          filtered-cases="$ctrl.filteredCases"
-          select-case="$ctrl.onSelectCase(caseId)"
-          filter-change="$ctrl.onFilterChange(filter, 'case')"></case-selector>
+        <filter-list-selector
+          selected-id="$ctrl.selectedCaseId"
+          list-items="$ctrl.filteredCases"
+          select-item="$ctrl.onSelectCase(itemId)"
+          filter-change="$ctrl.onFilterChange(filter, 'case')"
+          title="Select a case"
+          placeholder="Filter cases"
+          item-name="$ctrl.getCaseDisplay(item)"></filter-list-selector>
       </div>
       <div class="col-md-3" ng-show='$ctrl.selectedCase'>
-        <macro-selector 
-          selected-macro-id="$ctrl.selectedMacroId"
-          filtered-macros="$ctrl.filteredMacros" 
-          select-macro="$ctrl.onSelectMacro(macroId)"
-          filter-change="$ctrl.onFilterChange(filter, 'macro')"></macro-selector>
+        <filter-list-selector 
+          selected-id="$ctrl.selectedMacroId"
+          list-items="$ctrl.filteredMacros" 
+          select-item="$ctrl.onSelectMacro(itemId)"
+          filter-change="$ctrl.onFilterChange(filter, 'macro')"
+          title="Select a macro"
+          placeholder="Filter macros"
+          item-name="$ctrl.getMacroDisplay(item)"></filter-list-selector>
       </div>
       <div class="col-md-3" ng-show='$ctrl.selectedCase && $ctrl.selectedMacro'>
           <input type="button" class='btn btn-primary' ng-click="$ctrl.applyMacro()" value="Apply Macro To Case"></input>
