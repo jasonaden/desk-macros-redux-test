@@ -1,5 +1,5 @@
 import {Store} from '@ngrx/store';
-import {selectedCase} from '../../cases/states/selectors';
+import {selectedCase} from '../../desk-agent-case/states/selectors';
 import {selectedMacro} from '../states/selectors';
 import {applyMacroToCase} from '../states/actions';
 
@@ -27,6 +27,10 @@ export class MacroApply {
 };
 
 export const MacroApplyComponent = {
+  controller: MacroApply,
+  bindings: {
+    
+  },
   template:`
     <div class="row">
       <div class="col-md-3">
@@ -39,6 +43,5 @@ export const MacroApplyComponent = {
         <input type="button" class='btn btn-primary' ng-click="$ctrl.applyMacro()" ng-disabled="!$ctrl.selectedCase || !$ctrl.selectedMacro" value="Apply Macro To Case"></input>
       </div>
     </div>
-	`,
-  controller: MacroApply
+	`
 }

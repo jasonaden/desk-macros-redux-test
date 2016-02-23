@@ -1,6 +1,6 @@
 import {combineReducers} from '@ngrx/store';
-import {macroReducers} from './macros/states/reducers';
-import {caseReducers} from './cases/states/reducers';
+import {macroReducers} from './desk-agent-case-macros/states/reducers';
+import {caseReducers} from './desk-agent-case/states/reducers';
 
 export const rootReducer = combineReducers({
   macros: macroReducers,

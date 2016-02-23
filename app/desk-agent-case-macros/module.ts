@@ -1,3 +1,4 @@
+
 export const macroMod = angular.module('macro', []);
 import * as comp from './components';
 

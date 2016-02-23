@@ -8,7 +8,7 @@ import {
 } from './actions';
 
 import {ICase} from './interfaces';
-import { APPLY_MACRO_TO_CASE } from '../../macros/states/actions';
+import { APPLY_MACRO_TO_CASE } from '../../desk-agent-case-macros/states/actions';
 
 const selectedCaseId:Reducer<number> = (state:number = -1, action:Action) => {
   switch (action.type) {

@@ -1,4 +1,4 @@
-System.register(['./data/macros', './data/cases', './macros/states/actions', './cases/states/actions'], function(exports_1) {
+System.register(['./data/macros', './data/cases', './desk-agent-case-macros/states/actions', './desk-agent-case/states/actions'], function(exports_1) {
     var macros_1, cases_1, actions_1, actions_2;
     var App, AppComponent;
     return {
@@ -20,6 +20,9 @@ System.register(['./data/macros', './data/cases', './macros/states/actions', './
                 function App(AppStore) {
                     // TODO: This just pre-load's data. Maybe work in $http or some kind of fetch
                     var store = AppStore;
+                    store.subscribe(function (_) {
+                        console.log(store.getState());
+                    });
                     store.dispatch(actions_1.setMacros(macros_1.macroList));
                     store.dispatch(actions_2.setCases(cases_1.caseList));
                 }
