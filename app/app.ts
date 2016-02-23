@@ -1,13 +1,11 @@
-import './cases/module';
-import './macros/module';
-
-import {DeskAppComponent} from './app.component';
+import './desk-agent/module';
+import {AppComponent} from './app.component';
 import {AppStore} from './store';
 
-export const app = angular.module('app', ['case', 'macro']);
+export const app = angular.module('app', ['desk.agent']);
 
 app
-  .component('deskApp', DeskAppComponent)
+  .component('app', AppComponent)
   .value('AppStore', AppStore);
 
 angular.element(document).ready(function() {

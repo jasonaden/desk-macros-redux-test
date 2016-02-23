@@ -1,0 +1,1 @@
+export {DeskAgentComponent} from './components/deskAgent';

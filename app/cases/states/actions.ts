@@ -8,14 +8,14 @@ export const setCases = function setCases(payload: Object[]): Action {
     payload
   }
 };
-/*
-export const SELECT_MACRO = "SELECT_MACRO";
-export function selectMacro (payload: number): Action {
+
+export const SELECT_CASE = "SELECT_CASE";
+export function setSelectedCase (payload: number): Action {
   return {
-    type: SELECT_MACRO,
+    type: SELECT_CASE,
     payload
   }
-}*/
+}
 
 export const SET_CASE_FILTER = "SET_CASE_FILTER";
 export function setCaseFilter(payload: string): Action {

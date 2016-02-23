@@ -19,8 +19,9 @@ export class MacroFolderSelector {
   }
   
 };
+
 export const MacroFolderSelectorComponent = {
-  selector: 'macro-folder-selector',
+  controller: MacroFolderSelector,
   template: `
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -31,6 +32,5 @@ export const MacroFolderSelectorComponent = {
           <li ng-repeat="folder in $ctrl.filteredFolders">{{folder.name}}</li>
         </ul>
       </div>
-	`,
-  controller: MacroFolderSelector
+	`
 }

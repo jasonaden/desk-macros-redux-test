@@ -10,10 +10,12 @@ import {
 } from './actions';
 
 
-const selectedMacro:Reducer<Object> = (state:Object = null, action:Action) => {
+const selectedMacroId:Reducer<number> = (state:number = -1, action:Action) => {
   switch (action.type) {
     case SELECT_MACRO:
       return action.payload;
+    case SET_MACRO_FILTER:
+      return -1;
     default:
       return state;
   }
@@ -49,47 +51,6 @@ const macros:Reducer<Object[]> = (state:Object[] = [], action:Action) => {
 export const macroReducers = combineReducers({
   macroFilter,
   folderFilter,
+  selectedMacroId,
   macros
 })
-
-// function selectedMacro(state = null, action): number {
-//   switch (action.type) {
-//     case SELECT_MACRO:
-//       return action.data;
-//     default:
-//       return state;
-//   }
-// }
-
-// function macroFilter (state = '', action): string {
-//   switch (action.type) {
-//     case SET_MACRO_FILTER:
-//       return action.data;
-//     default:
-//       return state;
-//   }
-// }
-
-// function folderFilter (state = '', action): string {
-//   switch (action.type) {
-//     case SET_FOLDER_FILTER:
-//       return action.data;
-//     default:
-//       return state;
-//   }
-// }
-
-// function macros (state = [], action): Object[] {
-//   switch (action.type) {
-// 		case SET_MACROS:
-// 			return action.data.slice(0);
-// 		default:
-// 			return state;
-// 	}
-// }
-
-// export const rootReducer = combineReducers({
-//   macroFilter,
-//   folderFilter,
-//   macros
-// })

@@ -1,7 +1,7 @@
 
 import {Store} from '@ngrx/store';
-import {setMacroFilter} from '../states/actions';
-import {filteredMacros} from '../states/selectors';
+import {setMacroFilter, setSelectedMacro} from '../states/actions';
+import {filteredMacros, selectedMacroId} from '../states/selectors';
 
 export class MacroSelector {
   store: Store<Object>;
@@ -18,13 +18,18 @@ export class MacroSelector {
     this.store.dispatch(setMacroFilter(filter));
   }
   
+  get selectedMacroId () {
+    return selectedMacroId(this.store.getState());
+  }
+  
+  setSelectedMacro (id: number) {
+    this.store.dispatch(setSelectedMacro(id));
+  }
+  
 };
 
 export const MacroSelectorComponent = {
   controller: MacroSelector,
-  bindings: {
-    macros: '<'
-  },
   template: `
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -32,7 +37,7 @@ export const MacroSelectorComponent = {
       </div>
       <div class="panel-body">
         <ul>
-          <li ng-repeat="macro in $ctrl.filteredMacros">{{macro.name}}</li>
+          <li ng-repeat="macro in $ctrl.filteredMacros" ng-class="{active: macro.id==$ctrl.selectedMacroId}" ng-click="$ctrl.setSelectedMacro(macro.id)">{{macro.name}}</li>
         </ul>
       </div>
     </div>

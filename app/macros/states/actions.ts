@@ -10,9 +10,17 @@ export const setMacros = function setMacros(payload: Object[]): Action {
 };
 
 export const SELECT_MACRO = "SELECT_MACRO";
-export function selectMacro (payload: number): Action {
+export function setSelectedMacro (payload: number): Action {
   return {
     type: SELECT_MACRO,
+    payload
+  }
+}
+
+export const APPLY_MACRO_TO_CASE = "APPLY_MACRO_TO_CASE";
+export function applyMacroToCase (payload: Object): Action {
+  return {
+    type: APPLY_MACRO_TO_CASE,
     payload
   }
 }

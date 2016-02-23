@@ -1,0 +1,18 @@
+
+export class FolderFilter {
+  constructor () { }
+};
+export const FolderFilterComponent = {
+  bindings: {
+    placeholder: '@',
+    filterChange: '&'
+  },
+  template:`
+    <form>
+      <input class="form-control" placeholder="{{::$ctrl.placeholder || 'Filter'}}" 
+        ng-model="$ctrl.filterText" ng-change="$ctrl.filterChange({filter: $ctrl.filterText})">
+    </form>
+	`,
+  controller: FolderFilter
+}
+
