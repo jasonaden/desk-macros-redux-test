@@ -25,13 +25,9 @@ export const FilterListSelectorComponent = {
     <div class="panel panel-default">
       <div class="panel-heading">
         <h3>{{::$ctrl.title}}</h3>
-        <form>
-          <input 
-            class="form-control" 
-            placeholder="{{::$ctrl.placeholder || 'Filter'}}" 
-            ng-model="$ctrl.filterText" 
-            ng-change="$ctrl.filterChange({filter: $ctrl.filterText})">
-        </form>
+        <filter-list-filter
+          filter-change="$ctrl.filterChange(filterText)"
+          placeholder="$ctrl.placeholder"></filter-list-filter>
       </div>
       <div class="panel-body">
         <ul>
