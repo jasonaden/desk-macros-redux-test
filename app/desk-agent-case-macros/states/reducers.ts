@@ -7,6 +7,7 @@ import {
   ADD_MACRO_FILTER,
   SET_MACROS
 } from './actions';
+
 import { SET_CASE_FILTER } from '../../desk-agent-case/states/actions';
 
 const selectedMacroId:Reducer<number> = (state:number = -1, action:Action) => {
