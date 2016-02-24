@@ -1,34 +1,8 @@
 
 import {Reducer, Action, combineReducers} from '@ngrx/store';
 
-import {
-  SET_CASE_FILTER,
-  SET_CASES,
-  SELECT_CASE
-} from './actions';
-
+import { SET_CASES, APPLY_MACRO_TO_CASE } from './actions';
 import {ICase} from './interfaces';
-import { APPLY_MACRO_TO_CASE } from './actions';
-
-const selectedCaseId:Reducer<number> = (state:number = -1, action:Action) => {
-  switch (action.type) {
-    case SELECT_CASE:
-      return action.payload;
-    case SET_CASE_FILTER:
-      return -1;
-    default:
-      return state;
-  }
-}
-
-const caseFilter:Reducer<string> = (state:string = '', action:Action) => {
-  switch (action.type) {
-    case SET_CASE_FILTER:
-      return action.payload;
-    default:
-      return state;
-  }
-}
 
 const cases:Reducer<ICase[]> = (state:ICase[] = [], action:Action) => {
   switch (action.type) {
@@ -43,12 +17,12 @@ const cases:Reducer<ICase[]> = (state:ICase[] = [], action:Action) => {
           return kase;
         }
         
-        if (kase.macros.indexOf(action.payload.macroId) > -1) {
+        if (kase.macros.indexOf(action.payload.macro) > -1) {
           return kase;
         }
 
         return Object.assign({}, kase,
-          { macros: [...kase.macros, action.payload.macroId] }
+          { macros: [...kase.macros, action.payload.macro] }
         );
       });
 		default:
@@ -57,7 +31,5 @@ const cases:Reducer<ICase[]> = (state:ICase[] = [], action:Action) => {
 }
 
 export const caseReducers = combineReducers({
-  caseFilter,
-  cases,
-  selectedCaseId
+  cases
 })

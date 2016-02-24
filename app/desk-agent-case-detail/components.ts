@@ -1,0 +1,1 @@
+export {CaseDetailComponent} from './components/caseDetail';

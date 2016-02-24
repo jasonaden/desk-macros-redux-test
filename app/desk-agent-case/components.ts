@@ -1,3 +1,3 @@
 
-export {CaseListComponent} from './components/caseList';
-export {CaseFilterList} from './components/caseFilterList';
+export {CaseComponent} from './components/case';
+

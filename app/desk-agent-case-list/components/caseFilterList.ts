@@ -2,7 +2,7 @@ import {FilterList, FilterListComponent} from '../../desk/components/filterList'
 
 export class CaseFilterList extends FilterList {}
 
-export const CaseFilterListComponent = angular.extend(FilterListComponent, {
+export const CaseFilterListComponent = Object.assign({}, FilterListComponent, {
   controller: CaseFilterList,
   template: `
     <ul>
