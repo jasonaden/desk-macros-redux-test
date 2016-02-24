@@ -4,7 +4,7 @@
 
 ```
 npm install
-tsd install
+typings install
 ```
 
 Once packages and TypeScript definitions are installed, you can start developing.
