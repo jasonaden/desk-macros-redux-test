@@ -14,8 +14,8 @@ export const FilterListSelectorComponent = {
     //itemName: '&'
   },
   transclude: {
-    filter: 'filterListFilter',
-    list: 'filterList'
+    filter: 'filter',
+    list: 'list'
   },
   template: `
     <div class="panel panel-default">

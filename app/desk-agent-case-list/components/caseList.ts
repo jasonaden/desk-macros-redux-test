@@ -48,14 +48,18 @@ export const CaseListComponent = {
   controller: CaseList,
 	template: `
     <filter-list-selector title="Select a case">
-      <filter-list-filter
-        filter-change="$ctrl.onFilterChange(filter)"
-        placeholder="Filter cases"></filter-list-filter>
-      <filter-list
-        selected-id="$ctrl.selectedCaseId"
-        list-items="$ctrl.filteredCases"
-        select-item="$ctrl.onSelectCase(itemId)"
-        item-name="$ctrl.getCaseDisplay(item)"></filter-list>
+      <filter>
+        <filter-list-filter
+          filter-change="$ctrl.onFilterChange(filter)"
+          placeholder="Filter cases"></filter-list-filter>
+      </filter>
+      <list>
+        <filter-list
+          selected-id="$ctrl.selectedCaseId"
+          list-items="$ctrl.filteredCases"
+          select-item="$ctrl.onSelectCase(itemId)"
+          item-name="$ctrl.getCaseDisplay(item)"></filter-list>
+      </list>
     </filter-list-selector>
 	`
 }

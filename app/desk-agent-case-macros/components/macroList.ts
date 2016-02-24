@@ -59,14 +59,18 @@ export const MacroListComponent = {
 	template: `
     <div ng-if='$ctrl.selectedCase'>
       <filter-list-selector title="Select a macro">
-        <filter-list-filter
-          filter-change="$ctrl.onFilterChange(filter)"
-          placeholder="Filter macros"></filter-list-filter>
-        <filter-list
-          selected-id="$ctrl.selectedMacroId"
-          list-items="$ctrl.filteredMacros"
-          select-item="$ctrl.onSelectMacro(itemId)"
-          item-name="$ctrl.getMacroDisplay(item)"></filter-list>
+        <filter>
+          <filter-list-filter
+            filter-change="$ctrl.onFilterChange(filter)"
+            placeholder="Filter macros"></filter-list-filter>
+        </filter>
+        <list>
+          <filter-list
+            selected-id="$ctrl.selectedMacroId"
+            list-items="$ctrl.filteredMacros"
+            select-item="$ctrl.onSelectMacro(itemId)"
+            item-name="$ctrl.getMacroDisplay(item)"></filter-list>
+        </list>
       </filter-list-selector>
       <input ng-show='$ctrl.selectedMacro' type="button" class='btn btn-primary' ng-click="$ctrl.applyMacro()" value="Apply Macro To Case"></input>
     </div>
