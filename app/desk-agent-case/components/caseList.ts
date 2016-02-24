@@ -83,24 +83,28 @@ export const CaseListComponent = {
 	template: `
     <div class="row">
       <div class="col-md-3">
-        <filter-list-selector
-          selected-id="$ctrl.selectedCaseId"
-          list-items="$ctrl.filteredCases"
-          select-item="$ctrl.onSelectCase(itemId)"
-          filter-change="$ctrl.onFilterChange(filter, 'case')"
-          title="Select a case"
-          placeholder="Filter cases"
-          item-name="$ctrl.getCaseDisplay(item)"></filter-list-selector>
+        <filter-list-selector title="Select a case">
+          <filter-list-filter
+            filter-change="$ctrl.onFilterChange(filter, 'case')"
+            placeholder="Filter cases"></filter-list-filter>
+          <filter-list
+            selected-id="$ctrl.selectedCaseId"
+            list-items="$ctrl.filteredCases"
+            select-item="$ctrl.onSelectCase(itemId)"
+            item-name="$ctrl.getCaseDisplay(item)"></filter-list>
+        </filter-list-selector>
       </div>
       <div class="col-md-3" ng-show='$ctrl.selectedCase'>
-        <filter-list-selector 
-          selected-id="$ctrl.selectedMacroId"
-          list-items="$ctrl.filteredMacros" 
-          select-item="$ctrl.onSelectMacro(itemId)"
-          filter-change="$ctrl.onFilterChange(filter, 'macro')"
-          title="Select a macro"
-          placeholder="Filter macros"
-          item-name="$ctrl.getMacroDisplay(item)"></filter-list-selector>
+        <filter-list-selector title="Select a macro">
+          <filter-list-filter
+            filter-change="$ctrl.onFilterChange(filter, 'macro')"
+            placeholder="Filter macros"></filter-list-filter>
+          <filter-list
+            selected-id="$ctrl.selectedMacroId"
+            list-items="$ctrl.filteredMacros"
+            select-item="$ctrl.onSelectMacro(itemId)"
+            item-name="$ctrl.getMacroDisplay(item)"></filter-list>
+        </filter-list-selector>
       </div>
       <div class="col-md-3" ng-show='$ctrl.selectedCase && $ctrl.selectedMacro'>
           <input type="button" class='btn btn-primary' ng-click="$ctrl.applyMacro()" value="Apply Macro To Case"></input>

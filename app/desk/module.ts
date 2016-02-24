@@ -1,13 +1,15 @@
 import '../desk-agent/module';
-import {DeskComponent, FilterListSelectorComponent, FilterListFilterComponent} from './components';
+import * as comp from './components';
+
 import {DeskStore} from './states/store';
 
 export const desk = angular.module('desk', ['desk.agent']);
 
 desk
-  .component('filterListSelector', FilterListSelectorComponent)
-  .component('filterListFilter', FilterListFilterComponent)
-  .component('desk', DeskComponent)
+  .component('filterList', comp.FilterListComponent)
+  .component('filterListSelector', comp.FilterListSelectorComponent)
+  .component('filterListFilter', comp.FilterListFilterComponent)
+  .component('desk', comp.DeskComponent)
   .value('DeskStore', DeskStore);
 
 angular.element(document).ready(function() {
