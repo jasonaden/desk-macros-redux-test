@@ -11,20 +11,20 @@ export interface ICase {
 
 // CASES
 export const SET_CASES = "SET_CASES";
-export function setCases(payload: Object[]): Action {
+export function setCases(payload: Object[]): Action<Object[]> {
   return {
     type: SET_CASES,
     payload
   }
 };
 export const APPLY_MACRO_TO_CASE = "APPLY_MACRO_TO_CASE";
-export function applyMacroToCase (payload: Object): Action {
+export function applyMacroToCase (payload: Object): Action<Object> {
   return {
     type: APPLY_MACRO_TO_CASE,
     payload
   };
 }
-const cases:Reducer = (state:ICase[] = [], action:Action) => {
+const cases:Reducer = (state:ICase[] = [], action:Action<ICase[]>) => {
   switch (action.type) {
 		case SET_CASES:
 			return action.payload.slice(0).map(kase => {

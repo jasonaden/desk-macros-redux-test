@@ -11,7 +11,7 @@ export function setSelectedCaseId (payload: number): Action {
     payload
   }
 }
-const selectedCaseId:Reducer = (state:number = -1, action:Action) => {
+const selectedCaseId:Reducer = (state:number = -1, action:Action<number>) => {
   switch (action.type) {
     case SET_SELECTED_CASE_ID:
       return action.payload;
@@ -30,13 +30,13 @@ function selectedCaseFinder (cases: ICase[], selectedCaseId: number) {
 
 // CASE FILTER
 export const SET_CASE_FILTER = "SET_CASE_FILTER";
-export function setCaseFilter(payload: string): Action {
+export function setCaseFilter(payload: string): Action<string> {
   return {
     type: SET_CASE_FILTER,
     payload
   }
 }
-const caseFilter:Reducer<string> = (state:string = '', action:Action) => {
+const caseFilter:Reducer = (state:string = '', action:Action<string>):string => {
   switch (action.type) {
     case SET_CASE_FILTER:
       return action.payload;

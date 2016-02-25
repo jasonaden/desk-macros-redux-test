@@ -1,5 +1,6 @@
 import {createSelector} from 'reselect';
-import {Reducer, Action, combineReducers} from 'redux';
+import {Reducer, combineReducers} from 'redux';
+import {Action} from 'flux-standard-action';
 import {APPLY_MACRO_TO_CASE} from '../desk-agent-case/states';
 import {getOpenCase} from '../desk-agent-case-detail/states';
 
@@ -11,13 +12,13 @@ export interface IMacro {
 
 // MACROS
 export const SET_MACROS = "SET_MACROS";
-export const setMacros = function setMacros(payload: Object[]): Action {
+export const setMacros = function setMacros(payload: Object[]): Action<Object[]> {
   return {
     type: SET_MACROS,
     payload
   }
 };
-const macros:Reducer<Object[]> = (state:Object[] = [], action:Action) => {
+const macros:Reducer = (state:Object[] = [], action:Action<Object[]>) => {
   switch (action.type) {
 		case SET_MACROS:
 			return action.payload.slice(0);
@@ -29,13 +30,13 @@ export const getMacros = (state): IMacro[] => state.deskAgentCaseMacros.macros;
 
 // SELECTED MACRO
 export const SET_SELECTED_MACRO_ID = "SET_SELECTED_MACRO_ID";
-export function setSelectedMacroId (payload: number): Action {
+export function setSelectedMacroId (payload: number): Action<number> {
   return {
     type: SET_SELECTED_MACRO_ID,
     payload
   }
 }
-const selectedMacroId:Reducer<number> = (state:number = -1, action:Action) => {
+const selectedMacroId:Reducer = (state:number = -1, action:Action<number>) => {
   switch (action.type) {
     case SET_SELECTED_MACRO_ID:
       return action.payload;
@@ -60,7 +61,7 @@ export function setMacroFilter(payload: string): Action {
     payload
   }
 }
-const macroFilter:Reducer<string> = (state:string = '', action:Action) => {
+const macroFilter:Reducer = (state:string = '', action:Action<string>) => {
   switch (action.type) {
     case SET_MACRO_FILTER:
       return action.payload;

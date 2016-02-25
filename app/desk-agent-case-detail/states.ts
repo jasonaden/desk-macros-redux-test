@@ -5,7 +5,7 @@ import {ICase, getCases} from '../desk-agent-case/states';
 
 // OPEN CASE
 export const SET_OPEN_CASE_ID = 'SET_OPEN_CASE';
-export function setOpenCaseId(payload: Object): Action {
+export function setOpenCaseId(payload: Object): Action<Object> {
   return {
     type: SET_OPEN_CASE_ID,
     payload
