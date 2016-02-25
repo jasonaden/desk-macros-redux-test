@@ -1,4 +1,4 @@
-import {Store} from '@ngrx/store';
+import {Store} from 'redux';
 
 // INTERFACES
 import {IMacro} from '../states';
@@ -9,7 +9,7 @@ import {getOpenCaseId} from '../../desk-agent-case-detail/states';
 import {applyMacroToCase} from '../../desk-agent-case/states';
 
 export class MacroList {
-  store: Store<Object>;
+  store: Store;
   
   constructor (DeskStore) {
     this.store = DeskStore;

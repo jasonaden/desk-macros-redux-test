@@ -1,5 +1,6 @@
 import {createSelector} from 'reselect';
-import {Reducer, Action, combineReducers} from '@ngrx/store';
+import {Reducer, combineReducers} from 'redux';
+import {Action} from 'flux-standard-action';
 import {ICase, getCases} from '../desk-agent-case/states';
 
 // OPEN CASE
@@ -10,7 +11,7 @@ export function setOpenCaseId(payload: Object): Action {
     payload
   }
 }
-export const openCaseId:Reducer<number> = (state:number = -1, action) => {
+export const openCaseId:Reducer = (state:number = -1, action) => {
   switch(action.type) {
     case SET_OPEN_CASE_ID:
       return action.payload;

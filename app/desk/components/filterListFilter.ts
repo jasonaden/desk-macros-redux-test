@@ -1,7 +1,7 @@
-import {Store} from '@ngrx/store';
+import {Store} from 'redux';
 
 export class FilterListFilter {
-  store: Store<Object>;
+  store: Store;
   
   constructor(DeskStore) {
     this.store = DeskStore;

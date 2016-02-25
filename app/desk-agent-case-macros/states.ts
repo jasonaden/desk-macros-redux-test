@@ -1,5 +1,5 @@
 import {createSelector} from 'reselect';
-import {Reducer, Action, combineReducers} from '@ngrx/store';
+import {Reducer, Action, combineReducers} from 'redux';
 import {APPLY_MACRO_TO_CASE} from '../desk-agent-case/states';
 import {getOpenCase} from '../desk-agent-case-detail/states';
 

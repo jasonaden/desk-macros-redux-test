@@ -1,4 +1,4 @@
-import {Store, createStore, combineReducers} from '@ngrx/store';
+import {Store, createStore, combineReducers} from 'redux';
 import {setMacros, macroReducers} from '../desk-agent-case-macros/states';
 import {setCases, caseReducers} from '../desk-agent-case/states';
 import {caseListReducers} from '../desk-agent-case-list/states';
@@ -11,7 +11,7 @@ export const rootReducer = combineReducers({
   deskAgentCaseList: caseListReducers
 });
 
-export const DeskStore:Store<Object> = createStore(rootReducer).useValue;
+export const DeskStore:Store = createStore(rootReducer);
 
 // pre-load from fixture data
 import {macroList} from '../data/macros';

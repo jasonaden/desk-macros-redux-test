@@ -1,5 +1,6 @@
 import {createSelector} from 'reselect';
-import {Reducer, Action, combineReducers} from '@ngrx/store';
+import {Reducer, combineReducers} from 'redux';
+import {Action} from 'flux-standard-action';
 import {DeskStore} from '../desk/states';
 
 export interface ICase {
@@ -23,7 +24,7 @@ export function applyMacroToCase (payload: Object): Action {
     payload
   };
 }
-const cases:Reducer<ICase[]> = (state:ICase[] = [], action:Action) => {
+const cases:Reducer = (state:ICase[] = [], action:Action) => {
   switch (action.type) {
 		case SET_CASES:
 			return action.payload.slice(0).map(kase => {

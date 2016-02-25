@@ -1,11 +1,11 @@
-import {Store} from '@ngrx/store';
+import {Store} from 'redux';
 
 import {ICase} from '../../desk-agent-case/states';
 import {setSelectedCaseId, setCaseFilter, getSelectedCase, getSelectedCaseId, getFilteredCases} from '../states';
 
 export class CaseList {
-  store: Store<Object>;
-  $state: Object;
+  store: Store;
+  $state: {go: (string, {id: number}) => void};
 
   constructor ($state, DeskStore) {
     this.store = DeskStore;

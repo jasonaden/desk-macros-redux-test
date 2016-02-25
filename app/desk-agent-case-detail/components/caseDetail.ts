@@ -1,10 +1,10 @@
-import {Store} from '@ngrx/store';
+import {Store} from 'redux';
 import {ICase} from '../../desk-agent-case/states';
 import {IMacro, getMacrosFromOpenCase} from '../../desk-agent-case-macros/states';
 import {getOpenCase} from '../states';
 
 export class CaseDetailController {
-  store: Store<Object>;
+  store: Store;
   constructor (DeskStore) {
     this.store = DeskStore;
   }
