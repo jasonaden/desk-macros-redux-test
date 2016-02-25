@@ -4,8 +4,8 @@ import {Store} from '@ngrx/store';
 import {IMacro} from '../states';
 
 // ACTIONS
-import {setSelectedMacro, setMacroFilter, getSelectedMacro, getSelectedMacroId, getFilteredMacros} from '../states';
-import {getOpenCase} from '../../desk-agent-case-detail/states';
+import {setSelectedMacroId, setMacroFilter, getSelectedMacro, getSelectedMacroId, getFilteredMacros} from '../states';
+import {getOpenCaseId} from '../../desk-agent-case-detail/states';
 import {applyMacroToCase} from '../../desk-agent-case/states';
 
 export class MacroList {
@@ -13,10 +13,6 @@ export class MacroList {
   
   constructor (DeskStore) {
     this.store = DeskStore;
-  }
-
-  get openCase () {
-    return getOpenCase(this.store.getState());
   }
 
   get selectedMacro () {
@@ -35,7 +31,7 @@ export class MacroList {
     return macro.name;
   }
   onSelectMacro (macroId:number) {
-    this.store.dispatch(setSelectedMacro(macroId))
+    this.store.dispatch(setSelectedMacroId(macroId))
   }
   
   // SHARED FILTER UPDATER
@@ -43,10 +39,13 @@ export class MacroList {
     return this.store.dispatch(setMacroFilter(filter));
   }
   
+  get openCaseId () {
+    return getOpenCaseId(this.store.getState());
+  }
+  
   // MAIN VIEW ACTION
-  applyMacro () {
-    let macro = this.selectedMacro;
-    this.store.dispatch(applyMacroToCase(macro));
+  applyMacro (caseId, macroId) {
+    return this.store.dispatch(applyMacroToCase({caseId:caseId, macroId:macroId}));
   }
 };
 
@@ -67,6 +66,6 @@ export const MacroListComponent = {
           item-name="$ctrl.getMacroDisplay(item)"></filter-list>
       </list>
     </filter-list-selector>
-    <input ng-show='$ctrl.selectedMacro' type="button" class='btn btn-primary' ng-click="$ctrl.applyMacro()" value="Apply Macro To Case"></input>
+    <input ng-show='$ctrl.selectedMacro' type="button" class='btn btn-primary' ng-click="$ctrl.applyMacro($ctrl.openCaseId, $ctrl.selectedMacroId)" value="Apply Macro To Case"></input>
 	`
 }

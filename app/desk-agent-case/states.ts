@@ -1,7 +1,6 @@
 import {createSelector} from 'reselect';
 import {Reducer, Action, combineReducers} from '@ngrx/store';
 import {DeskStore} from '../desk/states';
-import {setOpenCase} from '../desk-agent-case-detail/states';
 
 export interface ICase {
   id: number,
@@ -11,7 +10,7 @@ export interface ICase {
 
 // CASES
 export const SET_CASES = "SET_CASES";
-export const setCases = function setCases(payload: Object[]): Action {
+export function setCases(payload: Object[]): Action {
   return {
     type: SET_CASES,
     payload
@@ -37,12 +36,12 @@ const cases:Reducer<ICase[]> = (state:ICase[] = [], action:Action) => {
           return kase;
         }
         
-        if (kase.macros.indexOf(action.payload.macro) > -1) {
+        if (kase.macros.indexOf(action.payload.macroId) > -1) {
           return kase;
         }
 
         return Object.assign({}, kase,
-          { macros: [...kase.macros, action.payload.macro] });
+          { macros: [...kase.macros, action.payload.macroId] });
       });
 		default:
 			return state;

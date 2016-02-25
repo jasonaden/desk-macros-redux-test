@@ -1,6 +1,7 @@
 import {createSelector} from 'reselect';
 import {Reducer, Action, combineReducers} from '@ngrx/store';
 import {APPLY_MACRO_TO_CASE} from '../desk-agent-case/states';
+import {getOpenCase} from '../desk-agent-case-detail/states';
 
 export interface IMacro {
   id: number,
@@ -27,16 +28,16 @@ const macros:Reducer<Object[]> = (state:Object[] = [], action:Action) => {
 export const getMacros = (state): IMacro[] => state.deskAgentCaseMacros.macros;
 
 // SELECTED MACRO
-export const SET_SELECTED_MACRO = "SET_SELECTED_MACRO";
-export function setSelectedMacro (payload: number): Action {
+export const SET_SELECTED_MACRO_ID = "SET_SELECTED_MACRO_ID";
+export function setSelectedMacroId (payload: number): Action {
   return {
-    type: SET_SELECTED_MACRO,
+    type: SET_SELECTED_MACRO_ID,
     payload
   }
 }
 const selectedMacroId:Reducer<number> = (state:number = -1, action:Action) => {
   switch (action.type) {
-    case SET_SELECTED_MACRO:
+    case SET_SELECTED_MACRO_ID:
       return action.payload;
     case SET_MACRO_FILTER:
     case APPLY_MACRO_TO_CASE:
@@ -71,6 +72,17 @@ export const getMacroFilter = (state): string => state.deskAgentCaseMacros.macro
 export const getFilteredMacros: (state) => IMacro[] = createSelector(getMacros, getMacroFilter, filteredMacrosFinder);
 function filteredMacrosFinder (macros: IMacro[], macroFilter: string) {
   return macros.filter(macro => macro.name.toLowerCase().indexOf(macroFilter.toLowerCase()) > -1);
+}
+
+
+// MACROS FROM CASE (return list by ids)
+export const getMacrosFromOpenCase: (state) => IMacro[] = createSelector(getMacros, getOpenCase, macrosFromOpenCaseFinder);
+function macrosFromOpenCaseFinder(macros, kase) {
+  let caseMacros = []
+  kase.macros.forEach(macroId => {
+    caseMacros.push(macros.find(m => m.id == macroId));
+  });
+  return caseMacros;
 }
 
 

@@ -3,16 +3,16 @@ import {Reducer, Action, combineReducers} from '@ngrx/store';
 import {ICase, getCases} from '../desk-agent-case/states';
 
 // SELECTED CASE
-export const SET_SELECTED_CASE = "SET_SELECTED_CASE";
-export function setSelectedCase (payload: number): Action {
+export const SET_SELECTED_CASE_ID = "SET_SELECTED_CASE_ID";
+export function setSelectedCaseId (payload: number): Action {
   return {
-    type: SET_SELECTED_CASE,
+    type: SET_SELECTED_CASE_ID,
     payload
   }
 }
 const selectedCaseId:Reducer<number> = (state:number = -1, action:Action) => {
   switch (action.type) {
-    case SET_SELECTED_CASE:
+    case SET_SELECTED_CASE_ID:
       return action.payload;
     case SET_CASE_FILTER:
       return -1;

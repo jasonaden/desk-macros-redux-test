@@ -4,7 +4,6 @@ import {setCases, caseReducers} from '../desk-agent-case/states';
 import {caseListReducers} from '../desk-agent-case-list/states';
 import {caseDetailReducers} from '../desk-agent-case-detail/states';
 
-debugger;
 export const rootReducer = combineReducers({
   deskAgentCaseMacros: macroReducers,
   deskAgentCase: caseReducers,

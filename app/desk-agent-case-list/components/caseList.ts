@@ -1,7 +1,7 @@
 import {Store} from '@ngrx/store';
 
 import {ICase} from '../../desk-agent-case/states';
-import {setSelectedCase, setCaseFilter, getSelectedCase, getSelectedCaseId, getFilteredCases} from '../states';
+import {setSelectedCaseId, setCaseFilter, getSelectedCase, getSelectedCaseId, getFilteredCases} from '../states';
 
 export class CaseList {
   store: Store<Object>;
@@ -30,7 +30,7 @@ export class CaseList {
   }
 
   onSelectCase (caseId:number) {
-    this.store.dispatch(setSelectedCase(caseId));
+    this.store.dispatch(setSelectedCaseId(caseId));
   }
   
   // SHARED FILTER UPDATER

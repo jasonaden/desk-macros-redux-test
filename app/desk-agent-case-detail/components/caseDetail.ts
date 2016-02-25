@@ -1,5 +1,6 @@
 import {Store} from '@ngrx/store';
 import {ICase} from '../../desk-agent-case/states';
+import {IMacro, getMacrosFromOpenCase} from '../../desk-agent-case-macros/states';
 import {getOpenCase} from '../states';
 
 export class CaseDetailController {
@@ -10,7 +11,11 @@ export class CaseDetailController {
   
   get openCase ():ICase {
     return getOpenCase(this.store.getState());
-  } 
+  }
+
+  get caseMacros ():IMacro[] {
+    return getMacrosFromOpenCase(this.store.getState());
+  }
 
 };
 
@@ -27,9 +32,9 @@ export const CaseDetailComponent = {
       <span>Type: {{$ctrl.openCase.type}}</span>
       <div>
         <h4>Applied Macros</h4>
-        <span ng-if='!$ctrl.openCase.macros.length'>No macros</span>
-        <ul ng-if='$ctrl.openCase.macros.length'>
-          <li ng-repeat='macro in $ctrl.openCase.macros'>{{macro.name}}</li>
+        <span ng-if='!$ctrl.caseMacros.length'>No macros</span>
+        <ul ng-if='$ctrl.caseMacros.length'>
+          <li ng-repeat='macro in $ctrl.caseMacros'>{{macro.name}}</li>
         </ul>
       </div>
     </div>
