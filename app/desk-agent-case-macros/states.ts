@@ -1,0 +1,81 @@
+import {createSelector} from 'reselect';
+import {Reducer, Action, combineReducers} from '@ngrx/store';
+import {APPLY_MACRO_TO_CASE} from '../desk-agent-case/states';
+
+export interface IMacro {
+  id: number,
+  name: string,
+  folders: String[]
+}
+
+// MACROS
+export const SET_MACROS = "SET_MACROS";
+export const setMacros = function setMacros(payload: Object[]): Action {
+  return {
+    type: SET_MACROS,
+    payload
+  }
+};
+const macros:Reducer<Object[]> = (state:Object[] = [], action:Action) => {
+  switch (action.type) {
+		case SET_MACROS:
+			return action.payload.slice(0);
+		default:
+			return state;
+	}
+}
+export const getMacros = (state): IMacro[] => state.deskAgentCaseMacros.macros;
+
+// SELECTED MACRO
+export const SET_SELECTED_MACRO = "SET_SELECTED_MACRO";
+export function setSelectedMacro (payload: number): Action {
+  return {
+    type: SET_SELECTED_MACRO,
+    payload
+  }
+}
+const selectedMacroId:Reducer<number> = (state:number = -1, action:Action) => {
+  switch (action.type) {
+    case SET_SELECTED_MACRO:
+      return action.payload;
+    case SET_MACRO_FILTER:
+    case APPLY_MACRO_TO_CASE:
+      return -1;
+    default:
+      return state;
+  }
+}
+export const getSelectedMacroId = (state): number => state.deskAgentCaseMacros.selectedMacroId;
+export const getSelectedMacro: (state) => IMacro = createSelector(getMacros, getSelectedMacroId, selectedMacroFinder);
+function selectedMacroFinder (macros: IMacro[], selectedMacroId: number) {
+  return macros.find(macro => macro.id == selectedMacroId);
+}
+
+// MACRO FILTER / FILTERED MACROS
+export const SET_MACRO_FILTER = "SET_MACRO_FILTER";
+export function setMacroFilter(payload: string): Action {
+  return {
+    type: SET_MACRO_FILTER,
+    payload
+  }
+}
+const macroFilter:Reducer<string> = (state:string = '', action:Action) => {
+  switch (action.type) {
+    case SET_MACRO_FILTER:
+      return action.payload;
+    default:
+      return state;
+  }
+}
+export const getMacroFilter = (state): string => state.deskAgentCaseMacros.macroFilter;
+export const getFilteredMacros: (state) => IMacro[] = createSelector(getMacros, getMacroFilter, filteredMacrosFinder);
+function filteredMacrosFinder (macros: IMacro[], macroFilter: string) {
+  return macros.filter(macro => macro.name.toLowerCase().indexOf(macroFilter.toLowerCase()) > -1);
+}
+
+
+export const macroReducers = combineReducers({
+  macroFilter,
+  selectedMacroId,
+  macros
+});

@@ -1,6 +1,6 @@
 import {Store} from '@ngrx/store';
-import {ICase} from '../../desk-agent-case/states/interfaces';
-import {openCase} from '../states/selectors';
+import {ICase} from '../../desk-agent-case/states';
+import {getOpenCase} from '../states';
 
 export class CaseDetailController {
   store: Store<Object>;
@@ -9,7 +9,7 @@ export class CaseDetailController {
   }
   
   get openCase ():ICase {
-    return openCase(this.store.getState());
+    return getOpenCase(this.store.getState());
   } 
 
 };

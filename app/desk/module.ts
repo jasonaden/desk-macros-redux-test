@@ -2,7 +2,7 @@ import '../desk-agent/module';
 import * as comp from './components';
 import {routes} from './config/routes';
 
-import {DeskStore} from './states/store';
+import {DeskStore} from './states';
 
 export const deskMod = angular.module('desk', ['ui.router', 'desk.agent']);
 

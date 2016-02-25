@@ -5,13 +5,7 @@ export class FilterListSelector {};
 export const FilterListSelectorComponent = {
   controller: FilterListSelector,
   bindings: {
-    //selectedId: '<',
-    //listItems: '<',
-    //filterChange: '&',
-    //selectItem: '&',
     title: '@',
-    //placeholder: '@',
-    //itemName: '&'
   },
   transclude: {
     filter: 'filter',

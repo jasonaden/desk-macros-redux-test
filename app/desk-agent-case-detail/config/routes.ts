@@ -1,7 +1,7 @@
 import {caseDetailMod} from '../module';
-import {cases} from '../../desk-agent-case/states/selectors';
+import {getCases} from '../../desk-agent-case/states';
 import {CaseDetailController} from '../components/caseDetail';
-import {SET_OPEN_CASE, openCase} from '../states/actions';
+import {SET_OPEN_CASE, setOpenCase} from '../states';
 
 export const routes = ($stateProvider, $urlRouterProvider, $locationProvider) => {
   
@@ -9,7 +9,7 @@ export const routes = ($stateProvider, $urlRouterProvider, $locationProvider) =>
     url: '/case/:id',
     resolve: {
       resolvedCase: ($q, $timeout, $stateParams, DeskStore) => {
-        DeskStore.dispatch(openCase(cases(DeskStore.getState()).find((kase) => kase.id == $stateParams.id)))
+        DeskStore.dispatch(setOpenCase(getCases(DeskStore.getState()).find((kase) => kase.id == $stateParams.id)))
       }
     },    
     views: {

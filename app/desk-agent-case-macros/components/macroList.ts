@@ -1,15 +1,12 @@
 import {Store} from '@ngrx/store';
 
 // INTERFACES
-import {IMacro} from '../states/interfaces';
+import {IMacro} from '../states';
 
 // ACTIONS
-import {setSelectedMacro, setMacroFilter} from '../states/actions';
-import {applyMacroToCase} from '../../desk-agent-case-detail/states/actions';
-
-// SELECTORS
-import {openCase} from '../../desk-agent-case-detail/states/selectors';
-import {selectedMacro, selectedMacroId, filteredMacros} from '../states/selectors';
+import {setSelectedMacro, setMacroFilter, getSelectedMacro, getSelectedMacroId, getFilteredMacros} from '../states';
+import {getOpenCase} from '../../desk-agent-case-detail/states';
+import {applyMacroToCase} from '../../desk-agent-case/states';
 
 export class MacroList {
   store: Store<Object>;
@@ -19,19 +16,19 @@ export class MacroList {
   }
 
   get openCase () {
-    return openCase(this.store.getState());
+    return getOpenCase(this.store.getState());
   }
 
   get selectedMacro () {
-    return selectedMacro(this.store.getState());
+    return getSelectedMacro(this.store.getState());
   }
   
   get selectedMacroId () {
-    return selectedMacroId(this.store.getState());
+    return getSelectedMacroId(this.store.getState());
   }
   
   get filteredMacros () {
-    return filteredMacros(this.store.getState());
+    return getFilteredMacros(this.store.getState());
   }
   
   getMacroDisplay (macro: IMacro) {
