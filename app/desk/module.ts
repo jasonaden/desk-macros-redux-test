@@ -1,11 +1,13 @@
 import '../desk-agent/module';
 import * as comp from './components';
+import {routes} from './config/routes';
 
 import {DeskStore} from './states/store';
 
-export const desk = angular.module('desk', ['desk.agent']);
+export const deskMod = angular.module('desk', ['ui.router', 'desk.agent']);
 
-desk
+deskMod
+  .config(routes)
   .component('filterList', comp.FilterListComponent)
   .component('filterListSelector', comp.FilterListSelectorComponent)
   .component('filterListFilter', comp.FilterListFilterComponent)

@@ -11,7 +11,7 @@ export class DeskAgent {
 
 export const DeskAgentComponent = {
   template: `
-    <case></case>
+    <div ui-view></div>
 	`,
   controller: DeskAgent
 };

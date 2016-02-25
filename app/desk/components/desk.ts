@@ -4,7 +4,7 @@ export class Desk {
 
 export const DeskComponent = {
   template: `
-    <desk-agent></desk-agent>
+    <div ui-view></div>
 	`,
   controller: Desk
 };

@@ -5,10 +5,10 @@ import {IMacro} from '../states/interfaces';
 
 // ACTIONS
 import {setSelectedMacro, setMacroFilter} from '../states/actions';
-import {applyMacroToCase, setSelectedCase, setCaseFilter} from '../../desk-agent-case/states/actions';
+import {applyMacroToCase} from '../../desk-agent-case-detail/states/actions';
 
 // SELECTORS
-import {selectedCase} from '../../desk-agent-case-list/states/selectors';
+import {openCase} from '../../desk-agent-case-detail/states/selectors';
 import {selectedMacro, selectedMacroId, filteredMacros} from '../states/selectors';
 
 export class MacroList {
@@ -18,8 +18,8 @@ export class MacroList {
     this.store = DeskStore;
   }
 
-  get selectedCase () {
-    return selectedCase(this.store.getState());
+  get openCase () {
+    return openCase(this.store.getState());
   }
 
   get selectedMacro () {
@@ -48,31 +48,28 @@ export class MacroList {
   
   // MAIN VIEW ACTION
   applyMacro () {
-    let caseId = this.selectedCase.id;
     let macro = this.selectedMacro;
-    this.store.dispatch(applyMacroToCase({caseId, macro}))
+    this.store.dispatch(applyMacroToCase(macro));
   }
 };
 
 export const MacroListComponent = {
   controller: MacroList,
 	template: `
-    <div ng-if='$ctrl.selectedCase'>
-      <filter-list-selector title="Select a macro">
-        <filter>
-          <filter-list-filter
-            filter-change="$ctrl.onFilterChange(filter)"
-            placeholder="Filter macros"></filter-list-filter>
-        </filter>
-        <list>
-          <filter-list
-            selected-id="$ctrl.selectedMacroId"
-            list-items="$ctrl.filteredMacros"
-            select-item="$ctrl.onSelectMacro(itemId)"
-            item-name="$ctrl.getMacroDisplay(item)"></filter-list>
-        </list>
-      </filter-list-selector>
-      <input ng-show='$ctrl.selectedMacro' type="button" class='btn btn-primary' ng-click="$ctrl.applyMacro()" value="Apply Macro To Case"></input>
-    </div>
+    <filter-list-selector title="Select a macro">
+      <filter>
+        <filter-list-filter
+          filter-change="$ctrl.onFilterChange(filter)"
+          placeholder="Filter macros"></filter-list-filter>
+      </filter>
+      <list>
+        <filter-list
+          selected-id="$ctrl.selectedMacroId"
+          list-items="$ctrl.filteredMacros"
+          select-item="$ctrl.onSelectMacro(itemId)"
+          item-name="$ctrl.getMacroDisplay(item)"></filter-list>
+      </list>
+    </filter-list-selector>
+    <input ng-show='$ctrl.selectedMacro' type="button" class='btn btn-primary' ng-click="$ctrl.applyMacro()" value="Apply Macro To Case"></input>
 	`
 }

@@ -8,14 +8,13 @@ import {
   SET_MACROS
 } from './actions';
 
-import { APPLY_MACRO_TO_CASE, SET_CASE_FILTER } from '../../desk-agent-case/states/actions';
+import { APPLY_MACRO_TO_CASE } from '../../desk-agent-case-detail/states/actions';
 
 const selectedMacroId:Reducer<number> = (state:number = -1, action:Action) => {
   switch (action.type) {
     case SELECT_MACRO:
       return action.payload;
     case SET_MACRO_FILTER:
-    case SET_CASE_FILTER:
     case APPLY_MACRO_TO_CASE:
       return -1;
     default:
@@ -27,8 +26,6 @@ const macroFilter:Reducer<string> = (state:string = '', action:Action) => {
   switch (action.type) {
     case SET_MACRO_FILTER:
       return action.payload;
-    case SET_CASE_FILTER:
-      return '';
     default:
       return state;
   }

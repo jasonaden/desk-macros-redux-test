@@ -11,9 +11,11 @@ import {selectedCase, selectedCaseId, filteredCases} from '../states/selectors';
 
 export class CaseList {
   store: Store<Object>;
-  
-  constructor (DeskStore) {
+  $state: Object;
+
+  constructor ($state, DeskStore) {
     this.store = DeskStore;
+    this.$state = $state;
   }
   
   // CASE ITEMS
@@ -42,6 +44,10 @@ export class CaseList {
     return this.store.dispatch(setCaseFilter(filter));  
   }
   
+  goToCase (caseId: number) {
+    return this.$state.go('desk.agent.caseDetail', {id: caseId});
+  }
+  
 };
 
 export const CaseListComponent = {
@@ -61,5 +67,6 @@ export const CaseListComponent = {
           item-name="$ctrl.getCaseDisplay(item)"></filter-list>
       </list>
     </filter-list-selector>
+    <input type="button" class="btn btn-primary" ng-show="$ctrl.selectedCaseId > -1" ng-click="$ctrl.goToCase($ctrl.selectedCaseId)" value="Go To Case"/>
 	`
 }
