@@ -6,3 +6,4 @@ export const caseListMod = angular.module('desk.agent.case.list', []);
 caseListMod
   .config(routes)
   .component('caseList', comp.CaseListComponent);
+

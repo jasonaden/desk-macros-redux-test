@@ -1,41 +1,40 @@
 import {Store} from 'redux';
 
 import {ICase} from '../../desk-agent-case/states';
-import {setSelectedCaseId, setCaseFilter, getSelectedCase, getSelectedCaseId, getFilteredCases} from '../states';
+import {getCaseFilter, setSelectedCaseId, setCaseFilter, getSelectedCase, getSelectedCaseId, getFilteredCases} from '../states';
+
+const mapStateToThis = (state) => {
+  return {
+    selectedCaseId: getSelectedCaseId(state),
+    selectedCase: getSelectedCase(state),
+    caseFilter: getCaseFilter(state),
+    filteredCases: getFilteredCases(state)
+  };
+}
+
+const mapDispatchToThis = (dispatch) => {
+  return {
+    onSelectCase: (caseId:number) => {
+      dispatch(setSelectedCaseId(caseId));
+    },
+    onFilterChange: (filter:string) => {
+      dispatch(setCaseFilter(filter));
+    }
+  }
+}
 
 export class CaseList {
-  store: Store;
   $state: {go: (string, {id: number}) => void};
 
-  constructor ($state, $ngRedux) {
-    this.store = $ngRedux;
+  constructor ($scope, $state, $ngRedux) {
     this.$state = $state;
-  }
-  
-  // CASE ITEMS
-  get selectedCaseId () {
-    return getSelectedCaseId(this.store.getState());
-  }
-  
-  get selectedCase () {
-    return getSelectedCase(this.store.getState());
-  }
-  
-  get filteredCases () {
-    return getFilteredCases(this.store.getState());
+
+    let unsubscribe = $ngRedux.connect(mapStateToThis, mapDispatchToThis)(this);
+    $scope.$on('$destroy', unsubscribe);
   }
   
   getCaseDisplay (kase: ICase) {
     return kase.subject;
-  }
-
-  onSelectCase (caseId:number) {
-    this.store.dispatch(setSelectedCaseId(caseId));
-  }
-  
-  // SHARED FILTER UPDATER
-  onFilterChange (filter: string, selector: string) {
-    return this.store.dispatch(setCaseFilter(filter));  
   }
   
   goToCase (caseId: number) {

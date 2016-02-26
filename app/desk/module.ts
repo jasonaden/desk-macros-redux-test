@@ -4,6 +4,10 @@ import ngRedux from 'ng-redux';
 import {setMacros} from '../desk-agent-case-macros/states';
 import {setCases} from '../desk-agent-case/states';
 import '../desk-agent/module';
+import '../desk-agent-case/module';
+import '../desk-agent-case-detail/module';
+import '../desk-agent-case-list/module';
+import '../desk-agent-case-macros/module';
 import * as comp from './components';
 import {routes} from './config/routes';
 
@@ -14,7 +18,16 @@ import {macroList} from '../data/macros';
 import {caseList} from '../data/cases';
 
 // export const DeskStore:Store = createStore(rootReducer);
-export const deskMod = angular.module('desk', ['ngRedux', 'ui.router', 'desk.agent']);
+export const deskMod = angular.module('desk', [
+  'ngRedux', 
+  'ui.router', 
+  
+  'desk.agent', 
+  'desk.agent.case', 
+  'desk.agent.case.list', 
+  'desk.agent.case.macros', 
+  'desk.agent.case.detail'
+]);
 
 deskMod.config($ngReduxProvider => {
   $ngReduxProvider.createStoreWith(rootReducer)

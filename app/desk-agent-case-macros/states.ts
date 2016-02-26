@@ -79,6 +79,7 @@ function filteredMacrosFinder (macros: IMacro[], macroFilter: string) {
 // MACROS FROM CASE (return list by ids)
 export const getMacrosFromOpenCase: (state) => IMacro[] = createSelector(getMacros, getOpenCase, macrosFromOpenCaseFinder);
 function macrosFromOpenCaseFinder(macros, kase) {
+  if (!kase.macros) { return []; }
   let caseMacros = []
   kase.macros.forEach(macroId => {
     caseMacros.push(macros.find(m => m.id == macroId));

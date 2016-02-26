@@ -8,45 +8,41 @@ import {setSelectedMacroId, setMacroFilter, getSelectedMacro, getSelectedMacroId
 import {getOpenCaseId} from '../../desk-agent-case-detail/states';
 import {applyMacroToCase} from '../../desk-agent-case/states';
 
-export class MacroList {
-  store: Store;
-  
-  constructor ($ngRedux) {
-    this.store = $ngRedux;
-  }
+const mapStateToThis = (state) => {
+  return {
+    selectedMacro: getSelectedMacro(state),
+    selectedMacroId: getSelectedMacroId(state),
+    filteredMacros: getFilteredMacros(state),
+    openCaseId: getOpenCaseId(state)
+  };
+}
 
-  get selectedMacro () {
-    return getSelectedMacro(this.store.getState());
+const mapDispatchToThis = (dispatch) => {
+  return {
+    onSelectMacro: (macroId:number) => {
+      dispatch(setSelectedMacroId(macroId));
+    },
+    onFilterChange: (filter:string) => {
+      dispatch(setMacroFilter(filter));
+    },
+    applyMacro: (caseId:number, macroId:number) => {
+      dispatch(applyMacroToCase({caseId:caseId, macroId:macroId}));
+    }
   }
-  
-  get selectedMacroId () {
-    return getSelectedMacroId(this.store.getState());
-  }
-  
-  get filteredMacros () {
-    return getFilteredMacros(this.store.getState());
+}
+
+
+export class MacroList {
+
+  constructor ($scope, $ngRedux) {
+    let unsubscribe = $ngRedux.connect(mapStateToThis, mapDispatchToThis)(this);
+    $scope.$on('$destroy', unsubscribe);
   }
   
   getMacroDisplay (macro: IMacro) {
     return macro.name;
   }
-  onSelectMacro (macroId:number) {
-    this.store.dispatch(setSelectedMacroId(macroId))
-  }
   
-  // SHARED FILTER UPDATER
-  onFilterChange (filter: string, selector: string) {
-    return this.store.dispatch(setMacroFilter(filter));
-  }
-  
-  get openCaseId () {
-    return getOpenCaseId(this.store.getState());
-  }
-  
-  // MAIN VIEW ACTION
-  applyMacro (caseId, macroId) {
-    return this.store.dispatch(applyMacroToCase({caseId:caseId, macroId:macroId}));
-  }
 };
 
 export const MacroListComponent = {

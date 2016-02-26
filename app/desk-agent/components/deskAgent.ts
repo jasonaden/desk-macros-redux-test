@@ -1,11 +1,6 @@
-import {Store} from 'redux';
 
 export class DeskAgent {
-  store: Store;
-  
-  constructor ($ngRedux) {
-    this.store = $ngRedux;
-  };
+  constructor () {};
   
 }
 

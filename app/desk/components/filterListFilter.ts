@@ -1,12 +1,7 @@
 import {Store} from 'redux';
 
 export class FilterListFilter {
-  store: Store;
-  
-  constructor($ngRedux) {
-    this.store = $ngRedux;
-  }
-  
+  constructor() {}  
 }
 
 export const FilterListFilterComponent = {

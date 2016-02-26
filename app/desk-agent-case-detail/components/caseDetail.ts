@@ -3,20 +3,18 @@ import {ICase} from '../../desk-agent-case/states';
 import {IMacro, getMacrosFromOpenCase} from '../../desk-agent-case-macros/states';
 import {getOpenCase} from '../states';
 
+const mapStateToThis = (state) => {
+  return {
+    openCase: getOpenCase(state),
+    caseMacros: getMacrosFromOpenCase(state)
+  };
+}
+
 export class CaseDetailController {
-  store: Store;
-  constructor ($ngRedux) {
-    this.store = $ngRedux;
+  constructor ($scope, $ngRedux) {
+    let unsubscribe = $ngRedux.connect(mapStateToThis)(this);
+    $scope.$on('$destroy', unsubscribe);
   }
-  
-  get openCase ():ICase {
-    return getOpenCase(this.store.getState());
-  }
-
-  get caseMacros ():IMacro[] {
-    return getMacrosFromOpenCase(this.store.getState());
-  }
-
 };
 
 
