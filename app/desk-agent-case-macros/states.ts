@@ -55,7 +55,7 @@ function selectedMacroFinder (macros: IMacro[], selectedMacroId: number) {
 
 // MACRO FILTER / FILTERED MACROS
 export const SET_MACRO_FILTER = "SET_MACRO_FILTER";
-export function setMacroFilter(payload: string): Action {
+export function setMacroFilter(payload: string): Action<string> {
   return {
     type: SET_MACRO_FILTER,
     payload

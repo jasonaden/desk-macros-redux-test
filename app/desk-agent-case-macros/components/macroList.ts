@@ -11,8 +11,8 @@ import {applyMacroToCase} from '../../desk-agent-case/states';
 export class MacroList {
   store: Store;
   
-  constructor (DeskStore) {
-    this.store = DeskStore;
+  constructor ($ngRedux) {
+    this.store = $ngRedux;
   }
 
   get selectedMacro () {

@@ -1,6 +1,7 @@
-import {Store, createStore, combineReducers} from 'redux';
-import {setMacros, macroReducers} from '../desk-agent-case-macros/states';
-import {setCases, caseReducers} from '../desk-agent-case/states';
+import {combineReducers} from 'redux';
+
+import {macroReducers} from '../desk-agent-case-macros/states';
+import {caseReducers} from '../desk-agent-case/states';
 import {caseListReducers} from '../desk-agent-case-list/states';
 import {caseDetailReducers} from '../desk-agent-case-detail/states';
 
@@ -11,10 +12,3 @@ export const rootReducer = combineReducers({
   deskAgentCaseList: caseListReducers
 });
 
-export const DeskStore:Store = createStore(rootReducer);
-
-// pre-load from fixture data
-import {macroList} from '../data/macros';
-import {caseList} from '../data/cases';
-DeskStore.dispatch(setMacros(macroList));
-DeskStore.dispatch(setCases(caseList));

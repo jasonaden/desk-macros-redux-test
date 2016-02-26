@@ -7,8 +7,8 @@ export class CaseList {
   store: Store;
   $state: {go: (string, {id: number}) => void};
 
-  constructor ($state, DeskStore) {
-    this.store = DeskStore;
+  constructor ($state, $ngRedux) {
+    this.store = $ngRedux;
     this.$state = $state;
   }
   

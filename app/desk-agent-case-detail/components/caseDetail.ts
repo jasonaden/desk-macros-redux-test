@@ -5,8 +5,8 @@ import {getOpenCase} from '../states';
 
 export class CaseDetailController {
   store: Store;
-  constructor (DeskStore) {
-    this.store = DeskStore;
+  constructor ($ngRedux) {
+    this.store = $ngRedux;
   }
   
   get openCase ():ICase {

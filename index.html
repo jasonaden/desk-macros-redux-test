@@ -9,10 +9,9 @@
 
     <!-- 1. Load libraries -->
     <script src="node_modules/angular/angular.js"></script>
-    <script src="node_modules/angular2/bundles/angular2-polyfills.js"></script>
+    <script src="node_modules/ng-redux/dist/ng-redux.js"></script>
     <script src="node_modules/systemjs/dist/system.src.js"></script>
     <script src="node_modules/rxjs/bundles/Rx.js"></script>
-    <script src="node_modules/angular2/bundles/angular2.dev.js"></script>
     <script src="node_modules/angular-ui-router/release/angular-ui-router.min.js"></script>
 
     <!-- 2. Configure SystemJS -->
@@ -27,6 +26,7 @@
         map: {
           redux: '/node_modules/redux/dist/redux.js',
           'redux-logger': '/node_modules/redux-logger/dist/index.js',
+          'ng-redux': '/node_modules/ng-redux/dist/ng-redux.js',
           reselect: '/node_modules/reselect/lib/index.js',
           angular: '/node_modules/angular/angular.js'
         }

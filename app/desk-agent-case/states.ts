@@ -1,7 +1,6 @@
 import {createSelector} from 'reselect';
 import {Reducer, combineReducers} from 'redux';
 import {Action} from 'flux-standard-action';
-import {DeskStore} from '../desk/states';
 
 export interface ICase {
   id: number,

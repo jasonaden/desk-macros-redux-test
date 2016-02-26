@@ -8,8 +8,8 @@ export const routes = ($stateProvider, $urlRouterProvider, $locationProvider) =>
   $stateProvider.state('desk.agent.caseDetail', {
     url: '/case/:id',
     resolve: {
-      resolveOpenCaseId: ($stateParams, DeskStore) => {
-        DeskStore.dispatch(setOpenCaseId(parseInt($stateParams.id, 10)));
+      resolveOpenCaseId: ($stateParams, $ngRedux) => {
+        $ngRedux.dispatch(setOpenCaseId(parseInt($stateParams.id, 10)));
       }
     },    
     views: {

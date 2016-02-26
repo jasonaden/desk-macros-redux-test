@@ -3,8 +3,8 @@ import {Store} from 'redux';
 export class FilterListFilter {
   store: Store;
   
-  constructor(DeskStore) {
-    this.store = DeskStore;
+  constructor($ngRedux) {
+    this.store = $ngRedux;
   }
   
 }
