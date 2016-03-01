@@ -37,6 +37,7 @@ module.exports = {
   // webpack dev server configuration
   devServer: {
     contentBase: "./app",
+    publicPath: "/",
     noInfo: false,
     hot: true
   },

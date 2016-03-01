@@ -8,7 +8,12 @@
     <link rel="stylesheet" href="style.css"/>
 
     <!-- 2. Configure SystemJS -->
+    <script src="node_modules/systemjs/dist/system.src.js"></script>
   </head>
+  <script>
+      System.import('app/desk/module')
+            .then(null, console.error.bind(console));
+    </script>
 
   <!-- 3. Display the application -->
   <body>
@@ -16,7 +21,7 @@
       <desk>Loading...</desk>
     </div>
     
-    <script src="app.js"></script>
+    <script src="bundle.js"></script>
   </body>
 
 </html>

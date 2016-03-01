@@ -7,7 +7,12 @@
     "redux-logger": "github:DefinitelyTyped/DefinitelyTyped/redux-logger/redux-logger.d.ts#299be13624c3998ca5ca0f146202723e25eeb465",
     "redux-thunk": "github:DefinitelyTyped/DefinitelyTyped/redux-thunk/redux-thunk.d.ts#75249b97104d00c1ca2451ac29369009a5f2b101",
     "reselect": "github:DefinitelyTyped/DefinitelyTyped/reselect/reselect.d.ts#7ee8c031f981bfb4fd1dd511d3edf598ab96e5bb",
-    "systemjs": "github:DefinitelyTyped/DefinitelyTyped/systemjs/systemjs.d.ts#83af898254689400de8fb6495c34119ae57ec3fe",
-    "zone.js": "github:DefinitelyTyped/DefinitelyTyped/zone.js/zone.js.d.ts#9027703c0bd831319dcdf7f3169f7a468537f448"
+    "angular-mocks": "github:DefinitelyTyped/DefinitelyTyped/angularjs/angular-mocks.d.ts#5d0f2126c8dac8fce0ff020218aea06607213b0d",
+    "bootstrap": "github:DefinitelyTyped/DefinitelyTyped/bootstrap/bootstrap.d.ts#5ea7d92bb39c7a26f49dc3de2c566d5ae325e19e",
+    "jasmine": "github:DefinitelyTyped/DefinitelyTyped/jasmine/jasmine.d.ts#5d0f2126c8dac8fce0ff020218aea06607213b0d",
+    "jwt-decode": "github:DefinitelyTyped/DefinitelyTyped/jwt-decode/jwt-decode.d.ts#e2e1e881bb57431fbbe9289ac4da1fea928dc84c",
+    "lodash": "github:DefinitelyTyped/DefinitelyTyped/lodash/lodash.d.ts#5ea7d92bb39c7a26f49dc3de2c566d5ae325e19e",
+    "source-map": "github:DefinitelyTyped/DefinitelyTyped/source-map/source-map.d.ts#5d0f2126c8dac8fce0ff020218aea06607213b0d",
+    "uglify-js": "github:DefinitelyTyped/DefinitelyTyped/uglify-js/uglify-js.d.ts#5d0f2126c8dac8fce0ff020218aea06607213b0d"
   }
 }

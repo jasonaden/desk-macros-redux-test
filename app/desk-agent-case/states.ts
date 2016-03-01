@@ -23,7 +23,7 @@ export function applyMacroToCase (payload: Object): Action<Object> {
     payload
   };
 }
-const cases:Reducer = (state:ICase[] = [], action:Action) => {
+const cases:Reducer = (state:ICase[] = [], action: Action<any>) => {
   switch (action.type) {
 		case SET_CASES:
 			return action.payload.slice(0).map(kase => {

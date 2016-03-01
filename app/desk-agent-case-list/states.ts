@@ -5,12 +5,13 @@ import {ICase, getCases} from '../desk-agent-case/states';
 
 // SELECTED CASE
 export const SET_SELECTED_CASE_ID = "SET_SELECTED_CASE_ID";
-export function setSelectedCaseId (payload: number): Action {
+export function setSelectedCaseId(payload: number): Action<number> {
   return {
     type: SET_SELECTED_CASE_ID,
     payload
   }
 }
+
 const selectedCaseId:Reducer = (state:number = -1, action:Action<number>) => {
   switch (action.type) {
     case SET_SELECTED_CASE_ID:
