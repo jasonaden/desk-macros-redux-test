@@ -1,5 +1,8 @@
 module.exports = [
-    {test: /\.ts(x?)$/, loader: 'ts-loader'},
+    {test: /\.ts(x?)$/, loader: 'babel-loader?presets[]=es2015&presets[]=stage-0!ts-loader'},
+    // {test: /\.ts(x?)$/, loader: 'babel-loader?presets[]=es2015&presets[]=react!ts-loader'},
+    // {test: /\.js(x?)$/, loader: 'babel-loader', exclude: /node_modules/,
+    //   query: {presets: ['react', 'es2015']}},
     {
         test: /\.css$/,
         loader: 'style-loader!css-loader'
