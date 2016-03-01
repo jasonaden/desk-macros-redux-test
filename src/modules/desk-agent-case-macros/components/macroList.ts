@@ -4,7 +4,7 @@ import {Store} from 'redux';
 import {IMacro} from '../states';
 
 // ACTIONS
-import {setSelectedMacroId, setMacroFilter, getSelectedMacro, getSelectedMacroId, getFilteredMacros} from '../states';
+import {setSelectedMacroId, getMacroApplyError, setMacroFilter, getSelectedMacro, getSelectedMacroId, getFilteredMacros} from '../states';
 import {getOpenCaseId} from '../../desk-agent-case-detail/states';
 import {applyMacroToCase} from '../../desk-agent-case/states';
 
@@ -13,7 +13,8 @@ const mapStateToThis = (state) => {
     selectedMacro: getSelectedMacro(state),
     selectedMacroId: getSelectedMacroId(state),
     filteredMacros: getFilteredMacros(state),
-    openCaseId: getOpenCaseId(state)
+    openCaseId: getOpenCaseId(state),
+    applyError: getMacroApplyError(state)
   };
 }
 
@@ -63,5 +64,6 @@ export const MacroListComponent = {
       </list>
     </filter-list-selector>
     <input ng-show='$ctrl.selectedMacro' type="button" class='btn btn-primary' ng-click="$ctrl.applyMacro($ctrl.openCaseId, $ctrl.selectedMacroId)" value="Apply Macro To Case"></input>
+    <span class='danger' ng-show='$ctrl.applyError'>{{$ctrl.applyError}}</span>
 	`
 }
