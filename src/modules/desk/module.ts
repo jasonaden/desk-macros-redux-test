@@ -1,10 +1,11 @@
 import {ngRedux, applyMiddleware} from 'ng-redux';
-
 import createSagaMiddleware from 'redux-saga';
+import * as createLogger from 'redux-logger';
 
 import {setMacros} from '../desk-agent-case-macros/states';
 import {setCases, applyMacro} from '../desk-agent-case/states';
 import {failedToApply} from '../desk-agent-case-macros/states';
+import {mixPanel} from './states';
 
 import '../desk-agent/module';
 import '../desk-agent-case/module';
@@ -29,10 +30,19 @@ export const deskMod = angular.module('desk', [
   'desk.agent.case.detail'
 ]);
 
+const middlewares = [
+  createSagaMiddleware(applyMacro, failedToApply, mixPanel)
+];
+// add logger only for dev
+if (process.env.NODE_ENV) === `development`) {
+  const logger = createLogger();
+  middlewares.push(logger);
+}
+
 deskMod.config($ngReduxProvider => {
   $ngReduxProvider.createStoreWith(
     rootReducer,
-    [createSagaMiddleware(applyMacro, failedToApply)]
+    middlewares
   );
 })
 .run(($ngRedux) => {
