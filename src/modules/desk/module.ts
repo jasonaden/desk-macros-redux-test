@@ -1,4 +1,3 @@
-import {Store, createStore} from 'redux';
 import ngRedux from 'ng-redux';
 
 import {setMacros} from '../desk-agent-case-macros/states';
@@ -14,14 +13,11 @@ import {routes} from './config/routes';
 import {rootReducer} from './states';
 
 // pre-load from fixture data
-import {macroList} from '../data/macros';
-import {caseList} from '../data/cases';
+import {macroList} from '../../data/macros';
+import {caseList} from '../../data/cases';
 
 // export const DeskStore:Store = createStore(rootReducer);
 export const deskMod = angular.module('desk', [
-  'ngRedux', 
-  'ui.router', 
-  
   'desk.agent', 
   'desk.agent.case', 
   'desk.agent.case.list', 
@@ -44,6 +40,3 @@ deskMod
   .component('filterListFilter', comp.FilterListFilterComponent)
   .component('desk', comp.DeskComponent);
 
-angular.element(document).ready(function() {
-  angular.bootstrap(document, ['desk']);
-});

@@ -1,19 +1,32 @@
 # Desk Macros POC
 
-## Installation
+### Install
 
-```
+```sh
+npm i webpack typings typescript -g
+git clone git@github.com/brechtbilliet/angular-typescript-webpack.git
+cd angular-typescript-webpack
 npm install
-typings install
-```
-
-Once packages and TypeScript definitions are installed, you can start developing.
-
-Running the simple server with file watcher:
-
-```
 npm start
 ```
 
+Then it will automatically open the app in your browser
 
+To run tests
 
+```sh
+npm test
+```
+
+Coverage
+
+```sh
+open reports/coverage/index.html
+```
+
+Build
+```sh
+npm install
+tsd install
+npm run build
+```
