@@ -23,13 +23,13 @@ module.exports = {
     })
   ],
   module: {
-    loaders: loaders,
+    loaders: loaders/*,
     postLoaders: [
       {
         test: /^((?!\.spec\.ts).)*.ts$/,
         exclude: /(node_modules|bower_components)/,
         loader: 'istanbul-instrumenter'
       }
-    ]
+    ]*/
   }
 };
