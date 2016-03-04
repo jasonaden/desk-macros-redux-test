@@ -34,10 +34,8 @@ const middlewares = [
   createSagaMiddleware(applyMacro, failedToApply, mixPanel)
 ];
 // add logger only for dev
-if (process.env.NODE_ENV) === `development`) {
-  const logger = createLogger();
-  middlewares.push(logger);
-}
+const logger = createLogger();
+middlewares.push(logger);
 
 deskMod.config($ngReduxProvider => {
   $ngReduxProvider.createStoreWith(
