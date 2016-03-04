@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "start": "webpack --config webpack/webpack.dev.js --watch --NODE_ENV=dev",
+    "start": "node server.js",
     "test": "karma start --NODE_ENV=test",
     "build": "webpack --config webpack/webpack.build.js --NODE_ENV=production",
     "postinstall": "typings i"
@@ -36,6 +36,8 @@
     "browser-sync-webpack-plugin": "1.0.1",
     "compression-webpack-plugin": "0.3.0",
     "css-loader": "0.23.1",
+    "express": "^4.13.3",
+    "extract-text-webpack-plugin": "^0.8.2",
     "file-loader": "0.8.5",
     "html-webpack-plugin": "2.7.2",
     "istanbul": "0.4.2",
@@ -70,6 +72,8 @@
     "url-loader": "0.5.7",
     "wallaby-webpack": "0.0.11",
     "webpack": "1.12.13",
-    "webpack-dev-server": "1.14.1"
+    "webpack-dev-server": "1.14.1",
+    "webpack-dev-middleware": "^1.2.0",
+    "webpack-hot-middleware": "^2.2.0"
   }
 }
