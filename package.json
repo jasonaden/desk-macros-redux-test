@@ -22,7 +22,7 @@
     "redux-saga": "~0.9.3",
     "redux-thunk": "^1.0.3",
     "reselect": "^2.0.2",
-    "rxjs": "^5.0.0-beta.0"
+    "rx": "^4.0.8"
   },
   "devDependencies": {
     "angular-mocks": "1.5.0-rc.2",

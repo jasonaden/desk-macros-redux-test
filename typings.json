@@ -14,6 +14,7 @@
     "redux-thunk": "github:DefinitelyTyped/DefinitelyTyped/redux-thunk/redux-thunk.d.ts#75249b97104d00c1ca2451ac29369009a5f2b101",
     "redux-saga": "github:DefinitelyTyped/DefinitelyTyped/redux-saga/redux-saga.d.ts#bd08832e14cd61edc737a5d7793ee10ec130a738",
     "reselect": "github:DefinitelyTyped/DefinitelyTyped/reselect/reselect.d.ts#7ee8c031f981bfb4fd1dd511d3edf598ab96e5bb",
+    "rx": "file:./node_modules/rx/ts/rx.all.d.ts",
     "source-map": "github:DefinitelyTyped/DefinitelyTyped/source-map/source-map.d.ts#5d0f2126c8dac8fce0ff020218aea06607213b0d",
     "uglify-js": "github:DefinitelyTyped/DefinitelyTyped/uglify-js/uglify-js.d.ts#5d0f2126c8dac8fce0ff020218aea06607213b0d"
   }
