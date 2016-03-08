@@ -1,16 +1,13 @@
-import {DsPoller} from '../services/DsPoller'
-
 export class Desk {
-  constructor ($scope, $http) {
-    var poller = new DsPoller('cases',function () {return $http.get('http://localhost:3333/cases')},5000);
-  
-    $scope.unsubscribe = poller.poller$.subscribe(function (items) {
-        // console.log('fetch #', ++fetch, items);
-        $scope.$apply(function(){
-            $scope.items = items.data;        
-        });
-    }, function (err) {
-        debugger
+  constructor ($scope, $http, DsPoller) {
+      
+    var poller$ = DsPoller.addPoller('cases', 
+        () => $http.get('http://localhost:8888/cases'),
+        1000
+    )
+    
+    $scope.unsubscribe = poller$.subscribe(function (value) {
+        console.log('subscribe:', value);
     });
     
     setTimeout(()=> {
