@@ -21,7 +21,8 @@ import {rootReducer} from './states';
 import {macroList} from '../../data/macros';
 import {caseList} from '../../data/cases';
 
-import {DsPoller} from './services/DsPoller'
+import {DsPoller} from './services/DsPoller';
+import {RxPoller} from './services/DsPoller';
 
 // export const DeskStore:Store = createStore(rootReducer);
 export const deskMod = angular.module('desk', [
@@ -57,5 +58,6 @@ deskMod
   .component('filterListSelector', comp.FilterListSelectorComponent)
   .component('filterListFilter', comp.FilterListFilterComponent)
   .component('desk', comp.DeskComponent)
-  .service('DsPoller', DsPoller);
+  .service('DsPoller', DsPoller)
+  .service('RxPoller', RxPoller);
 
