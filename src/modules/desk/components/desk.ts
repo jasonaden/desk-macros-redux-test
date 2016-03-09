@@ -1,19 +1,28 @@
+import {setCases, applyMacro} from '../../desk-agent-case/states';
+
 export class Desk {
-  constructor ($scope, $http, DsPoller) {
+  constructor ($scope, $http, DsPoller, $ngRedux) {
       
-    var poller$ = DsPoller.addPoller('cases', 
+    let poller = new DsPoller('cases', 
         () => $http.get('http://localhost:8888/cases'),
         1000
     )
-    
-    $scope.unsubscribe = poller$.subscribe(function (value) {
-        console.log('subscribe:', value);
-    });
-    
+                   
+    $scope.unsubscribe = poller.getPoller().subscribe(function (value) {
+        console.log('poller$ subscribe:', value);
+        $ngRedux.dispatch(setCases(value.data))
+    });    
+         
+    setTimeout(()=> {
+        console.log('adjust poller rate');
+        poller.setInterval(5000);
+    }, 5000)
+
     setTimeout(()=> {
         console.log('stopping poller');
         $scope.unsubscribe.dispose();
-    },15000)
+        poller.destroy();
+    }, 30000)
   };
 }
 

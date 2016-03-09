@@ -1,43 +1,65 @@
 // DsPoller should:
 // 1. Accept the action to be taken & the interval
+// 1.5 Allow pollers to have a name (done)
 // 2. Return something that can paused and restarted
+// 3. Ability to do DsPoller.get('Name') to return the existing poller (done)
 
 // TODO:
-// 1.5 Allow pollers to have a name
-// 2.5 Make sure we can destroy a poller
-// 3. Ability to do DsPoller.get('Name') to return the existing poller
+// 2.5 Make sure we can destroy a poller 
 // 4. Retry logic (retry(3))
 // 5. Exponential Backoff
 // 6. Prevent pollers from stacking up due to delays in getting a response
 
-export class DsPoller { 
-    pollers: any;
+export const DsPoller = (rx) => {    
     
-    period: any;
-      
-    static $inject = ['rx'];
+    let pollers = {};
     
-    constructor (private rx) {
-        this.pollers = {};      
-    }
-    
-    addPoller(name: string, action: any, period: number = 5000) {       
-        let period$ = new this.rx.Subject();        
+    return class DsPoller {
+        name: string;
         
-        let interval$ = period$.startWith(period)
-            .flatMapLatest((t) => this.rx.Observable.timer(0, t));
+        period$: any;
+        
+        connection: any;
+        
+        constructor (name: string, action, period) {
+            this.period$ = new rx.Subject();     
             
-        let poller$ = interval$
-            .timeInterval()
-            .do((value) => {
-                console.log(value.interval);
-            })
-            .flatMapLatest(() => {
-                return this.rx.Observable.defer(() => action())
-            })     
+            this.name = name;   
             
-        this.pollers[name] = poller$;
-        return this.pollers[name]; 
+            let interval$ = this.period$.startWith(period)
+                .flatMapLatest((t) => rx.Observable.timer(0, t));
+                
+            let poller$ = interval$
+                .timeInterval()
+                .do((value) => {
+                    console.log(value.interval);
+                })
+                .flatMapLatest(() => {
+                    return rx.Observable.defer(() => action())
+                })
+                .publish();
+                
+            this.connection = poller$.connect();
+                
+            pollers[name] = poller$;
+        }
+        
+        public static getPollerInstance (name: string) {
+            return pollers[name];
+        }
+        
+        getPoller () { 
+            return pollers[this.name];
+        }
+        
+        destroy () {
+            this.connection.dispose();
+        }
+                
+        setInterval (interval) {
+            console.log('interval set to', interval, 'ms');
+            this.period$.onNext(interval);
+        }
     }
 }
 
