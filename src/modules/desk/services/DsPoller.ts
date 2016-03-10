@@ -50,9 +50,13 @@ export const DsPoller = (rx) => {
             this._pollers.set(name, instance);
         }
         
+        static getPoller (name) {
+            return this._pollers.get(name);
+        }
+              
         add (fn) {
             this._action = fn;
-        }
+        } 
         
         start () {
             this._connection = this._poller$.connect();
@@ -64,10 +68,6 @@ export const DsPoller = (rx) => {
         
         subscribe (cb) {
             this._poller$.subscribe(cb);  
-        }
-        
-        getPoller () { 
-            return this._poller$;
         }
         
         destroy () {

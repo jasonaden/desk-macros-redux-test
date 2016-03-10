@@ -10,9 +10,16 @@ export class Desk {
     poller.subscribe((value) => {
         console.log('poller$ subscribe:', value);
         $ngRedux.dispatch(setCases(value.data))
-    })
+    });
           
     poller.start();
+    
+    let poller2 = DsPoller.getPoller('cases');
+             
+    poller2.subscribe((value) => {
+        console.log('poller2$ subscribe:', value);
+        $ngRedux.dispatch(setCases(value.data))
+    });
     
     setTimeout(()=> {
         poller.setInterval(2000);
