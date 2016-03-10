@@ -28,9 +28,10 @@ export class Desk {
     //     poller.setInterval(2000);
     // }, 5000)
                    
-    // setTimeout(()=> {
-    //     poller.stop();
-    // }, 15000)
+    setTimeout(()=> {
+        console.log('stopping poller');
+        poller.stop();
+    }, 15000)
   };
 }
 

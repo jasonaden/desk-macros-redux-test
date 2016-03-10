@@ -150,7 +150,7 @@ export class RxPoller {
   }
   
   stop () {
-    this._connection();
+    this._connection.dispose();
   }
   
 }
