@@ -37,7 +37,7 @@ export const DsPoller = (rx) => {
                     console.log(value.interval);
                 })
                 .flatMapLatest(() => {
-                    return Observable.defer(() => this._action())
+                    return Observable.defer(this._action)
                 })
                 .publish();    
                          
