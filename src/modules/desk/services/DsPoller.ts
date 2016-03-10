@@ -1,4 +1,4 @@
-import {Subject, Observable, ConnectableObservable, TimeInterval} from 'rx';
+import {Subject, BehaviorSubject, Disposable, Observable, ConnectableObservable, TimeInterval} from 'rx';
 
 // DsPoller should:
 // 1. Accept the action to be taken & the interval
@@ -91,35 +91,38 @@ export class RxPoller {
   private _period$ = new Subject<number>();
   private _pauser$ = new Subject<boolean>();
   
-  private _interval$: Observable<TimeInterval<number>>;
-  private _poller$: ConnectableObservable<any>;
+  // private _interval$: Observable<TimeInterval<number>>;
+  // private _poller$: ConnectableObservable<any>;
   private _connection = Rx.helpers.noop;
   
-  constructor (name: string, period: number = 8000) {
-    this._interval$ = this._period$
-      .startWith(period)
-      .flatMapLatest(t => Observable.timer(0, t))
-      .timeInterval()
-      .pausable()
-      .publish();
-      
-    this._interval$.connect();
+  // Subject for number of errors
+  private _errorCount$ = new BehaviorSubject(0);
   
-    // this._poller$ = this._interval$
-    //   .do(_ => this._interval$.pause())
-    //   .flatMapLatest(() => this._action())
-    //   .do(_ => this._interval$.resume())
-    //   .catch(Observable.empty())
-    //   .publish();
+  // Subject for interval
+  private _interval$ = new BehaviorSubject(0);
+  private _maxInterval$ = new BehaviorSubject(4000);
+  
+  
+  // Observable to compute the interval
+  private computedInterval$ = this._interval$
+    .zip(this._errorCount$, this._maxInterval$, function (interval: number, errorCnt: number, maxInterval: number) {
+      let calInt = interval * Math.pow(2, errorCnt);
+      return calInt > (maxInterval || Infinity) ? maxInterval : calInt;
+    })
     
-    this._poller$ = Observable.fromPromise(() => this._action())
-      .repeatWhen(n => n.delay(2000))
-      .retryWhen(function (attempts) {
-        return Rx.Observable.range(1, 3).zip(attempts, function (i) { return i; }).flatMap(function (i) {
-          console.log("delay retry by " + i + " second(s)");
-          return Rx.Observable.timer(i * 1000);
-        });
-      }).publish();
+  private _poller$: ConnectableObservable<any> = Observable.fromPromise(() => this._action())
+      .repeatWhen(n => n
+        .do(_ => this._errorCount$.onNext(0))
+        .delay(_ => this.computedInterval$.flatMap(interval => Observable.timer(interval)))
+      )
+      .retryWhen(err => err
+        .do(err => this._errorCount$.onNext(this._errorCount$.getValue() + 1))
+        .flatMap(cnt => this.computedInterval$)
+        .flatMap(interval => Observable.timer(interval)))
+      .publish();
+    
+  constructor (name: string, period: number = 8000) {
+    this._interval$.onNext(period);
     
     RxPoller.setPoller(name, this);
   }
