@@ -12,55 +12,71 @@ import {Subject, Observable, ConnectableObservable, TimeInterval} from 'rx';
 // 5. Exponential Backoff
 // 6. Prevent pollers from stacking up due to delays in getting a response
 
-export const DsPoller = (rx) => {    
-    
-    let pollers = {};
-    
-    return class DsPoller {
-        name: string;
+export const DsPoller = (rx) => {
+    return class DsPoller {             
+        // CLASS METHODS
+        private static _pollers = new Map<String, DsPoller>();        
+ 
+        // PROPERTIES
+        private _interval$: Observable<TimeInterval<number>>;
+        private _poller$: ConnectableObservable<any>;
         
-        period$: any;
-        
-        connection: any;
-        
-        constructor (name: string, action, period) {
-            this.period$ = new rx.Subject();     
-            
-            this.name = name;   
-            
-            let interval$ = this.period$.startWith(period)
+        private _action = _ => _;
+        private _connection = Rx.helpers.noop;
+        private _period$ = new Subject<number>();
+                           
+        constructor (name: string, interval: number) {
+            this._period$ = new rx.Subject();     
+                       
+            let interval$ = this._period$.startWith(interval)
                 .flatMapLatest((t) => rx.Observable.timer(0, t));
                 
-            let poller$ = interval$
+            this._poller$ = interval$
                 .timeInterval()
                 .do((value) => {
                     console.log(value.interval);
                 })
                 .flatMapLatest(() => {
-                    return rx.Observable.defer(() => action())
+                    return Observable.defer(() => this._action())
                 })
-                .publish();
-                
-            this.connection = poller$.connect();
-                
-            pollers[name] = poller$;
+                .publish();    
+                         
+            DsPoller.setPoller(name, this);
         }
         
-        public static getPollerInstance (name: string) {
-            return pollers[name];
+        static setPoller (name: string, instance: DsPoller) {
+            let curr = this._pollers.get(name);
+            if (curr) throw "Cannot cache two RxPollers with the same name."
+            this._pollers.set(name, instance);
+        }
+        
+        add (fn) {
+            this._action = fn;
+        }
+        
+        start () {
+            this._connection = this._poller$.connect();
+        }
+        
+        stop () {
+            this._connection.dispose();
+        }
+        
+        subscribe (cb) {
+            this._poller$.subscribe(cb);  
         }
         
         getPoller () { 
-            return pollers[this.name];
+            return this._poller$;
         }
         
         destroy () {
-            this.connection.dispose();
+            this._connection.dispose();
         }
                 
-        setInterval (interval) {
-            console.log('interval set to', interval, 'ms');
-            this.period$.onNext(interval);
+        setInterval (time: number) {
+            console.log('interval set to', time, 'ms');
+            this._period$.onNext(time);
         }
     }
 }
@@ -135,39 +151,3 @@ export class RxPoller {
   }
   
 }
-
-// export const DsPoller = 
-//   function (name: string, action, period: number) {
-    
-//     period = period || 5000;
-    
-//     this.period$ = new Subject();
-    
-//     this.interval$ = this.period$.startWith(period)
-//     .flatMapLatest(function (t) {return Observable.timer(0, t)});
-    
-//     this.poller$ = this.interval$
-//         .timeInterval()
-//         .do(function (x) {
-//             console.log('interval', x.interval);
-//         })
-//         .flatMapLatest(function () {
-//             return Observable.defer(() => action())
-//         })
-//         .retryWhen(function (errors) {
-//             return errors
-//                 .zip(Rx.Observable.range(1, 5), function (_, i) { return i })
-//                 .flatMap(function (i) {
-//                     console.log('delay retry by ' + i + ' second(s)');
-//                     return Rx.Observable.timer(i * 1000);
-//                 });               
-//         })
-//         .map(function(x) {
-//            console.log('map', x);
-//            return x; 
-//         });        
-//   }
-        
-// DsPoller.prototype.setPeriod = function(time) {
-//     this.period$.onNext(time);
-// }
