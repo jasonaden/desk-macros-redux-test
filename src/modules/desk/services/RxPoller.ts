@@ -2,10 +2,10 @@ import {Subject, BehaviorSubject, Disposable, Observable, ConnectableObservable,
 
 // DsPoller should:
 // 1. Accept the action to be taken & the interval
-// 1.5 Allow pollers to have a name (done)
+// 1.5 Allow pollers to have a name
 // 2. Return something that can paused and restarted
 // 2.5 Make sure we can destroy a poller
-// 3. Ability to do DsPoller.get('Name') to return the existing poller (done)
+// 3. Ability to do DsPoller.get('Name') to return the existing poller
 // 4. Retry logic (retry(3))
 // 5. Exponential Backoff
 // 6. Prevent pollers from stacking up due to delays in getting a response
@@ -32,7 +32,7 @@ export class RxPoller {
   private computedInterval$ = this._interval$
     .zip(this._errorCount$, this._maxInterval$, function (interval: number, errorCnt: number, maxInterval: number) {
       let calInt = interval * Math.pow(2, errorCnt);
-      return calInt > (maxInterval || Infinity) ? maxInterval : calInt;
+      return Math.min(calInt, maxInterval);
     })
     
   private _poller$: ConnectableObservable<any> = Observable.fromPromise(() => this._action())
@@ -43,8 +43,9 @@ export class RxPoller {
       )
       .retryWhen(err => err
         .do(err => this._errorCount$.onNext(this._errorCount$.getValue() + 1))
-        .flatMap(cnt => this.computedInterval$)
-        .flatMap(interval => Observable.timer(interval)))
+        .flatMap(_ => this.computedInterval$)
+        .flatMap(interval => Observable.timer(interval))
+      )
       .publish();
     
   constructor (name: string, period: number = 8000) {

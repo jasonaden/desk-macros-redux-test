@@ -4,7 +4,7 @@ import {RxPoller} from '../services/DsPoller';
 export class Desk {
   constructor ($scope, $http, $ngRedux, RxPoller: RxPoller) {   
           
-    let poller = new RxPoller('cases', 5000);
+    let poller = new RxPoller('cases', 2000);
     
     poller.setAction(() => $http.get('http://localhost:8888/cases'));
     
