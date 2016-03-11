@@ -138,7 +138,7 @@ export class RxPoller {
   }
   
   setPeriod (time: number) {
-    this._period$.onNext(time);
+    this._interval$.onNext(time);
   }
   
   subscribe (cb) {

@@ -24,14 +24,15 @@ export class Desk {
     //     $ngRedux.dispatch(setCases(value.data))
     // });
     
-    // setTimeout(()=> {
-    //     poller.setInterval(2000);
-    // }, 5000)
+    setTimeout(()=> {
+        console.log('setting period to every 1 second');
+        poller.setPeriod(1000);
+    }, 10000)
                    
     setTimeout(()=> {
         console.log('stopping poller');
         poller.stop();
-    }, 15000)
+    }, 20000)
   };
 }
 
