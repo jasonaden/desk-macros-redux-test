@@ -1,10 +1,10 @@
 import {setCases, applyMacro} from '../../desk-agent-case/states';
-import {RxPoller} from '../services/DsPoller';
+import {RxPoller} from '../services/RxPoller';
 
 export class Desk {
   constructor ($scope, $http, $ngRedux, RxPoller: RxPoller) {   
           
-    let poller = new RxPoller('cases', 5000);
+    let poller = new RxPoller('cases', 2000);
     
     poller.setAction(() => $http.get('http://localhost:8888/cases'));
     
