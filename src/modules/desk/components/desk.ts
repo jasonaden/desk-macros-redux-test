@@ -2,11 +2,9 @@ import {setCases, applyMacro} from '../../desk-agent-case/states';
 import {RxPoller} from '../services/DsPoller';
 
 export class Desk {
-  constructor ($scope, $http, DsPoller, $ngRedux) {
-      
-    
-      
-    let poller = new RxPoller('cases', 2000);
+  constructor ($scope, $http, $ngRedux, RxPoller: RxPoller) {   
+          
+    let poller = new RxPoller('cases', 5000);
     
     poller.setAction(() => $http.get('http://localhost:8888/cases'));
     
@@ -16,23 +14,16 @@ export class Desk {
     });
           
     poller.start();
-    
-    // let poller2 = DsPoller.getPoller('cases');
-             
-    // poller2.subscribe((value) => {
-    //     console.log('poller2$ subscribe:', value);
-    //     $ngRedux.dispatch(setCases(value.data))
-    // });
-    
+      
     setTimeout(()=> {
         console.log('setting period to every 1 second');
         poller.setPeriod(1000);
-    }, 10000)
+    }, 20000)
                    
     setTimeout(()=> {
         console.log('stopping poller');
         poller.stop();
-    }, 20000)
+    }, 30000)
   };
 }
 
