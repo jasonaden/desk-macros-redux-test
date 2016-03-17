@@ -11,10 +11,11 @@ export const routes = ($stateProvider, $urlRouterProvider, $locationProvider) =>
       resolveOpenCaseId: ($stateParams, $ngRedux) => {
         $ngRedux.dispatch(setOpenCaseId(parseInt($stateParams.id, 10)));
       }
-    },    
+    },
     views: {
       '@': {
-        template: '<case-detail></case-detail>'    
+        template: '<case-detail></case-detail>',
+        controller: (resolveOpenCaseId) => this
       }
     }
   });

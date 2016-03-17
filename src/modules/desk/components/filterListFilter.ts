@@ -1,5 +1,3 @@
-import {Store} from 'redux';
-
 export class FilterListFilter {
   constructor() {}  
 }

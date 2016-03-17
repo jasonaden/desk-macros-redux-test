@@ -25,6 +25,13 @@ function openCaseFinder(cases, caseId) {
   return cases.find(kase => kase.id == caseId);
 }
 
+let getOpenCaseManual = (state) => {
+  let cases = getCases(state);
+  let caseId = getOpenCaseId(state);
+  return openCaseFinder(cases, caseId);
+}
+
+
 export const caseDetailReducers = combineReducers({
   openCaseId
 });

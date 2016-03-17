@@ -28,16 +28,16 @@ export const MACRO_APPLY_ERROR = 'MACRO_APPLY_ERROR';
 export function* applyMacro (getState) {
   while (true) {
     // wait for this action to be dispatched
-    const action = yield take(APPLY_MACRO_TO_CASE);
+    const action =  yield take(APPLY_MACRO_TO_CASE);
     
     // then process it
     
     // if we've hit the limit, dispatch limit event rather than proceeding to add
     const kase = getCaseById(getState(), action.payload.caseId);
     if (2 < kase.macros.length) {
-      yield put(setMacroApplyError('Macro limit reached!');
+      yield put(setMacroApplyError('Macro limit reached!'));
     } else if (-1 < kase.macros.indexOf(action.payload.macroId)) {
-      yield put(setMacroApplyError('Macro already applied!');
+      yield put(setMacroApplyError('Macro already applied!'));
     } else {
       // add to case since limit not reached
       yield put({type:APPLY_MACRO, payload:action.payload});

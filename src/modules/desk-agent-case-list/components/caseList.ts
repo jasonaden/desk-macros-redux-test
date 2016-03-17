@@ -29,6 +29,8 @@ export class CaseList {
   constructor ($scope, $state, $ngRedux) {
     this.$state = $state;
 
+    $scope.itemId = 10;
+
     let unsubscribe = $ngRedux.connect(mapStateToThis, mapDispatchToThis)(this);
     $scope.$on('$destroy', unsubscribe);
   }

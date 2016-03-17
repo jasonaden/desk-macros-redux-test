@@ -1,4 +1,4 @@
-import {Subject, BehaviorSubject, Disposable, Observable, ConnectableObservable, TimeInterval} from 'rx';
+import {Subject, BehaviorSubject, Disposable, Observable, ConnectableObservable, TimeInterval, helpers} from 'rx';
 
 // DsPoller should:
 // 1. Accept the action to be taken & the interval
@@ -34,8 +34,12 @@ export class RxPoller {
       let calInt = interval * Math.pow(2, errorCnt);
       return Math.min(calInt, maxInterval);
     })
-    
-  private _poller$: ConnectableObservable<any> = Observable.fromPromise(() => this._action())
+  
+  // private _poller$: ConnectableObservable<any> = Observable.fromPromise((): Promise<Object> => this._action())
+  
+  helpers.isPromise
+  
+  private _pollerx$: ConnectableObservable<any> = Observable.fromPromise(() => this._action())
       .repeatWhen(n => n
         .do(_ => this._errorCount$.onNext(0))
         .flatMap(_ => this.computedInterval$)

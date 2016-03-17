@@ -1,4 +1,4 @@
-import {Store} from 'redux';
+
 import {ICase} from '../../desk-agent-case/states';
 import {IMacro, getMacrosFromOpenCase} from '../../desk-agent-case-macros/states';
 import {getOpenCase} from '../states';
@@ -20,10 +20,7 @@ export class CaseDetailController {
 
 export const CaseDetailComponent = {
   controller: CaseDetailController,
-  bindings: {
-    resolvedCase: '<'
-  },
-	template: `
+  template: `
     <div class='well'>
       <h3>{{$ctrl.openCase.subject}}</h3>
       <span>Status: {{$ctrl.openCase.status}}</span>
