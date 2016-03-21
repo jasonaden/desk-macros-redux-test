@@ -1,8 +1,7 @@
 import {createSelector} from 'reselect';
 import {Reducer, combineReducers} from 'redux';
 import {Action} from 'flux-standard-action';
-import {take, put, call, fork, cancel} from 'redux-saga/effects';
-import {takeLatest, SagaCancellationException} from 'redux-saga';
+
 import {APPLY_MACRO, MACRO_APPLY_ERROR} from '../desk-agent-case/states';
 import {getOpenCase} from '../desk-agent-case-detail/states';
 
@@ -96,7 +95,7 @@ export const setMacroApplyError = function setMacroApplyError(payload: string): 
     payload
   };
 }
-const macroApplyError:Reducer = (state:string = false, action:Action<string>) => {
+const macroApplyError:Reducer = (state:string = '', action:Action<string>) => {
   switch (action.type) {
     case SET_MACRO_APPLY_ERROR:
       return action.payload;
@@ -107,22 +106,30 @@ const macroApplyError:Reducer = (state:string = false, action:Action<string>) =>
 
 export const getMacroApplyError = (state):string => state.deskAgentCaseMacros.macroApplyError;
 
-export function* failedToApply (getState) {
-  yield* takeLatest(SET_MACRO_APPLY_ERROR, clearError);
+export function failedToApply () {
+  console.log('failedToApply', arguments);
 }
 
-function* clearError() {
-  try {
-    while (true) {
-      yield call(delay, 3000);
-      yield put(setMacroApplyError(''));
-    }
-  } catch (error) {
-    if(error instanceof SagaCancellationException) {
-      //event was canceled either by cancel or takeLatest
-    }
-  }
+// export function* failedToApplys (getState) {
+//   yield* takeLatest(SET_MACRO_APPLY_ERROR, clearError);
+// }
+
+function clearError () {
+  console.log('clearError', arguments);
 }
+
+// function* clearError() {
+//   try {
+//     while (true) {
+//       yield call(delay, 3000);
+//       yield put(setMacroApplyError(''));
+//     }
+//   } catch (error) {
+//     if(error instanceof SagaCancellationException) {
+//       //event was canceled either by cancel or takeLatest
+//     }
+//   }
+// }
 
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))

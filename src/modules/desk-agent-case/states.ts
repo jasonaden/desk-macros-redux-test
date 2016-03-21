@@ -1,10 +1,8 @@
 import {createSelector} from 'reselect';
 import {Reducer, combineReducers} from 'redux';
+import * as thunk from 'redux-thunk';
 import {Action} from 'flux-standard-action';
-import {takeEvery} from 'redux-saga';
-import {put, call, take} from 'redux-saga/effects';
 
-import {getCaseById} from '../desk-agent-case/states';
 import {setMacroApplyError} from '../desk-agent-case-macros/states';
 
 export interface ICase {
@@ -24,33 +22,26 @@ export function setCases(payload: Object[]): Action<Object[]> {
 
 export const APPLY_MACRO = 'APPLY_MACRO';
 export const MACRO_APPLY_ERROR = 'MACRO_APPLY_ERROR';
-
-export function* applyMacro (getState) {
-  while (true) {
-    // wait for this action to be dispatched
-    const action = yield take(APPLY_MACRO_TO_CASE);
-    
-    // then process it
-    
-    // if we've hit the limit, dispatch limit event rather than proceeding to add
-    const kase = getCaseById(getState(), action.payload.caseId);
-    if (2 < kase.macros.length) {
-      yield put(setMacroApplyError('Macro limit reached!');
-    } else if (-1 < kase.macros.indexOf(action.payload.macroId)) {
-      yield put(setMacroApplyError('Macro already applied!');
-    } else {
-      // add to case since limit not reached
-      yield put({type:APPLY_MACRO, payload:action.payload});
-    }
-  }
+export function applyMacro (payload: Object): Action<Object> {
+  return {
+    type: APPLY_MACRO, 
+    payload
+  };
 }
 
 export const APPLY_MACRO_TO_CASE = "APPLY_MACRO_TO_CASE";
-export function applyMacroToCase (payload: Object): Action<Object> {
-  return {
-    type: APPLY_MACRO_TO_CASE,
-    payload
-  };
+export function applyMacroToCase (payload: {caseId: number, macroId: number}) {
+  return (dispatch, getState) => {
+    const kase = getCaseById(getState(), payload.caseId);
+    
+    if (2 < kase.macros.length) {
+      dispatch(setMacroApplyError('Macro limit reached!'));
+    } else if (-1 < kase.macros.indexOf(payload.macroId)) {
+      dispatch(setMacroApplyError('Macro already applied!'));
+    } else {
+      dispatch(applyMacro(payload));
+    }
+  }
 }
 const cases:Reducer = (state:ICase[] = [], action: Action<any>) => {
   switch (action.type) {

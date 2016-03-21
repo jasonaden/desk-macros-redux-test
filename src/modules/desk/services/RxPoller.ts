@@ -88,7 +88,7 @@ export interface IRxPollerConfig {
  *   
  * [Egghead Step-by-Step Async JavaScript with RxJS](https://egghead.io/series/step-by-step-async-javascript-with-rxjs)
  *  
- */
+ */k,
 export class RxPoller {
   private static _pollers = new Map<String, RxPoller>();
   
@@ -102,6 +102,7 @@ export class RxPoller {
    * A subject which presents the current paused status.
    */
   private _pauser$:Subject<boolean> = new Subject<boolean>();
+  private _connection: Disposable;
   
   /**
    * A Disposable instance for an active poller. This is set
@@ -166,6 +167,7 @@ export class RxPoller {
   constructor (name: string, config: IRxPollerConfig) {
     this.setConfig(config);
     RxPoller.setPoller(name, this);
+    return this;
   }
   
   /**
