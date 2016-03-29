@@ -4,7 +4,7 @@ import {RxPoller} from '../services/RxPoller';
 export class Desk {
   constructor ($scope, $http, $ngRedux, RxPoller: RxPoller) {   
           
-    let poller = new RxPoller('cases', 2000);
+    let poller = new RxPoller('cases', {interval:2000});
     
     poller.setAction(() => $http.get('http://localhost:8888/cases'));
     
@@ -17,7 +17,7 @@ export class Desk {
       
     setTimeout(()=> {
         console.log('setting period to every 1 second');
-        poller.setPeriod(1000);
+        poller.setConfig({interval:1000});
     }, 20000)
                    
     setTimeout(()=> {

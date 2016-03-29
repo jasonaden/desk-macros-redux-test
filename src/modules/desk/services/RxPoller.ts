@@ -1,90 +1,231 @@
-import {Subject, BehaviorSubject, Disposable, Observable, ConnectableObservable, TimeInterval} from 'rx';
+import {Subject, BehaviorSubject, Disposable, Observable, ConnectableObservable, TimeInterval, IDisposable, ISubject} from 'rx';
 
-// DsPoller should:
-// 1. Accept the action to be taken & the interval
-// 1.5 Allow pollers to have a name
-// 2. Return something that can paused and restarted
-// 2.5 Make sure we can destroy a poller
-// 3. Ability to do DsPoller.get('Name') to return the existing poller
-// 4. Retry logic (retry(3))
-// 5. Exponential Backoff
-// 6. Prevent pollers from stacking up due to delays in getting a response
-
+/**
+ * Interface for RxPoller configuration options.
+ */
 export interface IRxPollerConfig {
-  period: number,
-  maxInterval: number
+  /**
+   * Default polling rate.
+   */
+  interval?: number,
+  
+  /**
+   * Maximum rate allowed when exponentially backing off. 
+   */
+  maxInterval?: number
 }
 
+/**
+ * RxPoller
+ * ========
+ * 
+ * RxPoller is an Observable poller built with RxJS. 
+ * 
+ *  
+ * Goals
+ * -----
+ * 
+ * * Pollers must have a unique name
+ * * Interval and Action can be set or changed at any time via setConfig and setAction
+ * * Poller can be paused and restarted
+ * * Pollers can be retrieved by name via RxPoller.getPoller('posts')
+ * * Poller will exponentially backoff on errors, doubling the interval until maxInterval is reached.
+ * * Pollers do not start counting the next interval until the prior promise has been resolved.
+ *
+ * Instantiation:
+ * --------------
+ * 
+ * ```
+ * poller = new RxPoller('posts');
+ * poller.setConfig({
+ *   interval: 5000,
+ *   maxInterval: 40000
+ * });
+ * ```
+ * 
+ * But since configuration can also be passed in the constructor, 
+ * the above code could also be written as:
+ * 
+ * ```
+ * poller = new RxPoller('posts', {
+ *   interval: 5000,
+ *   maxInterval: 40000
+ * });
+ * ```
+ * 
+ * Setting Poller Action:
+ * ----------------------
+ * 
+ * ```
+ * poller.setAction(function(){
+ *   return $http.get('/api/posts');
+ * });
+ * ```
+ * 
+ * Subscribing to Poller for Callback
+ * ----------------------------------
+ * 
+ * ```
+ * poller.subscribe(function(posts){
+ *   // send array of posts to app
+ * });
+ * ```
+ * 
+ * Starting and Stopping
+ * ---------------------
+ * 
+ * ```
+ * poller.start()
+ * poller.stop()
+ * ```
+ * 
+ * References
+ * ----------
+ * 
+ * Built with [RxJS v4.x](https://github.com/Reactive-Extensions/RxJS)  
+ * 
+ * [Egghead Intro to Reactive Programming](https://egghead.io/series/introduction-to-reactive-programming)  
+ *   
+ * [Egghead Step-by-Step Async JavaScript with RxJS](https://egghead.io/series/step-by-step-async-javascript-with-rxjs)
+ *  
+ */
 export class RxPoller {
-  // CLASS METHODS
   private static _pollers = new Map<String, RxPoller>();
   
-  // PROPERTIES
+  /**
+   * A private cached function to be called for each iteration of the poller.
+   * @returns Must return a promise.
+   */
   private _action = _ => _;
-  private _action$ = new Subject();
-  private _period$ = new Subject<number>();
-  private _pauser$ = new Subject<boolean>();
-  private _connection = Rx.helpers.noop;
+ 
+  /**
+   * A subject which presents the current paused status.
+   */
+  private _pauser$:Subject<boolean> = new Subject<boolean>();
   
-  // Subject for number of errors
-  private _errorCount$ = new BehaviorSubject(0);
+  /**
+   * A Disposable instance for an active poller. This is set
+   * when a poller is started via .connect(). To disconnect a poller,
+   * you would run .dispose() on this.
+   */
+  private _connection:Disposable = Disposable.create(Rx.helpers.noop);
   
+  /**
+   * A subject which presents the number of errors since the last success.
+   */
+  private _errorCount$:BehaviorSubject<any> = new BehaviorSubject(0);
+  
+  /**
+   * A subject which presents the current default polling interval.
+   */
   // Subject for interval
-  private _interval$ = new BehaviorSubject(0);
-  private _maxInterval$ = new BehaviorSubject(8000);  
+  private _interval$:BehaviorSubject<any> = new BehaviorSubject(0);
   
-  // Observable to compute the interval
-  private computedInterval$ = this._interval$
+  /**
+   * A subject which presents the maximum polling interval.
+   * 
+   * When a poll action (Promise) fails, or is rejected, 
+   * we will exponentially back off the interval until the max is reached.
+   */
+  private _maxInterval$:BehaviorSubject<any> = new BehaviorSubject(8000);  
+  
+  /**
+   * An Observable which presents the active polling delay between each iteration of the poller.
+   * 
+   * When errors occur, this method will take that into account and exponentially back off the next interval.
+   */
+  private _computedInterval$:Observable<any> = this._interval$
     .zip(this._errorCount$, this._maxInterval$, function (interval: number, errorCnt: number, maxInterval: number) {
       let calInt = interval * Math.pow(2, errorCnt);
       return Math.min(calInt, maxInterval);
     })
-    
-  private _poller$: ConnectableObservable<any> = Observable.fromPromise(() => this._action())
+  
+  /**
+   * A ConnectableObservable which is a "hot observable" for the poller action. 
+   * This is what gets subscribed to by consumers of this class.
+   */
+  private _poller$:ConnectableObservable<any> = Observable.fromPromise(() => this._action())
       .repeatWhen(n => n
         .do(_ => this._errorCount$.onNext(0))
-        .flatMap(_ => this.computedInterval$)
+        .flatMap(_ => this._computedInterval$)
         .flatMap(interval => Observable.timer(interval))
       )
       .retryWhen(err => err
         .do(err => this._errorCount$.onNext(this._errorCount$.getValue() + 1))
-        .flatMap(_ => this.computedInterval$)
+        .flatMap(_ => this._computedInterval$)
         .flatMap(interval => Observable.timer(interval))
       )
       .publish();
     
+  /**
+   * Creates a new instance of RxPoller.
+   * 
+   * @param name A name for the poller which can be used to retrieve it later.
+   * @param config Configuration options for RxPoller.
+   */
   constructor (name: string, config: IRxPollerConfig) {
     this.setConfig(config);
     RxPoller.setPoller(name, this);
   }
   
+  /**
+   * Cache method used when creating a poller. 
+   * Enforces unique names.
+   * 
+   * @param name The desired name for a new poller.
+   * @param instance New poller instance to be cached.
+   */
   static setPoller (name: string, instance: RxPoller) {
     let curr = this._pollers.get(name);
     if (curr) throw "Cannot cache two RxPollers with the same name."
     this._pollers.set(name, instance);
   } 
-        
-  static getPoller (name) {
+
+  /**
+   * Retrieve a cached poller by name.
+   * 
+   * @param name The name which was used to register a poller.
+   */
+  static getPoller (name: string): RxPoller {
     return this._pollers.get(name);
   }
   
+  /**
+   * Supply a function to be called for each iteration of the poller.
+   * 
+   * @param fn Action function to be called for each iteration of the poller. This method should return a Promise.
+   */
   setAction (fn) {
     this._action = fn;
   }
   
+  /**
+   * Update configuration options.
+   */
   setConfig (config: IRxPollerConfig) {
-    this._interval$.onNext(config.period || 8000);
-    this._maxInterval$.onNext(config.maxInterval || 300000);
+    this._interval$.onNext(config.interval || this._interval$.getValue() || 8000);
+    this._maxInterval$.onNext(config.maxInterval || this._maxInterval$.getValue() || 300000);
   }
   
+  /**
+   * Subscribe to a poller observable with a callback.
+   * 
+   * @param cb Function to be called with the results of each interation of the poller.
+   */
   subscribe (cb) {
     this._poller$.subscribe(cb);  
   }
   
+  /**
+   * Start a poller instance.
+   */
   start () {
     this._connection = this._poller$.connect();
   }
   
+  /**
+   * Stop a poller instance.
+   */
   stop () {
     this._connection.dispose();
   }  
