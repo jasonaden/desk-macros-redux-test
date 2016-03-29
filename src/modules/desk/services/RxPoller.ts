@@ -10,6 +10,11 @@ import {Subject, BehaviorSubject, Disposable, Observable, ConnectableObservable,
 // 5. Exponential Backoff
 // 6. Prevent pollers from stacking up due to delays in getting a response
 
+export interface IRxPollerConfig {
+  period: number,
+  maxInterval: number
+}
+
 export class RxPoller {
   // CLASS METHODS
   private static _pollers = new Map<String, RxPoller>();
@@ -48,9 +53,8 @@ export class RxPoller {
       )
       .publish();
     
-  constructor (name: string, period: number = 8000) {
-    this._interval$.onNext(period);
-    
+  constructor (name: string, config: IRxPollerConfig) {
+    this.setConfig(config);
     RxPoller.setPoller(name, this);
   }
   
@@ -68,8 +72,9 @@ export class RxPoller {
     this._action = fn;
   }
   
-  setPeriod (time: number) {
-    this._interval$.onNext(time);
+  setConfig (config: IRxPollerConfig) {
+    this._interval$.onNext(config.period || 8000);
+    this._maxInterval$.onNext(config.maxInterval || 300000);
   }
   
   subscribe (cb) {
