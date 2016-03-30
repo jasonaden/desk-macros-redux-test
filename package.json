@@ -17,6 +17,7 @@
     "jquery": "2.2.0",
     "lodash": "^4.2.0",
     "ng-redux": "^3.3.3",
+    "normalizr": "~2.0.1",
     "redux": "^3.3.1",
     "redux-logger": "~2.6.1",
     "redux-saga": "~0.9.3",

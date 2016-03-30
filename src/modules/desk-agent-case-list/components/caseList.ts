@@ -1,6 +1,5 @@
-import {Store} from 'redux';
 
-import {ICase} from '../../desk-agent-case/states';
+import {ICase} from '../../../resources/case';
 import {getCaseFilter, setSelectedCaseId, setCaseFilter, getSelectedCase, getSelectedCaseId, getFilteredCases} from '../states';
 
 const mapStateToThis = (state) => {

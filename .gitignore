@@ -3,8 +3,10 @@
 node_modules
 dist
 reports
-typings
 out
-typings
+typings/browser
+typings/browser.d.ts
+typings/main
+typings/main.d.ts
 .idea/
 app/

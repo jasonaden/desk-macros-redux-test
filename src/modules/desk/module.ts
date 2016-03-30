@@ -4,13 +4,14 @@ import * as thunk from 'redux-thunk';
 import * as createLogger from 'redux-logger';
 
 import {setMacros} from '../desk-agent-case-macros/states';
-import {setCases} from '../desk-agent-case/states';
+import {setCases, Case} from '../../resources/case';
 
 import '../desk-agent/module';
 import '../desk-agent-case/module';
 import '../desk-agent-case-detail/module';
 import '../desk-agent-case-list/module';
 import '../desk-agent-case-macros/module';
+import '../../resources/module';
 import * as comp from './components';
 import {routes} from './config/routes';
 
@@ -29,7 +30,8 @@ export const deskMod = angular.module('desk', [
   'desk.agent.case.list', 
   'desk.agent.case.macros', 
   'desk.agent.case.detail',
-  'rx'
+  'rx',
+  'ds.resources'
 ]);
 
 deskMod.config($ngReduxProvider => {
@@ -38,9 +40,10 @@ deskMod.config($ngReduxProvider => {
     [thunk, createLogger()]
   );
 })
-.run(($ngRedux) => {
+.run(($ngRedux, Case: Case) => {
+  Case.loadMany();
   $ngRedux.dispatch(setMacros(macroList));
-  $ngRedux.dispatch(setCases(caseList));
+  // $ngRedux.dispatch(setCases(caseList));
 });
 
 deskMod
