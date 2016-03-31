@@ -16,7 +16,7 @@ export interface IResourceAdapter {
   doRequest: (config) => ng.IPromise<any>;
   transformResponse: (data: any, headers: any) => any;
   transformRequest: (data: any, headers: any) => any;
-  interceptors: Function[];
+  interceptors: IInterceptorConfig[];
 }
 
 export interface IResourceRequestConfig {
@@ -76,7 +76,7 @@ export class ResourceAdapter implements IResourceAdapter {
     // Add default transforms
     for (let method of ['transformRequest', 'transformResponse'])
       if (config[method]) {
-        config[method] = [].concat(config[method], this[method].bind(this));
+        config[method] = [].concat(this[method].bind(this), config[method]);
       } else {
         config[method] = this[method].bind(this);
       }

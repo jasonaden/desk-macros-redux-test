@@ -17,6 +17,7 @@ import {routes} from './config/routes';
 
 import {rootReducer} from './states';
 
+
 // pre-load from fixture data
 import {macroList} from '../../data/macros';
 import {caseList} from '../../data/cases';
@@ -45,6 +46,9 @@ deskMod.config($ngReduxProvider => {
   $ngRedux.dispatch(setMacros(macroList));
   // $ngRedux.dispatch(setCases(caseList));
 });
+
+// Temporary for testing normalizr
+import '../../resources/schemas';
 
 deskMod
   .config(routes)

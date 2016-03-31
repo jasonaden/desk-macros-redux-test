@@ -4,7 +4,7 @@ import {Action} from 'flux-standard-action';
 import { normalize, Schema, arrayOf } from 'normalizr';
 
 import {ngRedux, Middleware} from 'ng-redux';
-import {IResourceAdapter} from './resource-adapter';
+import {IResourceAdapter, IResourceRequestConfig} from './resource-adapter';
 
 export interface IActions {
   loadingMany: string,
@@ -49,16 +49,41 @@ export class Resource<T> {
     return {type: this._actions.delete, payload};
   }
   
-  loadMany(args?: Object): Action<void> {
+  loadMany(args?: IResourceRequestConfig): Action<void> {
+    
     return this.store.dispatch(this._loadMany(args));
   }
   
-  private _loadMany (args?: Object) {
+  private _loadMany (args?: IResourceRequestConfig) {
     return (dispatch, store) => {
       dispatch(action(this._actions.loadingMany));
       
       // return this.$http.get(this.baseUrl + this.url)
-      return this.adapter.execute({url: this.url, baseUrl: this.baseUrl, method: 'GET'})
+      return this.adapter.execute({
+        url: this.url, 
+        baseUrl: this.baseUrl, 
+        method: 'GET',
+        // TODO: This needs to be abstracted, but for now putting interceptor straight in here
+        // Not sure if we want to do this type of transformation or if we should just map 
+        // straight to the HAL... probably do this transformation. To try the alternative
+        // way go to ./schemas.ts and switch the schema mapping.
+        /*transformResponse: function flattenEmbedded (data, headers) {
+          if (!data) return data;
+          if (Array.isArray(data)) {
+            return data.map((flatten));
+          } else {
+            return flatten(data);
+          }
+          
+          function flatten (data) {
+            if (data._embedded) {
+              for (let key in data._embedded) {
+                data[key] = data._embedded[key];
+              }
+            }
+            return data;
+          }
+        }*/})
       .then(
         items => dispatch(action(this._actions.loadMany, items.data)),
         error => dispatch(action("ERROR", error))
