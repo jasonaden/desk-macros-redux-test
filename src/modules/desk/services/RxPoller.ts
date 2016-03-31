@@ -218,9 +218,13 @@ export class RxPoller {
   
   /**
    * Start a poller instance.
+   * 
+   * @param forceStart Begin polling immediately or wait one interval period before the first action.
    */
-  start () {
-    this._connection = this._poller$.connect();
+  start (forceStart: boolean) {
+    Observable.timer(forceStart ? 0 : this._interval$.getValue()).subscribe( _ => {
+      this._connection = this._poller$.connect(); 
+    });
   }
   
   /**
