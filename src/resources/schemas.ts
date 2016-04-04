@@ -10,20 +10,20 @@ const message = new Schema('message');
 const draft = new Schema('draft');
 
 // If we don't flatten the HAL
-kase.define({
-  _embedded: {
-    customer: customer,
-    draft: draft,
-    message: message
-  }
-})
+// kase.define({
+//   _embedded: {
+//     customer: customer,
+//     draft: draft,
+//     message: message
+//   }
+// })
 
 // Flattening the HAL
-// kase.define({
-//   customer: customer,
-//   draft: draft,
-//   message: message
-// })
+kase.define({
+  customer: customer,
+  draft: draft,
+  message: message
+})
 
 angular.module('desk')
 .run(($ngRedux: INgRedux, Case: Case) => {
@@ -31,4 +31,4 @@ angular.module('desk')
     const normalized = normalize(Case.state, arrayOf(kase));
     console.log(normalized);
   })
-})
+});

@@ -3,7 +3,8 @@ import {Reducer, combineReducers} from 'redux';
 import {Action} from 'flux-standard-action';
 
 import {Resource, IActions} from './resource';
-import {ResourceAdapter} from './resource-adapter';
+import {IResourceAdapter} from './resource-adapter';
+import {ApiV2Adapter} from './apiv2-adapter';
 
 // ACTION TYPES
 export const LOADING_CASES = "LOADING_CASES";
@@ -44,6 +45,9 @@ const actions: IActions = {
   reloadOne: RELOAD_CASE
 };
 
+export const ONE = "CASE";
+export const MANY = "CASES";
+
 export interface ICase {
   id: number,
   subject: string,
@@ -59,31 +63,13 @@ export interface ICases extends Map<String, any> {
 
 export class Case extends Resource<ICase> {
   url = '/cases';
+  private _one = ONE;
+  private _many = MANY;
   
-  constructor($injector, ResourceAdapter: ResourceAdapter) {
-    super($injector, ResourceAdapter, actions);
-    
-    // this._store.select<IUsers>('users');
-
-  //   this.adding$ = store$.map(data => data.get('adding'));
-  //   this.loading$ = store$.map(data => data.get('loading'));
-
-  //   this.users$ = store$.map(data => {
-  //     return data.get('result').reduce((acc, userId) => {
-  //       acc.push(data.getIn(['entities', 'users', userId]));
-  //       return acc;
-  //     }, []);
-  //   });
-    
-    
-  // }
-  
-  // get data () {
-  //   const state = this.state;
-     
+  constructor($injector, ApiV2Adapter: IResourceAdapter) {
+    super($injector, ApiV2Adapter, actions);
   }
   
-
   get state () {
     return this.store.getState().entities.cases;
   }

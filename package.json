@@ -69,7 +69,7 @@
     "ts-loader": "^0.8.1",
     "tsd": "0.6.5",
     "typescript": "^1.7.3",
-    "typings": "^0.6.8",
+    "typings": "^0.7.11",
     "url-loader": "0.5.7",
     "wallaby-webpack": "0.0.11",
     "webpack": "1.12.13",

@@ -34,11 +34,24 @@ export class Resource<T> {
   url: string;
   baseUrl: string = 'http://localhost:8888';
   $http: ng.IHttpService;
+  $q: ng.IQService;
   public store: Store;
   
   constructor($injector, public adapter: IResourceAdapter, private _actions: IActions) {
     this.store = $injector.get('$ngRedux');
     this.$http = $injector.get('$http');
+    this.$q = $injector.get('$q');
+  }
+  
+  static isLoading (id?: string | number) {
+    // Check by ID
+    if (id) {
+      
+    // Check loading for all instances of this type (e.g. all Cases)
+    } else {
+      
+    }
+    return false;
   }
   
   add(payload: T): Action<T> {
@@ -49,7 +62,7 @@ export class Resource<T> {
     return {type: this._actions.delete, payload};
   }
   
-  loadMany(args?: IResourceRequestConfig): Action<void> {
+  loadMany(args?: IResourceRequestConfig): Promise<any> {
     
     return this.store.dispatch(this._loadMany(args));
   }
@@ -67,7 +80,7 @@ export class Resource<T> {
         // Not sure if we want to do this type of transformation or if we should just map 
         // straight to the HAL... probably do this transformation. To try the alternative
         // way go to ./schemas.ts and switch the schema mapping.
-        /*transformResponse: function flattenEmbedded (data, headers) {
+        transformResponse: function flattenEmbedded (data, headers) {
           if (!data) return data;
           if (Array.isArray(data)) {
             return data.map((flatten));
@@ -83,10 +96,16 @@ export class Resource<T> {
             }
             return data;
           }
-        }*/})
+        }})
       .then(
-        items => dispatch(action(this._actions.loadMany, items.data)),
-        error => dispatch(action("ERROR", error))
+        res => {
+          dispatch(action(this._actions.loadMany, res.data));
+          return res.data;
+        },
+        error => {
+          dispatch(action("ERROR", error));
+          return this.$q.reject(error);
+        }
       );
     }
   }
