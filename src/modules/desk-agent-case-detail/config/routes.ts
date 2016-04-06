@@ -1,7 +1,4 @@
-import {caseDetailMod} from '../module';
-import {getCases} from '../../desk-agent-case/states';
-import {CaseDetailController} from '../components/caseDetail';
-import {setOpenCaseId, getOpenCaseId} from '../states';
+import {setOpenCaseId} from '../states';
 
 export const routes = ($stateProvider, $urlRouterProvider, $locationProvider) => {
   

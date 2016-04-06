@@ -1,5 +1,5 @@
 import {Store} from 'redux';
-import {ICase} from '../../desk-agent-case/states';
+import {ICase} from '../../../resources/case';
 import {IMacro, getMacrosFromOpenCase} from '../../desk-agent-case-macros/states';
 import {getOpenCase} from '../states';
 

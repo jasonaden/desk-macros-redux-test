@@ -1,16 +1,21 @@
 import {combineReducers} from 'redux';
-import {takeEvery} from 'redux-saga';
 
 import {macroReducers} from '../desk-agent-case-macros/states';
-import {caseReducers} from '../desk-agent-case/states';
+// import {caseReducers} from '../desk-agent-case/states';
 import {caseListReducers} from '../desk-agent-case-list/states';
 import {caseDetailReducers} from '../desk-agent-case-detail/states';
+import {entitiesReducer} from '../../resources/root';
 
-export function* mixPanel(getState) {
-  while (true) {
-    yield takeEvery('*', logIt, getState());
-  }
+export function mixPanel () {
+  // Make this middleware
+  console.log('mixpanel', arguments);
 }
+
+// export function* mixPanel(getState) {
+//   while (true) {
+//     yield takeEvery('*', logIt, getState());
+//   }
+// }
 
 function* logIt(state, action) {
   console.log('****************');
@@ -19,8 +24,9 @@ function* logIt(state, action) {
 }
 
 export const rootReducer = combineReducers({
+  entities: entitiesReducer,
   deskAgentCaseMacros: macroReducers,
-  deskAgentCase: caseReducers,
+  // deskAgentCase: caseReducers,
   deskAgentCaseDetail: caseDetailReducers,
   deskAgentCaseList: caseListReducers
 });

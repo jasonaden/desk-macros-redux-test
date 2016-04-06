@@ -166,6 +166,7 @@ export class RxPoller {
   constructor (name: string, config: IRxPollerConfig) {
     this.setConfig(config);
     RxPoller.setPoller(name, this);
+    return this;
   }
   
   /**

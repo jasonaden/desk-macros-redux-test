@@ -1,7 +1,7 @@
 import {createSelector} from 'reselect';
 import {Reducer, combineReducers} from 'redux';
 import {Action} from 'flux-standard-action';
-import {ICase, getCases} from '../desk-agent-case/states';
+import {ICase, getCases} from '../../resources/case';
 
 // OPEN CASE
 export const SET_OPEN_CASE_ID = 'SET_OPEN_CASE';
