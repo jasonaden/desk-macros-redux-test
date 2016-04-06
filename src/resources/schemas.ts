@@ -4,31 +4,33 @@ import {normalize, Schema, arrayOf} from 'normalizr';
 
 import {Case} from './case';
 
-const kase = new Schema('case');
-const customer = new Schema('customer');
-const message = new Schema('message');
-const draft = new Schema('draft');
+/**
+ * Schema setup for Case
+ */
+export const caseSchema = new Schema('case');
+/**
+ * Schema setup for Interactions (reply, message, draft)
+ */
+export const interactionSchema = new Schema('interaction');
+export const messageSchema = new Schema('message');
+export const replySchema = new Schema('reply');
+/**
+ * Schema setup for Customer
+ */
+export const customerSchema = new Schema('customer');
 
-// If we don't flatten the HAL
-// kase.define({
-//   _embedded: {
-//     customer: customer,
-//     draft: draft,
-//     message: message
-//   }
-// })
 
-// Flattening the HAL
-kase.define({
-  customer: customer,
-  draft: draft,
-  message: message
-})
+interactionSchema.define({
+  case: caseSchema
+});
 
-angular.module('desk')
-.run(($ngRedux: INgRedux, Case: Case) => {
-  $ngRedux.subscribe(() => {
-    const normalized = normalize(Case.state, arrayOf(kase));
-    console.log(normalized);
-  })
+customerSchema.define({
+  cases: arrayOf(caseSchema)
+});
+
+caseSchema.define({
+  customer: customerSchema,
+  draft: interactionSchema,
+  message: interactionSchema,
+  replies: arrayOf(interactionSchema)
 });
