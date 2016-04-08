@@ -1,12 +1,50 @@
 
-
+/**
+ * Instance configuration for a ResourceAdapter. These are the configurable properties
+ * that can be adjusted in the constructor for a Resource Adapter.
+ * 
+ * ```
+ * let config = {
+ *   baseUrl: '/api/v2',
+ *   removeTrailingSlash: false
+ * }
+ * 
+ * let adapter = new ResourceAdapter(config, ... );
+ * 
+ * let myResource = new Resource($injector, adapter, schema);
+ * ``` 
+ */
 export interface IResourceAdapterConfig {
   baseUrl: string,
   removeTrailingSlash?: boolean,
   datePattern?: RegExp
 }
 
+/**
+ * Interface for creating a ResourceAdapter. ResourceAdapters are the glue that 
+ * ties a back-end (API) to the Resource processing and data storage on the front
+ * end. An Adapter could be used on it's own, but typically would be used in the 
+ * context of a Resource of some kind.
+ * 
+ * ```
+ * class Case extends Resource {
+ *   ...
+ *   constructor(..., ApiV2Adapter: IResourceAdapter) {
+ *     ...
+ *   }
+ *   ...
+ * }
+ * ```
+ * 
+ */
 export interface IResourceAdapter extends IResourceAdapterConfig {
+  /**
+   * Pass-through for running a request or doing whatever action this Adapter does
+   * to send or receive data. In the case of an API adapter, it's likely going to 
+   * run doRequest() method. But in some cases there might be another method such 
+   * as for storage of data in Local Storage (LocalStorageAdapter). The `execute()` 
+   * method gives a single interface for executing on actions.
+   */
   execute: (config: IResourceRequestConfig) => ng.IPromise<any>;
   reviver: (key: string, value: any) => any;
   doRequest: (config: IResourceRequestConfig) => ng.IPromise<any>;
@@ -41,10 +79,4 @@ export interface IResourceRequestConfig extends ng.IRequestConfig {
    * here on the [Angular Docs](https://docs.angularjs.org/api/ng/service/$http)
    */
   interceptors?: ng.IHttpInterceptor
-}
-
-export class ResourceAdapter {
-  constructor (config: IResourceAdapter) {
-    
-  }
 }

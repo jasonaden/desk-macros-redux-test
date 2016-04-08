@@ -32,15 +32,34 @@ function action<T> (type: string, suffix: string, payload?: any): Action<T> {
   return {type: `${type}_${suffix}`, payload};
 }
 
+/**
+ * 
+ */
 export class Resource<T> {
-  loading: boolean;
-  url: string;
-  baseUrl: string = 'http://localhost:8888';
-  $http: ng.IHttpService;
-  $q: ng.IQService;
+  
+  public url: string;
+  public baseUrl: string;
   public className: string;
+  
   public store: Store;
   
+  public $http: ng.IHttpService;
+  public $q: ng.IQService;
+  
+  private _loading: boolean;
+  
+  /**
+   * The Resource class is designed to be extended, rather than instantiated on its own.
+   * Because it's extended, Angular's DI system will not pick up on the constructor 
+   * arguments, so anything Resource needs must be passed in. This is why the first 
+   * argument is `$injector` so the Resource can grab the services it needs.
+   * 
+   * @param $injector $injector   Angular's injector. Inject this into the parent class 
+   *                              constructor and pass to the super() call.
+   * @param adapter adapter       The ResourceAdapter instance to use in this Resource.
+   * @param schema Schema         The Normalizr schema to use when parsing API data 
+   *                              returned for this Resource.
+   */
   constructor($injector, public adapter: IResourceAdapter, public schema: Schema) {
     this.store = $injector.get('$ngRedux');
     this.$http = $injector.get('$http');
@@ -64,12 +83,11 @@ export class Resource<T> {
   static isLoading (id?: string | number) {
     // Check by ID
     if (id) {
-      
+      return false;
     // Check loading for all instances of this type (e.g. all Cases)
     } else {
-      
+      return false;
     }
-    return false;
   }
     
   /**

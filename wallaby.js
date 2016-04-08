@@ -22,8 +22,14 @@ var webpackPostprocessor = wallabyWebpack({
     }
 });
 
-module.exports = function () {
+module.exports = function (wallaby) {
     return {
+        compilers: {
+          '**/*.ts': wallaby.compilers.typeScript({
+            module: 5,
+            target: 2
+          })
+        },
         files: [
             {pattern: 'src/**/*.html', load: false},
             {pattern: 'src/**/*.scss', load: false},
@@ -39,7 +45,7 @@ module.exports = function () {
         ],
 
         preprocessors: {
-            '**/*.js': file => babel.transform(file.content, {sourceMap: true})
+            '**/*.js': file => babel.transform(file.content, {sourceMap: true, presets: ['es2015']})
         },
         "testFramework": "jasmine",
         postprocessor: webpackPostprocessor,

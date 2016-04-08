@@ -6,7 +6,7 @@ import {joinUrl, parseJson, generateConfig} from './utils';
 import {IResourceAdapter, IResourceAdapterConfig, IResourceRequestConfig} from './interfaces';
 
 /*
-* Base Adapter for an API
+* Base Adapter for an API. The adapter handles
 */
 export class ResourceAdapter implements IResourceAdapter {
 

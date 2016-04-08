@@ -30,3 +30,9 @@ npm install
 tsd install
 npm run build
 ```
+
+Creating Docs
+```sh
+typedoc --ignoreCompilerErrors -m commonjs --out ./doc/ src/modules/desk/services/RxPoller.ts
+typedoc --ignoreCompilerErrors -m commonjs --out ./doc/ src/modules
+```
