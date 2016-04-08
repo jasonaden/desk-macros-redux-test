@@ -31,6 +31,7 @@ module.exports = function (wallaby) {
           })
         },
         files: [
+            {pattern: 'node_modules/babel-polyfill/dist/polyfill.js', instrument: false},
             {pattern: 'src/**/*.html', load: false},
             {pattern: 'src/**/*.scss', load: false},
             {pattern: 'src/**/*.css', load: false},
@@ -40,6 +41,7 @@ module.exports = function (wallaby) {
         ],
 
         tests: [
+            {pattern: 'src/test.ts', load: false},
             {pattern: 'src/**/*.spec.ts', load: false},
             {pattern: 'node_modules/**/*.js', ignore: true}
         ],
@@ -50,6 +52,7 @@ module.exports = function (wallaby) {
         "testFramework": "jasmine",
         postprocessor: webpackPostprocessor,
         bootstrap: function () {
+            // require('babel/node_modules/babel-core/polyfill.js');
             window.__moduleBundler.loadTests();
         }
     };

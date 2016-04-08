@@ -1,5 +1,6 @@
 import {ResourceAdapter} from './adapter';
 import 'angular-mocks';
+import 'babel-polyfill';
 
 var $httpBackend: ng.IHttpBackendService;
 var $q: ng.IQService;
