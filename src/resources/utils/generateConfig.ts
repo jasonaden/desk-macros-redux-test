@@ -12,15 +12,17 @@ export function generateConfig ($q: ng.IQService, adapter: IResourceAdapter, con
       config[method] = adapter[method].bind(adapter);
     }
   // Set up default interceptors
-  let interceptors = adapter.interceptors.concat(config.interceptors);
+  let interceptors = adapter.interceptors;
+  if (config.interceptors) {
+      interceptors = interceptors.concat(config.interceptors);
+  }
   config.interceptors = {
     response: (response): ng.IPromise<any> => {
       let promise = $q.when(response)
       let icptr;
-      for (icptr in interceptors) {
-        let fn;
-        if (fn = icptr && icptr.response) {
-          promise = promise.then(fn)
+      for (icptr of interceptors) {
+        if (icptr.response) {
+          promise = promise.then(icptr.response);
         }
       }
       return promise;
@@ -29,9 +31,8 @@ export function generateConfig ($q: ng.IQService, adapter: IResourceAdapter, con
       let promise = $q.reject(response)
       let icptr;
       for (icptr of interceptors) {
-        let fn;
-        if (fn = icptr && icptr.responseError) {
-          promise = promise.catch(fn)
+        if (icptr.responseError) {
+          promise = promise.catch(icptr.responseError)
         }
       }
       return promise;
@@ -41,9 +42,8 @@ export function generateConfig ($q: ng.IQService, adapter: IResourceAdapter, con
   let request = $q.when(config);
   let icptr;
   for (icptr of interceptors) {
-    let fn;
-    if (fn = icptr && icptr.request) {
-      request = request.then(fn)
+    if (icptr.request) {
+      request = request.then(icptr.request)
     }
   }
   return request;
