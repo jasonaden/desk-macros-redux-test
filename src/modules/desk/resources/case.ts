@@ -1,7 +1,7 @@
 import {Action} from 'flux-standard-action';
 import {normalize, Schema, arrayOf} from 'normalizr';
 
-import {Resource} from './resource';
+import {Resource} from '../../../resources';
 
 import {caseSchema} from './schemas';
 
