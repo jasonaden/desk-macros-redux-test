@@ -1,8 +1,7 @@
 
 import * as ng from 'angular';
 
-import {IResourceAdapter} from './interfaces';
-import {ResourceAdapter} from './adapter';
+import {IResourceAdapter, ResourceAdapter} from '../../../../resources';
 
 /*
 * Base Adapter for an API

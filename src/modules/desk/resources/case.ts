@@ -3,7 +3,7 @@ import {normalize, Schema, arrayOf} from 'normalizr';
 
 import {Resource} from '../../../resources';
 
-import {caseSchema} from './schemas';
+import {caseSchema} from './config/schemas';
 
 /**
  * Module name

@@ -1,9 +1,9 @@
 import {Action} from 'flux-standard-action';
 import {normalize, Schema, arrayOf} from 'normalizr';
 
-import {Resource} from './resource';
+import {Resource} from '../../../resources';
 
-import {customerSchema} from './schemas';
+import {customerSchema} from './config/schemas';
 
 export const NAME = "CUSTOMER";
 

@@ -1,4 +1,4 @@
-import {ResourceAdapter} from './adapter';
+import {ResourceAdapter} from './resource-adapter';
 import 'angular-mocks';
 import 'babel-polyfill';
 

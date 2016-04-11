@@ -1,8 +1,4 @@
-import {INgRedux} from 'ng-redux';
-import {normalize, Schema, arrayOf} from 'normalizr';
-
-
-import {Case} from './case';
+import {Schema, arrayOf} from 'normalizr';
 
 /**
  * Schema setup for Case

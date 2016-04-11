@@ -4,7 +4,7 @@ import {macroReducers} from '../desk-agent-case-macros/states';
 // import {caseReducers} from '../desk-agent-case/states';
 import {caseListReducers} from '../desk-agent-case-list/states';
 import {caseDetailReducers} from '../desk-agent-case-detail/states';
-import {entitiesReducer} from '../../resources/root';
+import {entitiesReducer} from './resources/root';
 
 export function mixPanel () {
   // Make this middleware

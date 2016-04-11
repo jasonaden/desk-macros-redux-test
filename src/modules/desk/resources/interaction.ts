@@ -1,10 +1,10 @@
 import {Action} from 'flux-standard-action';
 import {normalize, Schema, arrayOf} from 'normalizr';
 
-import {Resource} from './resource';
+import {Resource} from '../../../resources';
 
 
-import {interactionSchema} from './schemas';
+import {interactionSchema} from './config/schemas';
 
 
 export const NAME = "INTERACTION";
