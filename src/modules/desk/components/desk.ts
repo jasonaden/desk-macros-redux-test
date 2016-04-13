@@ -1,5 +1,5 @@
 import {RxPoller} from '../services/RxPoller';
-import {Case} from '../../../resources/case';
+import {Case} from '../resources/case';
 
 export class Desk {
   constructor ($scope, $http, $ngRedux, RxPoller, Case:Case) {   

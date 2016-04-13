@@ -96,7 +96,7 @@ export class RxPoller {
    * A private cached function to be called for each iteration of the poller.
    * @returns Must return a promise.
    */
-  private _action = _ => _;
+  private _action;
  
   /**
    * A subject which presents the current paused status.
@@ -197,7 +197,7 @@ export class RxPoller {
    * @param fn Action function to be called for each iteration of the poller. This method should return a Promise.
    */
   setAction (fn) {
-    this._action = fn;
+    this._action = () => fn;
   }
   
   /**

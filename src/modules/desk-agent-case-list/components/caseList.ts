@@ -1,5 +1,5 @@
 
-import {ICase} from '../../../resources/case';
+import {ICase} from '../../desk/resources/case';
 import {getCaseFilter, setSelectedCaseId, setCaseFilter, getSelectedCase, getSelectedCaseId, getFilteredCases} from '../states';
 
 const mapStateToThis = (state) => {

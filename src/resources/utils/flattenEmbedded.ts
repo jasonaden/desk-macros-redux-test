@@ -1,4 +1,4 @@
-export function flattenEmbedded (data, headers) {
+export function flattenEmbedded (data, headers?) {
   if (!data) return data;
   if (Array.isArray(data)) {
     return data.map((flatten));

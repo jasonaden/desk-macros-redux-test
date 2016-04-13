@@ -1,5 +1,5 @@
 import {Store} from 'redux';
-import {ICase} from '../../../resources/case';
+import {ICase} from '../..//desk/resources/case';
 import {IMacro, getMacrosFromOpenCase} from '../../desk-agent-case-macros/states';
 import {getOpenCase} from '../states';
 
@@ -18,7 +18,7 @@ export class CaseDetailController {
 };
 
 
-export const CaseDetailComponent = {
+export const CaseDetailComponent:ng.IComponentOptions = {
   controller: CaseDetailController,
   bindings: {
     resolvedCase: '<'

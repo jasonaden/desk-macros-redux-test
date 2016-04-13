@@ -4,6 +4,7 @@ import * as thunk from 'redux-thunk';
 import {Action} from 'flux-standard-action';
 
 import {setMacroApplyError} from '../desk-agent-case-macros/states';
+import {getCaseById} from '../desk/resources/case';
 
 // export interface ICase {
 //   id: number,
