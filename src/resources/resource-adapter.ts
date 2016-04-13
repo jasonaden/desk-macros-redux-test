@@ -36,7 +36,7 @@ export class ResourceAdapter implements IResourceAdapter {
   doRequest (config: IResourceRequestConfig): ng.IPromise<any> {
     return generateConfig(this.$q, this, config)
     .then(config => this.$http(config)
-      .then(config.interceptors.response, config.interceptors.responseError)
+      .then(config.interceptor.response, config.interceptor.responseError)
     );
   }
   

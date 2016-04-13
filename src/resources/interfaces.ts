@@ -78,5 +78,11 @@ export interface IResourceRequestConfig extends ng.IRequestConfig {
    * Instance level interceptors. Behaves the same as those documented
    * here on the [Angular Docs](https://docs.angularjs.org/api/ng/service/$http)
    */
-  interceptors?: ng.IHttpInterceptor
+  interceptors?: ng.IHttpInterceptor | ng.IHttpInterceptor[];
+  /**
+   * This interceptor will be overwritten at runtime. When the request is being 
+   * created any interceptors on the Adapter are combined with interceptor(s) on
+   * the Config object and all are added to this `interceptor` property.
+   */
+  interceptor?: ng.IHttpInterceptor;
 }

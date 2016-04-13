@@ -38,8 +38,8 @@ describe('generateConfig', () => {
   
   it ('sets up default interceptors', () => {
     generateConfig($q, adapter, config).then((config) => {
-      expect(config.interceptors.response).toBeDefined();
-      expect(config.interceptors.responseError).toBeDefined();  
+      expect(config.interceptor.response).toBeDefined();
+      expect(config.interceptor.responseError).toBeDefined();  
     });
     $rootScope.$digest();
   });    
