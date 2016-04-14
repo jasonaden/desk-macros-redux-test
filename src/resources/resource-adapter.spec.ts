@@ -1,6 +1,5 @@
 import {ResourceAdapter} from './resource-adapter';
 import 'angular-mocks';
-import 'babel-polyfill';
 import {IResourceAdapter, IResourceRequestConfig} from './interfaces';
 
 var $httpBackend: ng.IHttpBackendService;
