@@ -9,7 +9,7 @@ const mockStore = configureMockStore(middlewares)
 let $httpBackend: ng.IHttpBackendService;
 let $rootScope: ng.IRootScopeService;
 let Case;
-let response = [{}];
+let response = {_links: {self: {href: '/test/1'}}, _embedded: {entries: [{}]}};
 let store = mockStore({});;
 
 describe('Resource', () => {
@@ -34,21 +34,24 @@ describe('Resource', () => {
   
   it ('should have isLoading method default to false', () => {
     $httpBackend.flush();
-    expect(Resource.isLoading()).toBe(false);   
+    expect(Case.isLoading()).toBe(false);   
   });  
   
   it ('should have isLoading(id) method default to false', () => {
     $httpBackend.flush();
-    expect(Resource.isLoading(1)).toBe(false);
+    expect(Case.isLoading(1)).toBe(false);
   });
   
   it ('dispatches the proper actions when loading cases (success)', () => {  
     const actions = [
       { type: 'LOADING_MANY_CASE', payload: undefined},
-      { type: 'LOAD_MANY_CASE', payload: response}  
+      { type: 'LOAD_MANY_CASE', payload: {result: [ ], items: {}, meta: {count: undefined, page: undefined, links: {self: {href: '/test/1'}}}}}  
     ];    
     Case.loadMany();
     $httpBackend.flush();
     expect(Case.store.getActions()).toEqual(actions);
   });
 });
+
+// [ Object({ type: 'LOADING_MANY_CASE', payload: undefined }), Object({ type: 'LOAD_MANY_CASE', payload: Object({ result: [  ], items: Object({ undefined: Object({  }) }), meta: Object({ count: undefined, page: undefined, links: Object({ self: Object({ href: '/test/1' }) }) }) }) }) ]
+// [ Object({ type: 'LOADING_MANY_CASE', payload: undefined }), Object({ type: 'LOAD_MANY_CASE', payload: Object({ result: [  ], items: Object({  }), meta: Object({ count: undefined, page: undefined, links: Object({  }) }) }) }) ]

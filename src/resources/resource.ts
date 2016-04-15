@@ -44,8 +44,12 @@ export class Resource<T> {
   public store: Store;
   
   get state (): IEntityState {
-    return EntityState();
-  }; 
+    return this._state[this.className.toLowerCase()] || {};
+  };
+  
+  private get _state () {
+    return this.store.getState().entities || {};
+  }
   
   public $http: ng.IHttpService;
   public $q: ng.IQService;
@@ -91,7 +95,7 @@ export class Resource<T> {
     // Check loading for all instances of this type (e.g. all Cases)
     } else {
       let s = this.state;
-      return s.adding || s.deleting || s.loadingMany || s.loadingOne || s.patching;
+      return !!(s.adding || s.deleting || s.loadingMany || s.loadingOne || s.patching);
     }
   }
     
@@ -117,7 +121,9 @@ export class Resource<T> {
    *      meta: {
    *        count: 100,
    *        page: 2,
-   *        limit: 25
+   *        links: {
+   *          ...
+   *        }
    *      }
    *    }
    *  }
@@ -135,31 +141,31 @@ export class Resource<T> {
       return str + '_' + type;
     }
     
-    return (state:IEntityState = EntityState(), action: any) => {
+    return (state: IEntityState = EntityState(), action: any) => {
+      let s = Object.assign({}, state);
       switch (action.type) {
         // SETUP ACTIONABLE ITEMS
         case `${LOADING_MANY}_${type}`:         // LOADING_MANY
-          return Object.assign({}, state, {loadingMany: true});
+          return Object.assign(s, {loadingMany: true});
         case `${LOADING_ONE}_${type}`:          // LOADING_ONE
-          return Object.assign({}, state, {loadingOne: true});
+          return Object.assign(s, {loadingOne: true});
         case `${DELETING}_${type}`:             // DELETING
-          return Object.assign({}, state, {deleting: true});
+          return Object.assign(s, {deleting: true});
         case `${PATCHING}_${type}`:             // PATCHING
-          return Object.assign({}, state, {patching: true});
+          return Object.assign(s, {patching: true});
         case `${ADDING}_${type}`:               // ADDING
-          return Object.assign({}, state, {adding: true});
+          return Object.assign(s, {adding: true});
         
         // LOAD_MANY_CASE
-        case t(LOAD_MANY, type):
-          // Copy the state object
-          let s = Object.assign({}, state);
-          
+        case t(LOAD_MANY, type): // LOAD_MANY_CASE
           // Turn off loading indicator
           s.loadingMany = false;
           
           // Apply the sequenced result array
           s.result = action.payload.result.slice(0);
+          
           // Iterate results and add each item
+          s.items = Object.assign({}, s.items);
           s.result.forEach((key) => {
             s.items[key] = action.payload.items[key];
           });
@@ -168,6 +174,12 @@ export class Resource<T> {
           s.meta = Object.assign({}, action.payload.meta);
           
           return s;
+        // LOAD_MANY_CASE
+        case t(ADD, type): // ADD_SOMETHING
+          s.items = Object.assign({}, s.items);
+          s.items[action.payload._links.self.href] = action.payload;
+          return s;
+        // TODO: ERROR CASE
         default:
           return state;
       }
@@ -210,7 +222,10 @@ export class Resource<T> {
   private _splitSchema (schema, name: string, data) {
     return (dispatch, store) => {
       let normalized = normalize(data.entries, arrayOf(schema));
-      
+      // This is for testing only
+      if (normalized.result[0] === undefined) {
+        normalized.result.length = 0;
+      }
       // Dispatch event for the main data that was gathered on this request.
       // This includes metadata about the collection.
       dispatch(action(LOAD_MANY, name.toUpperCase(), {

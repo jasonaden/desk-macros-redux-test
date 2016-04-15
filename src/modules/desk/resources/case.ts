@@ -31,14 +31,7 @@ export class Case extends Resource<ICase> {
     super($injector, ApiV2Adapter, caseSchema);
   }
   
-  get state () {
-    return this.store.getState().entities.case;
-  }
-  
 }
-
-
-
 
 export const kase = Case.reducer(NAME);
 

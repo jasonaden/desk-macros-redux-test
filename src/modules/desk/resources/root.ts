@@ -5,7 +5,7 @@ import {interaction} from './interaction';
 // import {customers} from './customer';
 
 export const entitiesReducer = combineReducers({
-  case: kase
+  case: kase,
   customer,
   interaction
   // customers
