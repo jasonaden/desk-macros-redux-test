@@ -4,7 +4,7 @@ import {Action} from 'flux-standard-action';
 import { normalize, Schema, arrayOf } from 'normalizr';
 
 import {ngRedux, Middleware} from 'ng-redux';
-import {IResourceAdapter, IResourceRequestConfig} from './interfaces';
+import {IResourceAdapter, IResourceRequestConfig, IEntityState, EntityState} from './interfaces';
 
 import {flattenEmbedded} from './utils';
 
@@ -43,6 +43,10 @@ export class Resource<T> {
   
   public store: Store;
   
+  get state (): IEntityState {
+    return EntityState();
+  }; 
+  
   public $http: ng.IHttpService;
   public $q: ng.IQService;
   
@@ -80,42 +84,88 @@ export class Resource<T> {
    * Case.isLoading(5); // Checks whether we are fetching a specific case
    * ```
    */
-  static isLoading (id?: string | number) {
+  public isLoading (id?: string | number) {
     // Check by ID
     if (id) {
       return false;
     // Check loading for all instances of this type (e.g. all Cases)
     } else {
-      return false;
+      let s = this.state;
+      return s.adding || s.deleting || s.loadingMany || s.loadingOne || s.patching;
     }
   }
     
   /**
-   * Generic reducer for items of any type (entities). Will automatically
-   * replace existing items in the state tree with the items being loaded
+   * Generic reducer for items of any type (entities). Produces a state tree like:
+   * 
+   * ```
+   *  entities = {
+   *    cases: {
+   *      // sequence of cases as returned from most recent API call
+   *      result: [6, 3, 5, ...],
+   *      loadingMany: true,
+   *      loadingOne: true,
+   *      deleting: false,
+   *      patching: false,
+   *      adding: false,
+   *      items: {
+   *        3: {...},
+   *        5: {...},
+   *        6: {...},
+   *        ...
+   *      },
+   *      meta: {
+   *        count: 100,
+   *        page: 2,
+   *        limit: 25
+   *      }
+   *    }
+   *  }
+   * ```
    */
-  static itemsReducer (type: string): Reducer {
-    return (state:Object[] = [], action: Action<Object[]>) => {
+  static reducer<T> (type: string): Reducer {
+    /**
+     * Simple function for concatinating the type const with the type value.
+     * 
+     * ```
+     *  t("LOADING_SOMETHING", "CASE"); // returns LOADING_SOMETHING_CASE
+     * ``` 
+     */
+    function t (str: string, type: string): string {
+      return str + '_' + type;
+    }
+    
+    return (state:IEntityState = EntityState(), action: any) => {
       switch (action.type) {
+        // SETUP ACTIONABLE ITEMS
+        case `${LOADING_MANY}_${type}`:         // LOADING_MANY
+          return Object.assign({}, state, {loadingMany: true});
+        case `${LOADING_ONE}_${type}`:          // LOADING_ONE
+          return Object.assign({}, state, {loadingOne: true});
+        case `${DELETING}_${type}`:             // DELETING
+          return Object.assign({}, state, {deleting: true});
+        case `${PATCHING}_${type}`:             // PATCHING
+          return Object.assign({}, state, {patching: true});
+        case `${ADDING}_${type}`:               // ADDING
+          return Object.assign({}, state, {adding: true});
+        
         // LOAD_MANY_CASE
-        case `${LOAD_MANY}_${type}`:
-          return action.payload.slice(0);
-        default:
-          return state;
-      }
-    } 
-  }
-  
-  /**
-   * Single item reducer. Used for adding or updating a single entity
-   * in the state tree.
-   */
-  static itemReducer (type: string): Reducer {
-    return (state: Object = {}, action: Action<any>) => {
-      switch (action.type) {
-        // ADD_CASE
-        case `${ADD}_${type}`:
-          return Object.assign({}, action.payload);
+        case t(LOAD_MANY, type):
+          // Copy the state object
+          let s = Object.assign({}, state);
+          
+          // Turn off loading indicator
+          s.loadingMany = false;
+          
+          // Apply the sequenced result array
+          s.result = action.payload.result.slice(0);
+          // Iterate results and add each item
+          s.result.forEach((key) => {
+            s.items[key] = action.payload.items[key];
+          });
+          // TODO: Apply metadata
+          
+          return s;
         default:
           return state;
       }
@@ -140,11 +190,11 @@ export class Resource<T> {
       
       return this.adapter.execute({
         url: this.url, 
-        method: 'GET',
-        transformResponse: flattenEmbedded})
+        method: 'GET'
+      })
       .then(
         res => {
-          dispatch(action(LOAD_MANY, this.className, res.data));
+          dispatch(this._splitSchema(this.schema, this.className, res.data));
           return res.data;
         },
         error => {
@@ -152,6 +202,31 @@ export class Resource<T> {
           return this.$q.reject(error);
         }
       );
+    }
+  }
+  
+  private _splitSchema (schema, name: string, data) {
+    return (dispatch, store) => {
+      let normalized = normalize(data.entries, arrayOf(schema));
+      
+      // Dispatch event for the main data that was gathered on this request.
+      // This includes metadata about the collection.
+      dispatch(action(LOAD_MANY, name.toUpperCase(), {
+        result: normalized.result,
+        items: normalized.entities[name.toLowerCase()]
+      }));
+      
+      // Iterate over other objects that were returned (normalized) and 
+      // dispatch add actions for them to get them into the store.
+      for (let x in normalized.entities) {
+        // Exclude main entity
+        if (x.toUpperCase() !== name.toUpperCase()) {
+          // Iterate over each object passed back and dispatch ADD action
+          for (let y in normalized.entities[x]) {
+            dispatch(action(ADD, x.toUpperCase(), normalized.entities[x][y]));
+          }
+        }
+      }
     }
   }
   

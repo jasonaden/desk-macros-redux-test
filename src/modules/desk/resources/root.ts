@@ -1,9 +1,13 @@
 import {combineReducers} from 'redux';
-import {cases} from './case';
+import {kase} from './case';
+import {customer} from './customer';
+import {interaction} from './interaction';
 // import {customers} from './customer';
 
 export const entitiesReducer = combineReducers({
-  cases
+  case: kase
+  customer,
+  interaction
   // customers
 });
 

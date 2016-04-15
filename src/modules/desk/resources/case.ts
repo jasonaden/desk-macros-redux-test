@@ -1,7 +1,7 @@
 import {Action} from 'flux-standard-action';
 import {normalize, Schema, arrayOf} from 'normalizr';
 
-import {Resource} from '../../../resources';
+import {Resource, IEntityState} from '../../../resources';
 
 import {caseSchema} from './config/schemas';
 
@@ -25,14 +25,14 @@ export interface ICases extends Map<String, any> {
 
 export class Case extends Resource<ICase> {
   url = '/cases';
-  public className: string = NAME;
+  public className = NAME;
   
   constructor($injector, ApiV2Adapter) {
     super($injector, ApiV2Adapter, caseSchema);
   }
   
   get state () {
-    return this.store.getState().entities.cases;
+    return this.store.getState().entities.case;
   }
   
 }
@@ -40,7 +40,7 @@ export class Case extends Resource<ICase> {
 
 
 
-export const cases = Case.itemsReducer(NAME);
+export const kase = Case.reducer(NAME);
 
 
 
@@ -58,7 +58,8 @@ export const cases = Case.itemsReducer(NAME);
 
 
 export const getCases = (state): ICase[] => {
-  return state.entities.cases;
+  state = state.entities.case;
+  return state.result.map(id => state.items[id]);
 }
 
 

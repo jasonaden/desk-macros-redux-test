@@ -27,11 +27,11 @@ export class Customer extends Resource<ICustomer> {
   }
   
   get state () {
-    return this.store.getState().entities.customers;
+    return this.store.getState().entities.customer;
   }
   
   // ADD METHODS TO GET DATA OUT OF THE RESOURCE.
   
 }
 
-export const customers = Customer.itemsReducer(NAME);
+export const customer = Customer.reducer(NAME);

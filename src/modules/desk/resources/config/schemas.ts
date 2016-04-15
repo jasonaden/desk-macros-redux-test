@@ -1,19 +1,28 @@
 import {Schema, arrayOf} from 'normalizr';
+import {ApiV2Adapter} from './apiv2-adapter';
+
+// Default options
+let getOptions = (overrides = {}) => {
+  let options = {
+    idAttribute: ApiV2Adapter.generateSlug
+  };
+  return Object.assign(options, overrides);
+}
 
 /**
  * Schema setup for Case
  */
-export const caseSchema = new Schema('case');
+export const caseSchema = new Schema('case', getOptions());
 /**
  * Schema setup for Interactions (reply, message, draft)
  */
-export const interactionSchema = new Schema('interaction');
-export const messageSchema = new Schema('message');
-export const replySchema = new Schema('reply');
+export const interactionSchema = new Schema('interaction', getOptions());
+export const messageSchema = new Schema('message', getOptions());
+export const replySchema = new Schema('reply', getOptions());
 /**
  * Schema setup for Customer
  */
-export const customerSchema = new Schema('customer');
+export const customerSchema = new Schema('customer', getOptions());
 
 
 interactionSchema.define({

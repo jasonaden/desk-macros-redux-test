@@ -86,3 +86,35 @@ export interface IResourceRequestConfig extends ng.IRequestConfig {
    */
   interceptor?: ng.IHttpInterceptor;
 }
+
+export interface IEntityState {
+  result: string[],
+  loadingMany: boolean,
+  loadingOne: boolean,
+  deleting: boolean,
+  patching: boolean,
+  adding: boolean,
+  items: {[key: string]: any},
+  meta: {
+    count: number,
+    page: number,
+    limit: number
+  }
+}
+
+export function EntityState (): IEntityState {
+  return {
+    result: [],
+    loadingMany: false,
+    loadingOne: false,
+    deleting: false,
+    patching: false,
+    adding: false,
+    items: {},
+    meta: {
+      count: 0,
+      page: 0,
+      limit: 0
+    }
+  };
+}

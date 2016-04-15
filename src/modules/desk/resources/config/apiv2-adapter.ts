@@ -1,7 +1,7 @@
 
 import * as ng from 'angular';
 
-import {IResourceAdapter, ResourceAdapter} from '../../../../resources';
+import {IResourceAdapter, ResourceAdapter, flattenEmbedded} from '../../../../resources';
 
 /*
 * Base Adapter for an API
@@ -12,12 +12,22 @@ export class ApiV2Adapter extends ResourceAdapter implements IResourceAdapter {
   baseUrl: string = 'http://localhost:8888';
   
   static generateSlug = function (entity) {
-    return entity.id;
+    let key = (entity._links && entity._links.self && entity._links.self.href) || entity.id;
+    if (key.indexOf('/api/v2') == 0) {
+      key = key.slice(7)
+    }
+    return key;
   }
   
   constructor ($http: ng.IHttpService, $q: ng.IQService) {
     super($http, $q);
+    
+    /**
+     * Extend transformResponse by adding HAL parsing.
+     */
+    this.transformResponse = (data, headers) => {
+      return flattenEmbedded(super.transformResponse(data, headers), headers); 
+    }
   }
-
 
 }

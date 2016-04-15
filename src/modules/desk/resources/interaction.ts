@@ -9,6 +9,36 @@ import {interactionSchema} from './config/schemas';
 
 export const NAME = "INTERACTION";
 
+export interface IInteraction {
+  id: number
+}
+
+export interface IInteractions extends Map<String, any> {
+  result: Number[];
+  entities: {customers: Map<Number, IInteraction>};
+  adding: boolean;
+  loading: boolean;
+}
+
+export class Interaction extends Resource<IInteraction> {
+  url = '/interactions';
+  public className: string = NAME;
+  
+  constructor($injector, ApiV2Adapter) {
+    super($injector, ApiV2Adapter, interactionSchema);
+  }
+  
+  get state () {
+    return this.store.getState().entities.interaction;
+  }
+  
+  // ADD METHODS TO GET DATA OUT OF THE RESOURCE.
+  
+}
+
+export const interaction = Interaction.reducer(NAME);
+
+
 // TODO: Figure out how to handle interactions generically
 
 

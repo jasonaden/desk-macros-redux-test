@@ -1,6 +1,6 @@
 declare module Normalizr {
     export class Schema {
-        constructor(name: String)
+        constructor(name: String, options?: any)
         define: (Object) => void;
     }
     export function arrayOf(obj: any);
