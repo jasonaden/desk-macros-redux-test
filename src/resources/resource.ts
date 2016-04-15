@@ -27,6 +27,7 @@ export const PATCHED = "PATCHED";
 export const REFRESH = "REFRESH";
 export const REFRESHING = "REFRESHING";
 export const REFRESHED = "REFRESHED";
+export const ERROR = "ERROR";
 
 function action<T> (type: string, suffix: string, payload?: any): Action<T> {
   return {type: `${type}_${suffix}`, payload};
@@ -148,7 +149,7 @@ export class Resource<T> {
           return res.data;
         },
         error => {
-          dispatch(action("ERROR", error));
+          dispatch(action(ERROR, this.className, error));
           return this.$q.reject(error);
         }
       );
