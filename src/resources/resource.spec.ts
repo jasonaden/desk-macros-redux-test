@@ -68,6 +68,3 @@ describe('Resource', () => {
     expect(Case.store.getActions()).toEqual(actions);
   });
 });
-
-// [ Object({ type: 'LOADING_MANY_CASE', payload: undefined }), Object({ type: 'LOAD_MANY_CASE', payload: Object({ result: [  ], items: Object({ undefined: Object({  }) }), meta: Object({ count: undefined, page: undefined, links: Object({ self: Object({ href: '/test/1' }) }) }) }) }) ]
-// [ Object({ type: 'LOADING_MANY_CASE', payload: undefined }), Object({ type: 'LOAD_MANY_CASE', payload: Object({ result: [  ], items: Object({  }), meta: Object({ count: undefined, page: undefined, links: Object({  }) }) }) }) ]

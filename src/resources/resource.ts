@@ -223,9 +223,11 @@ export class Resource<T> {
   private _splitSchema (schema, name: string, data) {
     return (dispatch, store) => {
       let normalized = normalize(data.entries, arrayOf(schema));
-      // This is for testing only
+      // This is for testing only. If no results are returned, Normalizr will 
+      // return result: [ undefined ] and entities[entity] = {undefined:{}}.
       if (normalized.result[0] === undefined) {
         normalized.result.length = 0;
+        normalized.entities[name.toLowerCase()] = {};
       }
       // Dispatch event for the main data that was gathered on this request.
       // This includes metadata about the collection.
