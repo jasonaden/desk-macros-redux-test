@@ -10,8 +10,7 @@ import './modules/desk/module';
 // export const DeskStore:Store = createStore(rootReducer);
 export const deskMod = angular.module('app', [
   'ngRedux', 
-  'ui.router', 
-  
+  'ui.router',   
   'desk'
 ]);
 
