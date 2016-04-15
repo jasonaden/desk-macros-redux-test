@@ -163,7 +163,9 @@ export class Resource<T> {
           s.result.forEach((key) => {
             s.items[key] = action.payload.items[key];
           });
-          // TODO: Apply metadata
+          
+          // Apply metadata
+          s.meta = Object.assign({}, action.payload.meta);
           
           return s;
         default:
@@ -213,7 +215,12 @@ export class Resource<T> {
       // This includes metadata about the collection.
       dispatch(action(LOAD_MANY, name.toUpperCase(), {
         result: normalized.result,
-        items: normalized.entities[name.toLowerCase()]
+        items: normalized.entities[name.toLowerCase()],
+        meta: {
+          count: data.total_entries,
+          page: data.page,
+          links: data._links
+        }
       }));
       
       // Iterate over other objects that were returned (normalized) and 

@@ -95,10 +95,13 @@ export interface IEntityState {
   patching: boolean,
   adding: boolean,
   items: {[key: string]: any},
-  meta: {
-    count: number,
-    page: number,
-    limit: number
+  meta?: {
+    count?: number,
+    page?: number,
+    links: {
+      [key: string]: {href: string, class?: string},
+      self: {href: string, class?: string}
+    }
   }
 }
 
@@ -111,10 +114,5 @@ export function EntityState (): IEntityState {
     patching: false,
     adding: false,
     items: {},
-    meta: {
-      count: 0,
-      page: 0,
-      limit: 0
-    }
   };
 }
