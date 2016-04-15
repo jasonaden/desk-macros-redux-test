@@ -11,6 +11,7 @@ let $rootScope: ng.IRootScopeService;
 let Case;
 let response = {_links: {self: {href: '/test/1'}}, _embedded: {entries: [{}]}};
 let store = mockStore({});;
+let url: string = 'http://localhost:8888/cases';
 
 describe('Resource', () => {
   
@@ -19,12 +20,13 @@ describe('Resource', () => {
   beforeEach(inject(function(_$httpBackend_, _$rootScope_, _Case_) {
     $httpBackend = _$httpBackend_;
     $rootScope = _$rootScope_;
-    Case = _Case_;      
-   
+    Case = _Case_;    
+    
+    $httpBackend.expectGET(url).respond(200, response);  
+    
     // Mock the store
     Case.store = store;
-    
-    $httpBackend.whenGET('http://localhost:8888/cases').respond(200, response);
+    Case.store.clearActions();
   }));
   
   afterEach(() => {
@@ -43,11 +45,25 @@ describe('Resource', () => {
   });
   
   it ('dispatches the proper actions when loading cases (success)', () => {  
-    const actions = [
+    let actions = [
       { type: 'LOADING_MANY_CASE', payload: undefined},
       { type: 'LOAD_MANY_CASE', payload: {result: [ ], items: {}, meta: {count: undefined, page: undefined, links: {self: {href: '/test/1'}}}}}  
     ];    
+    $httpBackend.whenGET(url).respond(200, response);
     Case.loadMany();
+    $httpBackend.flush();
+    expect(Case.store.getActions()).toEqual(actions);
+  });
+  
+  it ('dispatches the proper actions when loading cases (error)', () => {        
+    let actions;
+    $httpBackend.whenGET(url).respond(500, response);    
+    Case.loadMany().catch((error) => {      
+      actions = [
+        { type: 'LOADING_MANY_CASE', payload: undefined},
+        { type: 'ERROR_CASE', payload: error}  
+      ];      
+    });
     $httpBackend.flush();
     expect(Case.store.getActions()).toEqual(actions);
   });
