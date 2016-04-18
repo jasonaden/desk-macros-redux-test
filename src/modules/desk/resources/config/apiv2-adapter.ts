@@ -9,7 +9,7 @@ import {IResourceAdapter, ResourceAdapter, flattenEmbedded} from '../../../../re
 export class ApiV2Adapter extends ResourceAdapter implements IResourceAdapter {
 
   // Base URL for the API
-  baseUrl: string = 'http://localhost:8888';
+  baseUrl: string = 'http://localhost:8888/api/v2';
   
   static generateSlug = function (entity) {
     let key = (entity._links && entity._links.self && entity._links.self.href) || entity.id;
