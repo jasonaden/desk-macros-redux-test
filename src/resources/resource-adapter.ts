@@ -1,5 +1,5 @@
 
-import * as ng from 'angular';
+import {$q, $http} from '../ng';
 
 import {joinUrl, parseJson, generateConfig} from './utils';
 
@@ -17,7 +17,7 @@ export class ResourceAdapter implements IResourceAdapter {
   // Date pattern to be used to find dates in returns from the API
   datePattern: RegExp = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
   
-  constructor (public $http: ng.IHttpService, public $q: ng.IQService) {
+  constructor () {
     if (!this.interceptors) {
       this.interceptors = [];  
     }
@@ -38,8 +38,8 @@ export class ResourceAdapter implements IResourceAdapter {
   }
   
   doRequest (config: IResourceRequestConfig): ng.IPromise<any> {
-    return generateConfig(this.$q, this, config)
-    .then(config => this.$http(config)
+    return generateConfig($q, this, config)
+    .then(config => $http(config)
       .then(config.interceptor.response, config.interceptor.responseError)
     );
   }

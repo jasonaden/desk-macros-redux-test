@@ -37,3 +37,61 @@ export function splitSchema (schema, name: string, data) {
     }
   }
 }
+
+/*
+
+Case:
+
+[
+  {
+    id: 1,
+    customer: {...},
+    message: {...}
+  },
+  {
+    id: 2,
+    ...
+  }
+]
+
+
+Case Schema:
+
+caseSchema.define({
+  customer: customerSchema,
+  draft: interactionSchema,
+  message: interactionSchema,
+  replies: arrayOf(interactionSchema)
+});
+
+
+What it does:
+
+{
+  results: [],
+  case: {
+    "1": {
+      id: 1,
+      customer: 10,
+      interaction 100
+    },
+    "2": {...},
+    
+  },
+  customer: {
+    "10": {
+      id: 10,
+      ...
+    }
+  },
+  interaction: {
+    "100": {
+      id: 1,
+      ...
+    }
+  }
+  
+}
+
+*/
+

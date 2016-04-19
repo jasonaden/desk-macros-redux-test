@@ -1,5 +1,5 @@
 
-import * as ng from 'angular';
+import {$q, $http} from '../../../../ng';
 
 import {IResourceAdapter, ResourceAdapter, flattenEmbedded} from '../../../../resources';
 
@@ -22,7 +22,7 @@ export class ApiV2Adapter extends ResourceAdapter implements IResourceAdapter {
     return key;
   }
   
-  constructor ($http: ng.IHttpService, $q: ng.IQService) {
+  constructor () {
     super($http, $q);
     
     /**
