@@ -6,7 +6,7 @@ export const routes = ($stateProvider, $urlRouterProvider) => {
   $stateProvider.state('desk.agent.cases', {
     url: '/cases',
     views: {
-      '@': { template: '<case-list></case-list>' }
+      '@': { template: '<test-area></test-area><case-list></case-list>' }
     }
   })
 }

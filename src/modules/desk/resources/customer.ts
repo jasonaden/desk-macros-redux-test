@@ -1,7 +1,7 @@
 import {Action} from 'flux-standard-action';
 import {normalize, Schema, arrayOf} from 'normalizr';
 
-import {Resource} from '../../../resources';
+import {Resource, defaultReducer} from '../../../resources';
 
 import {customerSchema} from './config/schemas';
 
@@ -22,8 +22,8 @@ export class Customer extends Resource<ICustomer> {
   url = '/customers';
   public className: string = NAME;
   
-  constructor($injector, ApiV2Adapter) {
-    super($injector, ApiV2Adapter, customerSchema);
+  constructor(public $ngRedux, public $http, public $q, ApiV2Adapter) {
+    super($ngRedux, $http, $q, ApiV2Adapter, customerSchema);
   }
   
   get state () {
@@ -34,4 +34,4 @@ export class Customer extends Resource<ICustomer> {
   
 }
 
-export const customer = Customer.reducer(NAME);
+export const customer = defaultReducer(NAME);

@@ -1,9 +1,5 @@
-import {Action} from 'flux-standard-action';
-import {normalize, Schema, arrayOf} from 'normalizr';
 
-import {Resource} from '../../../resources';
-
-
+import {Resource, defaultReducer} from '../../../resources';
 import {interactionSchema} from './config/schemas';
 
 
@@ -24,8 +20,8 @@ export class Interaction extends Resource<IInteraction> {
   url = '/interactions';
   public className: string = NAME;
   
-  constructor($injector, ApiV2Adapter) {
-    super($injector, ApiV2Adapter, interactionSchema);
+  constructor(public $ngRedux, public $http, public $q, ApiV2Adapter) {
+    super($ngRedux, $http, $q, ApiV2Adapter, interactionSchema);
   }
   
   get state () {
@@ -36,7 +32,7 @@ export class Interaction extends Resource<IInteraction> {
   
 }
 
-export const interaction = Interaction.reducer(NAME);
+export const interaction = defaultReducer(NAME);
 
 
 // TODO: Figure out how to handle interactions generically

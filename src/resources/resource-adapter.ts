@@ -23,6 +23,10 @@ export class ResourceAdapter implements IResourceAdapter {
     }
   }
 
+  generateSlug (entity): string {
+    return entity.id;
+  }
+
   // Execute request based on given DsResourceAdapterConfig
   execute (config: IResourceRequestConfig): ng.IPromise<any> {
     return this.doRequest(config);

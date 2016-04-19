@@ -7,7 +7,6 @@ import {setMacros} from '../desk-agent-case-macros/states';
 import {
   Case, 
   Customer,
-  setCases,
   ApiV2Adapter
 } from './resources';
 
@@ -51,7 +50,6 @@ deskMod.config($ngReduxProvider => {
   console.log('log the cases before API', Case.state)
   Case.find();
   $ngRedux.dispatch(setMacros(macroList));
-  // $ngRedux.dispatch(setCases(caseList));
 });
 
 deskMod
@@ -59,6 +57,7 @@ deskMod
   .component('filterList', comp.FilterListComponent)
   .component('filterListSelector', comp.FilterListSelectorComponent)
   .component('filterListFilter', comp.FilterListFilterComponent)
+  .component('testArea', comp.TestAreaComponent)
   .component('desk', comp.DeskComponent)
   .factory('RxPoller', RxPollerFactory)
   .service('Case', Case)

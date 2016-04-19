@@ -45,6 +45,7 @@ export interface IResourceAdapter extends IResourceAdapterConfig {
    * as for storage of data in Local Storage (LocalStorageAdapter). The `execute()` 
    * method gives a single interface for executing on actions.
    */
+  generateSlug: (entity: any) => string;
   execute: (config: IResourceRequestConfig) => ng.IPromise<any>;
   reviver: (key: string, value: any) => any;
   doRequest: (config: IResourceRequestConfig) => ng.IPromise<any>;
@@ -103,16 +104,4 @@ export interface IEntityState {
       self: {href: string, class?: string}
     }
   }
-}
-
-export function EntityState (): IEntityState {
-  return {
-    result: [],
-    loadingMany: false,
-    loadingOne: false,
-    deleting: false,
-    patching: false,
-    adding: false,
-    items: {},
-  };
 }

@@ -1,16 +1,9 @@
 
 import {action} from './action';
-import {IResourceAdapter, IResourceRequestConfig} from '../interfaces';
-import {FINDING, ERROR} from '../resource';
+import {IResourceRequestConfig} from '../interfaces';
+import {FINDING, ERROR} from '../constants';
 import {splitSchema} from '../utils/splitSchema';
-
-declare type config = {
-  adapter: IResourceAdapter,
-  url: string,
-  schema: any,
-  className: string,
-  $q: ng.IQService
-}
+import {config} from './action-config';
 
 export function find (config: config, args?: IResourceRequestConfig) {
   return (dispatch, store) => {

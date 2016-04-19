@@ -1,7 +1,7 @@
 
 import {normalize, arrayOf} from 'normalizr';
 import {action} from '../actions/action';
-import {FIND, ADD} from '../resource';
+import {FIND, ADD} from '../constants';
 
 export function splitSchema (schema, name: string, data) {
   return (dispatch, store) => {

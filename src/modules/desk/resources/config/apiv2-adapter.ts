@@ -32,5 +32,9 @@ export class ApiV2Adapter extends ResourceAdapter implements IResourceAdapter {
       return flattenEmbedded(super.transformResponse(data, headers), headers); 
     }
   }
+  
+  generateSlug (entity: any) {
+    return ApiV2Adapter.generateSlug(entity);
+  }
 
 }

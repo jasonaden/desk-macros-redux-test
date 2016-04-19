@@ -3,37 +3,26 @@ import {Store, Reducer, combineReducers} from 'redux';
 import {Action} from 'flux-standard-action';
 import { normalize, Schema, arrayOf } from 'normalizr';
 
-import {ngRedux, Middleware} from 'ng-redux';
-import {IResourceAdapter, IResourceRequestConfig, IEntityState, EntityState} from './interfaces';
+import {INgRedux, ngRedux, Middleware} from 'ng-redux';
+import {IResourceAdapter, IResourceRequestConfig, IEntityState} from './interfaces';
 
 import {find} from './actions/find';
+import {findOne} from './actions/findOne';
+import {destroy} from './actions/destroy';
 import {action} from './actions/action';
 
 import {flattenEmbedded} from './utils';
 
-// ACTION TYPES
-export const FIND_ONE = "FIND_ONE";
-export const FINDING_ONE = "FINDING_ONE";
-export const FOUND_ONE = "FOUND_ONE";
-export const FIND = "FIND";
-export const FINDING = "FINDING";
-export const FOUND = "FOUND";
-export const ADD = "ADD";
-export const ADDING = "ADDING";
-export const ADDED = "ADDED";
-export const DELETE = "DELETE";
-export const DELETING = "DELETING";
-export const DELETED = "DELETED";
-export const PATCH = "PATCH";
-export const PATCHING = "PATCHING";
-export const PATCHED = "PATCHED";
-export const UPDATE = "UPDATE";
-export const UPDATING = "UPDATING";
-export const UPDATED = "UPDATED";
-export const REFRESH = "REFRESH";
-export const REFRESHING = "REFRESHING";
-export const REFRESHED = "REFRESHED";
-export const ERROR = "ERROR";
+import {
+  FIND_ONE, FINDING_ONE, FOUND_ONE,
+  FIND, FINDING, FOUND,
+  ADD, ADDING, ADDED, 
+  DESTROY, DESTROYING, DESTROYED,
+  PATCH, PATCHING, PATCHED,
+  UPDATE, UPDATING, UPDATED,
+  REFRESH, REFRESHING, REFRESHED,
+  ERROR
+} from './constants';
 
 /**
  * 
@@ -57,8 +46,6 @@ export class Resource<T> {
   public $http: ng.IHttpService;
   public $q: ng.IQService;
   
-  private _loading: boolean;
-  
   /**
    * The Resource class is designed to be extended, rather than instantiated on its own.
    * Because it's extended, Angular's DI system will not pick up on the constructor 
@@ -71,10 +58,10 @@ export class Resource<T> {
    * @param schema Schema         The Normalizr schema to use when parsing API data 
    *                              returned for this Resource.
    */
-  constructor($injector, public adapter: IResourceAdapter, public schema: Schema) {
-    this.store = $injector.get('$ngRedux');
-    this.$http = $injector.get('$http');
-    this.$q = $injector.get('$q');
+  constructor($ngRedux, $http, $q, public adapter: IResourceAdapter, public schema: Schema) {
+    this.store = $ngRedux;
+    this.$http = $http;
+    this.$q = $q;
   }
     
   // TODO: ADD METHODS TO GET DATA OUT OF THE RESOURCE.
@@ -101,93 +88,6 @@ export class Resource<T> {
       return !!(s.adding || s.deleting || s.loadingMany || s.loadingOne || s.patching);
     }
   }
-    
-  /**
-   * Generic reducer for items of any type (entities). Produces a state tree like:
-   * 
-   * ```
-   *  entities = {
-   *    cases: {
-   *      // sequence of cases as returned from most recent API call
-   *      result: [6, 3, 5, ...],
-   *      loadingMany: true,
-   *      loadingOne: true,
-   *      deleting: false,
-   *      patching: false,
-   *      adding: false,
-   *      items: {
-   *        3: {...},
-   *        5: {...},
-   *        6: {...},
-   *        ...
-   *      },
-   *      meta: {
-   *        count: 100,
-   *        page: 2,
-   *        links: {
-   *          ...
-   *        }
-   *      }
-   *    }
-   *  }
-   * ```
-   */
-  static reducer<T> (type: string): Reducer {
-    /**
-     * Simple function for concatinating the type const with the type value.
-     * 
-     * ```
-     *  t("LOADING_SOMETHING", "CASE"); // returns LOADING_SOMETHING_CASE
-     * ``` 
-     */
-    function t (str: string, type: string): string {
-      return str + '_' + type;
-    }
-    
-    return (state: IEntityState = EntityState(), action: any) => {
-      let s = Object.assign({}, state);
-      switch (action.type) {
-        // SETUP ACTIONABLE ITEMS
-        case `${FINDING}_${type}`:         // LOADING_MANY
-          return Object.assign(s, {loadingMany: true});
-        case `${FINDING_ONE}_${type}`:          // LOADING_ONE
-          return Object.assign(s, {loadingOne: true});
-        case `${DELETING}_${type}`:             // DELETING
-          return Object.assign(s, {deleting: true});
-        case `${PATCHING}_${type}`:             // PATCHING
-          return Object.assign(s, {patching: true});
-        case `${ADDING}_${type}`:               // ADDING
-          return Object.assign(s, {adding: true});
-        
-        // LOAD_MANY_CASE
-        case t(FIND, type): // LOAD_MANY_CASE
-          // Turn off loading indicator
-          s.loadingMany = false;
-          
-          // Apply the sequenced result array
-          s.result = action.payload.result.slice(0);
-          
-          // Iterate results and add each item
-          s.items = Object.assign({}, s.items);
-          s.result.forEach((key) => {
-            s.items[key] = action.payload.items[key];
-          });
-          
-          // Apply metadata
-          s.meta = Object.assign({}, action.payload.meta);
-          
-          return s;
-        // LOAD_MANY_CASE
-        case t(ADD, type): // ADD_SOMETHING
-          s.items = Object.assign({}, s.items);
-          s.items[action.payload._links.self.href] = action.payload;
-          return s;
-        // TODO: ERROR CASE
-        default:
-          return state;
-      }
-    } 
-  }
   
   /**
    * Lifecycle Hooks:
@@ -195,8 +95,24 @@ export class Resource<T> {
    * * `beforeCreate(payload[, cb])`
    * * `afterCreate(payload[, cb])`
    */
-  add(payload: T): Action<T> {
-    return action<T>(ADD, this.className, payload);
+  add(payload: T, config?: IResourceRequestConfig): ng.IPromise<any> {
+    return this.$q.when(this.beforeAdd(payload, config))
+    .then(args => this.store.dispatch(add(this, payload, config)))
+    .then(data => this.afterAdd(data));
+  }
+  
+  /**
+   * Default identity hook (return what was passed in)
+   */
+  beforeAdd(payload: T, config?: IResourceRequestConfig): ng.IPromise<(T | IResourceRequestConfig)[]> {
+    return this.$q.when(config).then(config => [payload, config]);
+  }
+  
+  /**
+   * Default identity hook (return what was passed in)
+   */
+  afterAdd(data: any): ng.IPromise<any> {
+    return this.$q.when(data);
   }
   
   /**
@@ -210,40 +126,106 @@ export class Resource<T> {
   }
   
   /**
+   * Default identity hook (return what was passed in)
+   */
+  beforeUpdate(config?: IResourceRequestConfig): ng.IPromise<IResourceRequestConfig> {
+    return this.$q.when(config);
+  }
+  
+  /**
+   * Default identity hook (return what was passed in)
+   */
+  afterUpdate(data: any): ng.IPromise<any> {
+    return this.$q.when(data);
+  }
+  
+  /**
    * Saves data. Will determine whether to create or update.
    * 
-   * For Lifecycle hooks, see `create` or `update`.
+   * For Lifecycle hooks, see `add` or `update`.
    */
   save(payload: T): Action<T> {
     return action<T>(ADD, this.className, payload);
   }
   
   /**
-   * Deletes an item from the store.
+   * Removes an item from the store.
    * 
-   * * `beforeDelete(payload[, cb])`
-   * * `afterDelete(payload[, cb])`
+   * * `beforeDestroy(payload[, cb])`
+   * * `afterDestroy(payload[, cb])`
    */
-  delete(payload: T): Action<T> {
-    return action<T>(DELETE, this.className, payload);
+  destroy(payload: T, config?: IResourceRequestConfig): ng.IPromise<any> {
+    let id = this.adapter.generateSlug(payload);
+    
+    return this.$q.when(this.beforeDestroy(id, config))
+    .then(args => this.store.dispatch(destroy(this, id, config)))
+    .then(data => this.afterFind(data));
+  }
+  
+  /**
+   * Default identity hook (return what was passed in)
+   */
+  beforeDestroy(id: string, config?: IResourceRequestConfig): ng.IPromise<IResourceRequestConfig> {
+    return this.$q.when(config);
+  }
+  
+  /**
+   * Default identity hook (return what was passed in)
+   */
+  afterDestroy(data: any): ng.IPromise<any> {
+    return this.$q.when(data);
   }
   
   /**
    * Finds items and puts them into the store.
    * 
-   * * `beforeFindMany(payload[, cb])`
-   * * `afterFindMany(payload[, cb])`
+   * * `beforeFind(payload[, cb])`
+   * * `afterFind(payload[, cb])`
    */
-  find(args?: IResourceRequestConfig): Promise<any> {
-    return this.store.dispatch(find(this, args));
+  find(args?: IResourceRequestConfig): ng.IPromise<any> {
+    return this.$q.when(this.beforeFind(args))
+    .then(args => this.store.dispatch(find(this, args)))
+    .then(data => this.afterFind(data));
   }
   
-  findOne(id: number): Action<number> {
-    return action<number>(FIND_ONE, this.className, id);
+  /**
+   * Default identity hook (return what was passed in)
+   */
+  beforeFind(config?: IResourceRequestConfig): ng.IPromise<IResourceRequestConfig> {
+    return this.$q.when(config);
   }
   
-  patch(payload: T): Action<T> {
-    return action<T>(PATCH, this.className, payload);
+  /**
+   * Default identity hook (return what was passed in)
+   */
+  afterFind(data: any): ng.IPromise<any> {
+    return this.$q.when(data);
+  }
+  
+  /**
+   * Finds a single and puts it into the store.
+   * 
+   * * `beforeFindOne(payload[, cb])`
+   * * `afterFindOne(payload[, cb])`
+   */
+  findOne(id: number, config?: IResourceRequestConfig): ng.IPromise<any> {
+    return this.$q.when(this.beforeFindOne(id, config))
+    .then(args => this.store.dispatch(findOne(this, args)))
+    .then(data => this.afterFindOne(data));
+  }
+  
+  /**
+   * Default identity hook (return what was passed in)
+   */
+  beforeFindOne(id: number, config?: IResourceRequestConfig): ng.IPromise<IResourceRequestConfig> {
+    return this.$q.when(config);
+  }
+  
+  /**
+   * Default identity hook (return what was passed in)
+   */
+  afterFindOne(data: any): ng.IPromise<any> {
+    return this.$q.when(data);
   }
   
   reloadMany(): void {

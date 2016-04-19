@@ -1,5 +1,14 @@
-export {Resource} from './resources/resource';
+// Resource class
+export {
+  Resource
+} from './resources/resource';
 
+// resource reducer
+export {
+  defaultReducer
+} from './resources/resource-reducer';
+
+// interfaces
 export {
   IResourceAdapter, 
   IResourceAdapterConfig, 
@@ -7,6 +16,16 @@ export {
   IEntityState
 } from './resources/interfaces';
 
-export {ResourceAdapter} from './resources/resource-adapter';
+// resource-adapter
+export {
+  ResourceAdapter
+} from './resources/resource-adapter';
 
-export {flattenEmbedded, generateConfig, joinUrl, parseJson, transform} from './resources/utils';
+// utils
+export {
+  flattenEmbedded, 
+  generateConfig, 
+  joinUrl, 
+  parseJson, 
+  transform
+} from './resources/utils';
