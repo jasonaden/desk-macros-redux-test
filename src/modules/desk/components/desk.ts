@@ -10,7 +10,7 @@ export class Desk {
     
     poller.subscribe((value) => {
         console.log('poller$ subscribe:', value);
-        Case.loadMany(value.data);
+        Case.find(value.data);
     });
           
     // poller.start();

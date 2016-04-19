@@ -49,7 +49,7 @@ deskMod.config($ngReduxProvider => {
 })
 .run(($ngRedux, Case: Case) => {
   console.log('log the cases before API', Case.state)
-  Case.loadMany();
+  Case.find();
   $ngRedux.dispatch(setMacros(macroList));
   // $ngRedux.dispatch(setCases(caseList));
 });

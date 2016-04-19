@@ -6,15 +6,18 @@ import { normalize, Schema, arrayOf } from 'normalizr';
 import {ngRedux, Middleware} from 'ng-redux';
 import {IResourceAdapter, IResourceRequestConfig, IEntityState, EntityState} from './interfaces';
 
+import {find} from './actions/find';
+import {action} from './actions/action';
+
 import {flattenEmbedded} from './utils';
 
 // ACTION TYPES
-export const LOAD_ONE = "LOAD_ONE";
-export const LOADING_ONE = "LOADING_ONE";
-export const LOADED_ONE = "LOADED_ONE";
-export const LOAD_MANY = "LOAD_MANY";
-export const LOADING_MANY = "LOADING_MANY";
-export const LOADED_MANY = "LOADED_MANY";
+export const FIND_ONE = "FIND_ONE";
+export const FINDING_ONE = "FINDING_ONE";
+export const FOUND_ONE = "FOUND_ONE";
+export const FIND = "FIND";
+export const FINDING = "FINDING";
+export const FOUND = "FOUND";
 export const ADD = "ADD";
 export const ADDING = "ADDING";
 export const ADDED = "ADDED";
@@ -24,14 +27,13 @@ export const DELETED = "DELETED";
 export const PATCH = "PATCH";
 export const PATCHING = "PATCHING";
 export const PATCHED = "PATCHED";
+export const UPDATE = "UPDATE";
+export const UPDATING = "UPDATING";
+export const UPDATED = "UPDATED";
 export const REFRESH = "REFRESH";
 export const REFRESHING = "REFRESHING";
 export const REFRESHED = "REFRESHED";
 export const ERROR = "ERROR";
-
-function action<T> (type: string, suffix: string, payload?: any): Action<T> {
-  return {type: `${type}_${suffix}`, payload};
-}
 
 /**
  * 
@@ -146,9 +148,9 @@ export class Resource<T> {
       let s = Object.assign({}, state);
       switch (action.type) {
         // SETUP ACTIONABLE ITEMS
-        case `${LOADING_MANY}_${type}`:         // LOADING_MANY
+        case `${FINDING}_${type}`:         // LOADING_MANY
           return Object.assign(s, {loadingMany: true});
-        case `${LOADING_ONE}_${type}`:          // LOADING_ONE
+        case `${FINDING_ONE}_${type}`:          // LOADING_ONE
           return Object.assign(s, {loadingOne: true});
         case `${DELETING}_${type}`:             // DELETING
           return Object.assign(s, {deleting: true});
@@ -158,7 +160,7 @@ export class Resource<T> {
           return Object.assign(s, {adding: true});
         
         // LOAD_MANY_CASE
-        case t(LOAD_MANY, type): // LOAD_MANY_CASE
+        case t(FIND, type): // LOAD_MANY_CASE
           // Turn off loading indicator
           s.loadingMany = false;
           
@@ -187,76 +189,57 @@ export class Resource<T> {
     } 
   }
   
+  /**
+   * Lifecycle Hooks:
+   * 
+   * * `beforeCreate(payload[, cb])`
+   * * `afterCreate(payload[, cb])`
+   */
   add(payload: T): Action<T> {
     return action<T>(ADD, this.className, payload);
   }
   
+  /**
+   * Lifecycle Hooks:
+   * 
+   * * `beforeUpdate(payload[, cb])`
+   * * `afterUpdate(payload[, cb])`
+   */
+  update(payload: T): Action<T> {
+    return action<T>(UPDATE, this.className, payload);
+  }
+  
+  /**
+   * Saves data. Will determine whether to create or update.
+   * 
+   * For Lifecycle hooks, see `create` or `update`.
+   */
+  save(payload: T): Action<T> {
+    return action<T>(ADD, this.className, payload);
+  }
+  
+  /**
+   * Deletes an item from the store.
+   * 
+   * * `beforeDelete(payload[, cb])`
+   * * `afterDelete(payload[, cb])`
+   */
   delete(payload: T): Action<T> {
     return action<T>(DELETE, this.className, payload);
   }
   
-  loadMany(args?: IResourceRequestConfig): Promise<any> {
-    return this.store.dispatch(this._loadMany(args));
+  /**
+   * Finds items and puts them into the store.
+   * 
+   * * `beforeFindMany(payload[, cb])`
+   * * `afterFindMany(payload[, cb])`
+   */
+  find(args?: IResourceRequestConfig): Promise<any> {
+    return this.store.dispatch(find(this, args));
   }
   
-  private _loadMany (args?: IResourceRequestConfig) {
-    return (dispatch, store) => {
-      dispatch(action(LOADING_MANY, this.className));
-      
-      return this.adapter.execute({
-        url: this.url, 
-        method: 'GET'
-      })
-      .then(
-        res => {
-          dispatch(this._splitSchema(this.schema, this.className, res.data));
-          return res.data;
-        },
-        error => {
-          dispatch(action(ERROR, this.className, error));
-          return this.$q.reject(error);
-        }
-      );
-    }
-  }
-  
-  private _splitSchema (schema, name: string, data) {
-    return (dispatch, store) => {
-      let normalized = normalize(data.entries, arrayOf(schema));
-      // This is for testing only. If no results are returned, Normalizr will 
-      // return result: [ undefined ] and entities[entity] = {undefined:{}}.
-      if (normalized.result[0] === undefined) {
-        normalized.result.length = 0;
-        normalized.entities[name.toLowerCase()] = {};
-      }
-      // Dispatch event for the main data that was gathered on this request.
-      // This includes metadata about the collection.
-      dispatch(action(LOAD_MANY, name.toUpperCase(), {
-        result: normalized.result,
-        items: normalized.entities[name.toLowerCase()],
-        meta: {
-          count: data.total_entries,
-          page: data.page,
-          links: data._links
-        }
-      }));
-      
-      // Iterate over other objects that were returned (normalized) and 
-      // dispatch add actions for them to get them into the store.
-      for (let x in normalized.entities) {
-        // Exclude main entity
-        if (x.toUpperCase() !== name.toUpperCase()) {
-          // Iterate over each object passed back and dispatch ADD action
-          for (let y in normalized.entities[x]) {
-            dispatch(action(ADD, x.toUpperCase(), normalized.entities[x][y]));
-          }
-        }
-      }
-    }
-  }
-  
-  loadOne(id: number): Action<number> {
-    return action<number>(LOAD_ONE, this.className, id);
+  findOne(id: number): Action<number> {
+    return action<number>(FIND_ONE, this.className, id);
   }
   
   patch(payload: T): Action<T> {
@@ -265,7 +248,7 @@ export class Resource<T> {
   
   reloadMany(): void {
     this.store.dispatch(action(REFRESH, this.className, []))
-    this.loadMany();
+    this.find();
   }
   
 
