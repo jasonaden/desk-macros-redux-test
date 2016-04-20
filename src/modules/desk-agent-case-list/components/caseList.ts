@@ -37,7 +37,7 @@ export class CaseList {
   }
   
   goToCase (caseId: number) {
-    return this.$state.go('desk.agent.caseDetail', {id: caseId});
+    return this.$state.go('desk.agent.case.detail', {id: caseId});
   }
   
 };

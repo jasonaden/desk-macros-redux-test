@@ -26,7 +26,6 @@ const mapDispatchToThis = (dispatch) => {
       dispatch(setMacroFilter(filter));
     },
     applyMacro: (macroId:number) => {
-      console.log('map dispatch', macroId);
       dispatch(applyMacroToCase(macroId));
     }
   }

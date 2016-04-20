@@ -99,10 +99,19 @@ export const setMacroApplyError = function setMacroApplyError(payload: string): 
     payload
   };
 }
+const CLEAR_MACRO_APPLY_ERROR = 'CLEAR_MACRO_APPLY_ERROR';
+export const clearMacroApplyError = function clearMacroApplyError(): Action<Object> {
+  return {
+    type: CLEAR_MACRO_APPLY_ERROR,
+    payload: ''
+  };
+}
 const macroApplyError:Reducer = (state:string = '', action:Action<string>) => {
   switch (action.type) {
     case SET_MACRO_APPLY_ERROR:
       return action.payload;
+    case CLEAR_MACRO_APPLY_ERROR:
+      return '';
     default:
       return state;
   }
@@ -116,10 +125,8 @@ export function* failedToApplySaga (getState) {
 
 function* clearError() {
   try {
-    while (true) {
-      yield call(delay, 3000);
-      yield put(setMacroApplyError(''));
-    }
+    yield call(delay, 3000);
+    yield put(clearMacroApplyError());
   } catch (error) {
     if(error instanceof SagaCancellationException) {
       //event was canceled either by cancel or takeLatest
