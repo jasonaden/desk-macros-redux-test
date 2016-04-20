@@ -5,15 +5,14 @@ import {IMacro} from '../states';
 
 // ACTIONS
 import {setSelectedMacroId, getMacroApplyError, setMacroFilter, getSelectedMacro, getSelectedMacroId, getFilteredMacros} from '../states';
-import {getOpenCaseId} from '../../desk-agent-case-detail/states';
-import {applyMacroToCase} from '../../desk-agent-case/states';
+import {applyMacroToCase, getOpenCase} from '../../desk-agent-case-detail/states';
 
 const mapStateToThis = (state) => {
   return {
     selectedMacro: getSelectedMacro(state),
     selectedMacroId: getSelectedMacroId(state),
     filteredMacros: getFilteredMacros(state),
-    openCaseId: getOpenCaseId(state),
+    openCase: getOpenCase(state),
     applyError: getMacroApplyError(state)
   };
 }
@@ -26,8 +25,9 @@ const mapDispatchToThis = (dispatch) => {
     onFilterChange: (filter:string) => {
       dispatch(setMacroFilter(filter));
     },
-    applyMacro: (caseId:number, macroId:number) => {
-      dispatch(applyMacroToCase({caseId:caseId, macroId:macroId}));
+    applyMacro: (macroId:number) => {
+      console.log('map dispatch', macroId);
+      dispatch(applyMacroToCase(macroId));
     }
   }
 }
@@ -63,7 +63,7 @@ export const MacroListComponent = {
           item-name="$ctrl.getMacroDisplay(item)"></filter-list>
       </list>
     </filter-list-selector>
-    <input ng-show='$ctrl.selectedMacro' type="button" class='btn btn-primary' ng-click="$ctrl.applyMacro($ctrl.openCaseId, $ctrl.selectedMacroId)" value="Apply Macro To Case"></input>
+    <input ng-show='$ctrl.selectedMacro' type="button" class='btn btn-primary' ng-click="$ctrl.applyMacro($ctrl.selectedMacroId)" value="Apply Macro To Case"></input>
     <span class='danger' ng-show='$ctrl.applyError'>{{$ctrl.applyError}}</span>
 	`
 }

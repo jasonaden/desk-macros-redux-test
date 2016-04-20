@@ -38,7 +38,10 @@ export const getCases = (state): ICase[] => {
   return state.result.map(id => state.items[id]);
 }
 
-export const getCaseById = (state, id):ICase => getCases(state).find(kase => kase.id==id);
+export const getCaseById = (state, id):ICase =>{
+  console.log(state, id);
+  return getCases(state).find(kase => kase.id==id);
+}
 
 export const APPLY_MACRO = 'APPLY_MACRO';
 export const MACRO_APPLY_ERROR = 'MACRO_APPLY_ERROR';

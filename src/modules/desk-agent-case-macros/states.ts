@@ -1,8 +1,10 @@
 import {createSelector} from 'reselect';
 import {Reducer, combineReducers} from 'redux';
 import {Action} from 'flux-standard-action';
+import {take, put, call, fork, cancel} from 'redux-saga/effects';
+import {takeLatest, SagaCancellationException} from 'redux-saga';
 
-import {APPLY_MACRO, MACRO_APPLY_ERROR} from '../desk-agent-case/states';
+import {APPLY_MACRO, MACRO_APPLY_ERROR} from '../desk-agent-case-detail/states';
 import {getOpenCase} from '../desk-agent-case-detail/states';
 
 export interface IMacro {
@@ -108,30 +110,22 @@ const macroApplyError:Reducer = (state:string = '', action:Action<string>) => {
 
 export const getMacroApplyError = (state):string => state.deskAgentCaseMacros.macroApplyError;
 
-export function failedToApply () {
-  console.log('failedToApply', arguments);
+export function* failedToApplySaga (getState) {
+  yield* takeLatest(SET_MACRO_APPLY_ERROR, clearError);
 }
 
-// export function* failedToApplys (getState) {
-//   yield* takeLatest(SET_MACRO_APPLY_ERROR, clearError);
-// }
-
-function clearError () {
-  console.log('clearError', arguments);
+function* clearError() {
+  try {
+    while (true) {
+      yield call(delay, 3000);
+      yield put(setMacroApplyError(''));
+    }
+  } catch (error) {
+    if(error instanceof SagaCancellationException) {
+      //event was canceled either by cancel or takeLatest
+    }
+  }
 }
-
-// function* clearError() {
-//   try {
-//     while (true) {
-//       yield call(delay, 3000);
-//       yield put(setMacroApplyError(''));
-//     }
-//   } catch (error) {
-//     if(error instanceof SagaCancellationException) {
-//       //event was canceled either by cancel or takeLatest
-//     }
-//   }
-// }
 
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))

@@ -1,6 +1,6 @@
 import {deskAgentMod} from '../module';
 
-export const routes = ($stateProvider, $urlRouterProvider, $locationProvider) => {
+export const routes = ($stateProvider) => {
   $stateProvider.state('desk.agent', {
     abstract: true
   });

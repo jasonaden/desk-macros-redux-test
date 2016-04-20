@@ -2,8 +2,11 @@ import {applyMiddleware} from 'redux';
 import {ngRedux, Middleware} from 'ng-redux';
 import * as thunk from 'redux-thunk';
 import * as createLogger from 'redux-logger';
+import createSagaMiddleware from 'redux-saga';
 
-import {setMacros} from '../desk-agent-case-macros/states';
+import {failedToApplySaga, setMacros} from '../desk-agent-case-macros/states';
+import {applyMacroSaga} from '../desk-agent-case-detail/states';
+
 import {
   Case, 
   Customer,
@@ -43,12 +46,10 @@ deskMod.config($ngReduxProvider => {
   
   $ngReduxProvider.createStoreWith(
     rootReducer,
-    [thunk, createLogger()]
+    [thunk, createLogger(), createSagaMiddleware(applyMacroSaga, failedToApplySaga)]
   );
 })
-.run(($ngRedux, Case: Case) => {
-  console.log('log the cases before API', Case.state)
-  Case.find();
+.run(($ngRedux) => {
   $ngRedux.dispatch(setMacros(macroList));
 });
 
