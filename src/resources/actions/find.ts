@@ -5,8 +5,6 @@ import {FINDING, ERROR} from '../constants';
 import {splitSchema} from '../utils/splitSchema';
 import {config} from './action-config';
 
-import {$q} from '../../ng';
-
 export function find (config: config, args?: IResourceRequestConfig) {
   return (dispatch, store) => {
     dispatch(action(FINDING, config.className));
@@ -25,7 +23,7 @@ export function find (config: config, args?: IResourceRequestConfig) {
       },
       error => {
         dispatch(action(ERROR, config.className, error));
-        return $q.reject(error);
+        return config.$q.reject(error);
       }
     );
   }

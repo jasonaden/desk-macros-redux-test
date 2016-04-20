@@ -44,7 +44,7 @@ describe('Resource', () => {
     expect(Case.isLoading(1)).toBe(false);
   });
       
-  fit ('dispatches the proper actions when finding (success)', () => {  
+  it ('dispatches the proper actions when finding (success)', () => {  
     let actions = [
       { type: 'FINDING_CASE', payload: undefined},
       { type: 'FIND_CASE', payload: {result: [ ], items: {}, meta: {count: undefined, page: undefined, links: {self: {href: '/test/1'}}}}}  
@@ -54,7 +54,7 @@ describe('Resource', () => {
     $httpBackend.flush();
     expect(Case.store.getActions()).toEqual(actions);
   });
-  
+
   it ('dispatches the proper actions when finding (error)', () => {        
     let actions;
     $httpBackend.whenGET(url).respond(500, response);    
