@@ -84,79 +84,92 @@ describe('Resource', () => {
   it ('should have isLoading(id) method default to false', () => {
     expect(Case.isLoading(1)).toBe(false);
   });
-
-  it ('dispatches the proper actions when finding (error)', () => {
-    let actions;
-    $httpBackend.whenGET(url).respond(500, response);
-    Case.find().catch((error) => {
-      actions = [
-        { type: 'FINDING_CASE', payload: undefined},
-        { type: 'ERROR_CASE', payload: error}
-      ];
+  
+  describe ('find()', () => {
+    it ('dispatches the proper actions on error', () => {
+      let actions;
+      $httpBackend.whenGET(url).respond(500, response);
+      Case.find().catch((error) => {
+        actions = [
+          { type: 'FINDING_CASE', payload: undefined},
+          { type: 'ERROR_CASE', payload: error}
+        ];
+      });
+      $httpBackend.flush();
+      expect(Case.store.getActions()).toEqual(actions);
     });
-    $httpBackend.flush();
-    expect(Case.store.getActions()).toEqual(actions);
-  });
 
-  it ('dispatches actions for each embedded resource', () => {
-    let actions = [
-      { type: 'FINDING_CASE', payload: undefined},
-      { type: 'FIND_CASE', payload: {
-          result: [ '/cases/1' ],
-          items: {
-            '/cases/1': {
-              id: 1,
-              subject: 'Test case subject',
-              _links: {
+    it ('dispatches the proper actions on success', () => {
+      let actions = [
+        { type: 'FINDING_CASE', payload: undefined},
+        { type: 'FIND_CASE', payload: {
+            result: [ '/cases/1' ],
+            items: {
+              '/cases/1': {
+                id: 1,
+                subject: 'Test case subject',
+                _links: {
+                  self: {
+                    href: '/api/v2/cases/1',
+                    class: 'page'
+                  }
+                },
+                _embedded: {
+                  customer: {
+                    "id": 10,
+                    "name": "John Smith",
+                    "_links": {
+                      "self": {
+                        "href": "/api/v2/customers/10",
+                        "class": "page"
+                      }
+                    }
+                },
+                  message: {
+                    "id": 20,
+                    "body": "Message body",
+                    "_links": {
+                      "self": {
+                        "href": "/api/v2/cases/1/message",
+                        "class": "page"
+                      }
+                    }
+                  }
+                },
+                customer: '/customers/10',
+                message: '/cases/1/message' }
+            },
+            meta: {
+              count: 1,
+              page: 1,
+              links: {
                 self: {
-                  href: '/api/v2/cases/1',
+                  href: '/api/v2/cases?page=1&per_page=50',
                   class: 'page'
                 }
-              },
-              _embedded: {
-                customer: {
-                  "id": 10,
-                  "name": "John Smith",
-                  "_links": {
-                    "self": {
-                      "href": "/api/v2/customers/10",
-                      "class": "page"
-                    }
-                  }
-               },
-                message: {
-                  "id": 20,
-                  "body": "Message body",
-                  "_links": {
-                    "self": {
-                      "href": "/api/v2/cases/1/message",
-                      "class": "page"
-                    }
-                  }
-                }
-              },
-              customer: '/customers/10',
-              message: '/cases/1/message' }
-          },
-          meta: {
-            count: 1,
-            page: 1,
-            links: {
-              self: {
-                href: '/api/v2/cases?page=1&per_page=50',
-                class: 'page'
               }
             }
           }
-        }
-      },
-      { type: 'ADD_CUSTOMER', payload: response._embedded.entries[0]._embedded.customer},
-      { type: 'ADD_INTERACTION', payload: response._embedded.entries[0]._embedded.message}
-    ];
-    $httpBackend.whenGET(url).respond(200, response);
-    Case.find();
-    $httpBackend.flush();
-    expect(Case.store.getActions()).toEqual(actions);
+        },
+        { type: 'ADD_CUSTOMER', payload: response._embedded.entries[0]._embedded.customer},
+        { type: 'ADD_INTERACTION', payload: response._embedded.entries[0]._embedded.message}
+      ];
+      $httpBackend.whenGET(url).respond(200, response);
+      Case.find();
+      $httpBackend.flush();
+      expect(Case.store.getActions()).toEqual(actions);
+    });
+    
+    it ('calls before and after lifecycle hooks', () => {
+      spyOn(Case, 'beforeFind').and.callThrough();
+      spyOn(Case, 'afterFind').and.callThrough();      
+      $httpBackend.whenGET(url).respond(200, response);
+      Case.find();
+      $httpBackend.flush();
+      expect(Case.beforeFind).toHaveBeenCalled();
+      expect(Case.afterFind).toHaveBeenCalled();
+    });
+        
   });
-
+  
 });

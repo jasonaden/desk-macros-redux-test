@@ -10,7 +10,6 @@ export function findOne (config: config, args?: IResourceRequestConfig) {
   return (dispatch, store) => {
     dispatch(action(FINDING_ONE, config.className));
     
-    debugger
     return config.adapter.execute({
       url: config.url, 
       method: 'GET'
