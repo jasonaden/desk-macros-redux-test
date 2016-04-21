@@ -3,6 +3,7 @@ import {ngRedux, Middleware} from 'ng-redux';
 import * as thunk from 'redux-thunk';
 import * as createLogger from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
+import * as Immutable from 'immutable';
 
 import {failedToApplySaga, setMacros} from '../desk-agent-case-macros/states';
 import {applyMacroSaga} from '../desk-agent-case-detail/states';
@@ -43,7 +44,6 @@ export const deskMod = angular.module('desk', [
 ]);
 
 deskMod.config($ngReduxProvider => {
-  
   $ngReduxProvider.createStoreWith(
     rootReducer,
     [thunk, createLogger(), createSagaMiddleware(applyMacroSaga, failedToApplySaga)]

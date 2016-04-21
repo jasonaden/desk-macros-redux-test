@@ -1,5 +1,6 @@
 import {Reducer} from 'redux';
 import {IEntityState} from './interfaces';
+import {Record} from 'immutable';
 
 import {
   FIND_ONE, FINDING_ONE, FOUND_ONE,
@@ -12,7 +13,7 @@ import {
   ERROR
 } from './constants';
 
-function defaultEntityState (): IEntityState {
+function defaultEntityState (): Record<IEntityState> {
   return {
     result: [],
     loadingMany: false,
@@ -68,6 +69,7 @@ export function defaultReducer<T> (type: string): Reducer {
   
   return (state: IEntityState = defaultEntityState(), action: any) => {
     let s = Object.assign({}, state);
+    if (!action) { return state; }
     switch (action.type) {
       // SETUP ACTIONABLE ITEMS
       case `${FINDING}_${type}`:              // LOADING_MANY

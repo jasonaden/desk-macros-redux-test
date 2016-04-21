@@ -2,9 +2,11 @@ import {createSelector} from 'reselect';
 import {Reducer, combineReducers} from 'redux';
 import {Action} from 'flux-standard-action';
 import {take, put, call, fork, cancel} from 'redux-saga/effects';
+import * as Immutable from 'immutable';
 
 import {ICase, getCases} from '../desk/resources/case';
 import {setMacroApplyError} from '../desk-agent-case-macros/states';
+
 
 // OPEN CASE
 export const SET_OPEN_CASE = 'SET_OPEN_CASE';
@@ -14,18 +16,17 @@ export function setOpenCase(payload: ICase): Action<Object> {
     payload
   }
 }
-export const openCase:Reducer = (state:ICase = null, action) => {
+export const openCase:Reducer = (state = Immutable.Map({'openCase': null}), action) => {
   switch(action.type) {
     case SET_OPEN_CASE:
-      return Object.assign({}, action.payload);
+      return state.set('openCase', action.payload);
     case APPLY_MACRO:
-      return Object.assign({}, state, 
-        {macros: [...state.macros || [], action.payload]})
+      return state.merge({macros: [...state.macros || [], action.payload]});
     default:
       return state;
   }
 }
-export const getOpenCase = (state): ICase => state.deskAgentCaseDetail.openCase; 
+export const getOpenCase = (state): ICase => state.deskAgentCaseDetail.openCase.get('openCase'); 
 
 export const APPLY_MACRO = 'APPLY_MACRO';
 export const MACRO_APPLY_ERROR = 'MACRO_APPLY_ERROR';

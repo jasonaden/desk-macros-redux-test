@@ -3,6 +3,7 @@ import {Reducer, combineReducers} from 'redux';
 import {Action} from 'flux-standard-action';
 import {take, put, call, fork, cancel} from 'redux-saga/effects';
 import {takeLatest, SagaCancellationException} from 'redux-saga';
+import * as Immutable from 'immutable';
 
 import {APPLY_MACRO, MACRO_APPLY_ERROR} from '../desk-agent-case-detail/states';
 import {getOpenCase} from '../desk-agent-case-detail/states';
@@ -21,15 +22,16 @@ export const setMacros = function setMacros(payload: Object[]): Action<Object[]>
     payload
   }
 };
-const macros:Reducer = (state:Object[] = [], action:Action<Object[]>) => {
+
+const macros:Reducer = (state = Immutable.Map(), action:Action<Object[]>) => {
   switch (action.type) {
 		case SET_MACROS:
-			return action.payload.slice(0);
+			return Immutable.fromJS(action.payload);
 		default:
 			return state;
 	}
 }
-export const getMacros = (state): IMacro[] => state.deskAgentCaseMacros.macros;
+export const getMacros = (state): IMacro[] => state.deskAgentCaseMacros.macros.toJS();
 
 // SELECTED MACRO
 export const SET_SELECTED_MACRO_ID = "SET_SELECTED_MACRO_ID";
@@ -39,10 +41,11 @@ export function setSelectedMacroId (payload: number): Action<number> {
     payload
   }
 }
+
 const selectedMacroId:Reducer = (state:number = -1, action:Action<number>) => {
   switch (action.type) {
     case SET_SELECTED_MACRO_ID:
-      return action.payload;
+      return action.payload
     case SET_MACRO_FILTER:
     case APPLY_MACRO:
       return -1;
@@ -64,7 +67,7 @@ export function setMacroFilter(payload: string): Action<string> {
     payload
   }
 }
-const macroFilter:Reducer = (state:string = '', action:Action<string>) => {
+const macroFilter:Reducer = (state = '', action:Action<string>) => {
   switch (action.type) {
     case SET_MACRO_FILTER:
       return action.payload;
@@ -106,7 +109,7 @@ export const clearMacroApplyError = function clearMacroApplyError(): Action<Obje
     payload: ''
   };
 }
-const macroApplyError:Reducer = (state:string = '', action:Action<string>) => {
+const macroApplyError:Reducer = (state = '', action:Action<string>) => {
   switch (action.type) {
     case SET_MACRO_APPLY_ERROR:
       return action.payload;
