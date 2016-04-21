@@ -6,6 +6,8 @@ import "babel-polyfill";
 import "redux-saga";
 import "redux-logger";
 import "rx-angular";
+import "redux-immutable";
+import "immutable";
 
 // load our default (non specific) css
 import "font-awesome/css/font-awesome.css";

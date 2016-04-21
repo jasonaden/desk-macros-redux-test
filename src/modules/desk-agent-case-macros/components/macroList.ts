@@ -4,16 +4,19 @@ import {Store} from 'redux';
 import {IMacro} from '../states';
 
 // ACTIONS
-import {setSelectedMacroId, getMacroApplyError, setMacroFilter, getSelectedMacro, getSelectedMacroId, getFilteredMacros} from '../states';
-import {applyMacroToCase, getOpenCase} from '../../desk-agent-case-detail/states';
+import {setSelectedMacroId, setMacroFilter, getMacroFilter, getFilteredMacros, getSelectedMacro} from '../states';
+import {applyMacro} from '../../desk-agent-case-detail/states';
 
 const mapStateToThis = (state) => {
   return {
-    selectedMacro: getSelectedMacro(state),
-    selectedMacroId: getSelectedMacroId(state),
+    macroFilter: getMacroFilter(state),
     filteredMacros: getFilteredMacros(state),
-    openCase: getOpenCase(state),
-    applyError: getMacroApplyError(state)
+    selectedMacro: getSelectedMacro(state)
+    //selectedMacro: getSelectedMacro(state),
+    //selectedMacroId: getSelectedMacroId(state),
+    //filteredMacros: getFilteredMacros(state),
+    //openCaseId: getOpenCaseId(state),
+    //applyError: getMacroApplyError(state)
   };
 }
 
@@ -25,8 +28,8 @@ const mapDispatchToThis = (dispatch) => {
     onFilterChange: (filter:string) => {
       dispatch(setMacroFilter(filter));
     },
-    applyMacro: (macroId:number) => {
-      dispatch(applyMacroToCase(macroId));
+    applyMacro: (macro) => {
+      dispatch(applyMacro(macro));
     }
   }
 }
@@ -56,13 +59,13 @@ export const MacroListComponent = {
       </filter>
       <list>
         <filter-list
-          selected-id="$ctrl.selectedMacroId"
+          selected-id="$ctrl.macroFilter.selectedMacroId"
           list-items="$ctrl.filteredMacros"
           select-item="$ctrl.onSelectMacro(itemId)"
           item-name="$ctrl.getMacroDisplay(item)"></filter-list>
       </list>
     </filter-list-selector>
-    <input ng-show='$ctrl.selectedMacro' type="button" class='btn btn-primary' ng-click="$ctrl.applyMacro($ctrl.selectedMacroId)" value="Apply Macro To Case"></input>
-    <span class='danger' ng-show='$ctrl.applyError'>{{$ctrl.applyError}}</span>
+    <input ng-show='$ctrl.macroFilter.selectedMacroId' type="button" class='btn btn-primary' ng-click="$ctrl.applyMacro($ctrl.selectedMacro)" value="Apply Macro To Case"></input>
+    <span class='danger' ng-show='$ctrl.macroFilter.macroApplyError'>{{$ctrl.macroFilter.macroApplyError}}</span>
 	`
 }

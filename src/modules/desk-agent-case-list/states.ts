@@ -1,59 +1,70 @@
 import {createSelector} from 'reselect';
 import {Reducer, combineReducers} from 'redux';
 import {Action} from 'flux-standard-action';
+import * as Immutable from 'immutable';
+
 import {ICase, getCases} from '../desk/resources/case';
 
-// SELECTED CASE
-export const SET_SELECTED_CASE_ID = "SET_SELECTED_CASE_ID";
-export function setSelectedCaseId(payload: number): Action<number> {
-  return {
-    type: SET_SELECTED_CASE_ID,
-    payload
-  }
-}
-
-const selectedCaseId:Reducer = (state:number = -1, action:Action<number>) => {
-  switch (action.type) {
-    case SET_SELECTED_CASE_ID:
-      return action.payload;
-    case SET_CASE_FILTER:
-      return -1;
-    default:
-      return state;
-  }
-}
-export const getSelectedCaseId = (state): number => state.deskAgentCaseList.selectedCaseId;
-export const getSelectedCase: (state) => ICase = createSelector(getCases, getSelectedCaseId, selectedCaseFinder);
-function selectedCaseFinder (cases: ICase[], selectedCaseId: number) {
-  return cases.find(kase => kase.id == selectedCaseId);
-}
-
-
-// CASE FILTER
-export const SET_CASE_FILTER = "SET_CASE_FILTER";
-export function setCaseFilter(payload: string): Action<string> {
-  return {
-    type: SET_CASE_FILTER,
-    payload
-  }
-}
-const caseFilter:Reducer = (state:string = '', action:Action<string>):string => {
-  switch (action.type) {
-    case SET_CASE_FILTER:
-      return action.payload;
-    default:
-      return state;
-  }
-}
-export const getCaseFilter = (state): string => state.deskAgentCaseList.caseFilter;
-export const getFilteredCases: (state) => ICase[] = createSelector(getCases, getCaseFilter, filteredCasesFinder);
-function filteredCasesFinder (cases: ICase[], caseFilter: string) {
-  return cases.filter(kase => kase.subject.toLowerCase().indexOf(caseFilter.toLowerCase()) > -1);
-}
-
-
-// EXPORT ALL REDUCERS
-export const caseListReducers = combineReducers({
-  selectedCaseId,
-  caseFilter
+export const Filter = Immutable.Record({
+  filterId: -1,
+  sortDirection: 'desc',
+  sortField: 'updated_at',
+  routingEnabled: false,
+  active: true,
+  group: null,
+  user: null,
+  items: Immutable.Set(),
+  actions: Immutable.List(),
+  selectedId: -1,
+  filterText: ''
 });
+
+
+export const SET_SELECTED_ID = "SET_SELECTED_ID";
+export const SET_FILTER_TEXT = "SET_FILTER_TEXT";
+export const SET_ITEMS = "SET_ITEMS";
+
+export const caseFilter:Reducer = (state = new Filter(), action:Action<any>) => {
+  switch( action.type ) {
+    case SET_SELECTED_ID:
+      return state.set('selectedId', action.payload);
+    case SET_FILTER_TEXT:
+      return state.set('filterText', action.payload);
+    case SET_ITEMS:
+      return state.mergeIn(['items'], action.payload);
+    default:
+      return state;
+  }
+}
+
+export function setItems(payload): Action<any> {
+  return {
+    type: SET_ITEMS,
+    payload
+  };
+}
+
+export function setSelectedId(payload: number): Action<number> {
+  return {
+    type: SET_SELECTED_ID,
+    payload
+  }
+}
+
+export function setFilterText(payload: string): Action<string> {
+  return {
+    type: SET_FILTER_TEXT,
+    payload
+  };
+}
+
+export const getFilter = (state) => {
+  return state.filter.toJS();
+}
+export const getFilteredItems = (state) => {
+  return state.filter.items.filter( item => {
+    return -1 < item.subject.toLowerCase().indexOf(
+      state.filter.filterText.toLowerCase()
+    );
+  }).toJS();
+}

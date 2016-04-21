@@ -1,23 +1,21 @@
 
 import {ICase} from '../../desk/resources/case';
-import {getCaseFilter, setSelectedCaseId, setCaseFilter, getSelectedCase, getSelectedCaseId, getFilteredCases} from '../states';
+import {getFilter, getFilteredItems, setSelectedId, setFilterText} from '../states';
 
 const mapStateToThis = (state) => {
   return {
-    selectedCaseId: getSelectedCaseId(state),
-    selectedCase: getSelectedCase(state),
-    caseFilter: getCaseFilter(state),
-    filteredCases: getFilteredCases(state)
+    filter: getFilter(state),
+    filteredItems: getFilteredItems(state)
   };
 }
 
 const mapDispatchToThis = (dispatch) => {
   return {
-    onSelectCase: (caseId:number) => {
-      dispatch(setSelectedCaseId(caseId));
+    onSelect: (id:number) => {
+      dispatch(setSelectedId(id));
     },
     onFilterChange: (filter:string) => {
-      dispatch(setCaseFilter(filter));
+      dispatch(setFilterText(filter));
     }
   }
 }
@@ -53,12 +51,12 @@ export const CaseListComponent = {
       </filter>
       <list>
         <filter-list
-          selected-id="$ctrl.selectedCaseId"
-          list-items="$ctrl.filteredCases"
-          select-item="$ctrl.onSelectCase(itemId)"
+          selected-id="$ctrl.filter.selectedId"
+          list-items="$ctrl.filteredItems"
+          select-item="$ctrl.onSelect(itemId)"
           item-name="$ctrl.getCaseDisplay(item)"></filter-list>
       </list>
     </filter-list-selector>
-    <input type="button" class="btn btn-primary" ng-show="$ctrl.selectedCaseId > -1" ng-click="$ctrl.goToCase($ctrl.selectedCaseId)" value="Go To Case"/>
+    <input type="button" class="btn btn-primary" ng-show="$ctrl.filter.selectedId > -1" ng-click="$ctrl.goToCase($ctrl.filter.selectedId)" value="Go To Case"/>
 	`
 }

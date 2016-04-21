@@ -9,7 +9,6 @@ export class Desk {
     poller.setAction(() => $http.get('http://localhost:8888/cases'));
     
     poller.subscribe((value) => {
-        console.log('poller$ subscribe:', value);
         Case.find(value.data);
     });
           

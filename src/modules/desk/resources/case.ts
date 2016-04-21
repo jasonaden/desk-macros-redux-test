@@ -39,7 +39,6 @@ export const getCases = (state): ICase[] => {
 }
 
 export const getCaseById = (state, id):ICase =>{
-  console.log(state, id);
   return getCases(state).find(kase => kase.id==id);
 }
 

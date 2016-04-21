@@ -7,7 +7,7 @@ export const routes = ($stateProvider, $urlRouterProvider, $locationProvider) =>
     url: '/case/:id',
     resolve: {
       resolveOpenCase: ($stateParams, $ngRedux, resolvedCases) => {
-        $ngRedux.dispatch(setOpenCase(getCaseById($ngRedux.getState(), parseInt($stateParams.id, 10))));
+        $ngRedux.dispatch(setOpenCase(getCaseById($ngRedux.getState(), parseInt($stateParams.id))));
       }
     },    
     views: {

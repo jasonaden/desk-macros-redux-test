@@ -1,5 +1,6 @@
 import {Reducer} from 'redux';
 import {IEntityState} from './interfaces';
+import * as Immutable from 'immutable';
 
 import {
   FIND_ONE, FINDING_ONE, FOUND_ONE,
@@ -68,6 +69,7 @@ export function defaultReducer<T> (type: string): Reducer {
   
   return (state: IEntityState = defaultEntityState(), action: any) => {
     let s = Object.assign({}, state);
+
     switch (action.type) {
       // SETUP ACTIONABLE ITEMS
       case `${FINDING}_${type}`:              // LOADING_MANY

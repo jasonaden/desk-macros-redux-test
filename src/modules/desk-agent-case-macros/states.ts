@@ -3,9 +3,11 @@ import {Reducer, combineReducers} from 'redux';
 import {Action} from 'flux-standard-action';
 import {take, put, call, fork, cancel} from 'redux-saga/effects';
 import {takeLatest, SagaCancellationException} from 'redux-saga';
+import * as Immutable from 'immutable';
 
 import {APPLY_MACRO, MACRO_APPLY_ERROR} from '../desk-agent-case-detail/states';
-import {getOpenCase} from '../desk-agent-case-detail/states';
+import {getOpenCaseId} from '../desk-agent-case-detail/states';
+import {getCaseById} from '../desk/resources/case';
 
 export interface IMacro {
   id: number,
@@ -13,111 +15,90 @@ export interface IMacro {
   folders: String[]
 }
 
-// MACROS
-export const SET_MACROS = "SET_MACROS";
-export const setMacros = function setMacros(payload: Object[]): Action<Object[]> {
-  return {
-    type: SET_MACROS,
-    payload
-  }
-};
-const macros:Reducer = (state:Object[] = [], action:Action<Object[]>) => {
-  switch (action.type) {
-		case SET_MACROS:
-			return action.payload.slice(0);
-		default:
-			return state;
-	}
-}
-export const getMacros = (state): IMacro[] => state.deskAgentCaseMacros.macros;
+export const MacroFilter = Immutable.Record({
+  macros: Immutable.Set(),
+  selectedMacroId: -1,
+  macroFilter: '',
+  macroApplyError: ''
+});
 
-// SELECTED MACRO
+export const SET_MACROS = 'SET_MACROS';
 export const SET_SELECTED_MACRO_ID = "SET_SELECTED_MACRO_ID";
-export function setSelectedMacroId (payload: number): Action<number> {
-  return {
-    type: SET_SELECTED_MACRO_ID,
-    payload
-  }
-}
-const selectedMacroId:Reducer = (state:number = -1, action:Action<number>) => {
-  switch (action.type) {
+export const SET_MACRO_FILTER = 'SET_MACRO_FILTER';
+export const SET_MACRO_APPLY_ERROR = 'SET_MACRO_APPLY_ERROR';
+export const CLEAR_MACRO_APPLY_ERROR = 'CLEAR_MACRO_APPLY_ERROR';
+
+export const macroFilter:Reducer = (state = new MacroFilter(), action:Action<any>) => {
+  switch( action.type ) {
+    case SET_MACROS:
+      return state.set('macros', action.payload);
     case SET_SELECTED_MACRO_ID:
-      return action.payload;
-    case SET_MACRO_FILTER:
+      return state.set('selectedMacroId', action.payload);
     case APPLY_MACRO:
-      return -1;
+      return state.set('selectedMacroId', -1);
+    case SET_MACRO_FILTER:
+      return state.set('macroFilter', action.payload);
+    case SET_MACRO_APPLY_ERROR:
+      return state.set('macroApplyError', action.payload);
+    case CLEAR_MACRO_APPLY_ERROR:
+      return state.set('macroApplyError', '');  
     default:
       return state;
   }
 }
-export const getSelectedMacroId = (state): number => state.deskAgentCaseMacros.selectedMacroId;
-export const getSelectedMacro: (state) => IMacro = createSelector(getMacros, getSelectedMacroId, selectedMacroFinder);
-function selectedMacroFinder (macros: IMacro[], selectedMacroId: number) {
-  return macros.find(macro => macro.id == selectedMacroId);
+
+export function setMacros (payload: Object[]): Action<Object[]> {
+  return {
+    type: SET_MACROS,
+    payload
+  };
 }
 
-// MACRO FILTER / FILTERED MACROS
-export const SET_MACRO_FILTER = "SET_MACRO_FILTER";
+export function setSelectedMacroId (payload: number): Action<number> {
+  return {
+    type: SET_SELECTED_MACRO_ID,
+    payload
+  };
+}
+
 export function setMacroFilter(payload: string): Action<string> {
   return {
     type: SET_MACRO_FILTER,
     payload
   }
 }
-const macroFilter:Reducer = (state:string = '', action:Action<string>) => {
-  switch (action.type) {
-    case SET_MACRO_FILTER:
-      return action.payload;
-    default:
-      return state;
-  }
-}
-export const getMacroFilter = (state): string => state.deskAgentCaseMacros.macroFilter;
-export const getFilteredMacros: (state) => IMacro[] = createSelector(getMacros, getMacroFilter, filteredMacrosFinder);
-function filteredMacrosFinder (macros: IMacro[], macroFilter: string) {
-  return macros.filter(macro => macro.name.toLowerCase().indexOf(macroFilter.toLowerCase()) > -1);
-}
 
-
-// MACROS FROM CASE (return list by ids)
-export const getMacrosFromOpenCase: (state) => IMacro[] = createSelector(getMacros, getOpenCase, macrosFromOpenCaseFinder);
-function macrosFromOpenCaseFinder(macros, kase?) {
-  let caseMacros = []
-  
-  if (!kase || !kase.macros) return caseMacros;
-  
-  kase.macros.forEach(macroId => {
-    caseMacros.push(macros.find(m => m.id == macroId));
-  });
-  return caseMacros;
-}
-
-const SET_MACRO_APPLY_ERROR = 'SET_MACRO_APPLY_ERROR';
-export const setMacroApplyError = function setMacroApplyError(payload: string): Action<Object> {
+export function setMacroApplyError(payload: string): Action<string> {
   return {
     type: SET_MACRO_APPLY_ERROR,
     payload
-  };
-}
-const CLEAR_MACRO_APPLY_ERROR = 'CLEAR_MACRO_APPLY_ERROR';
-export const clearMacroApplyError = function clearMacroApplyError(): Action<Object> {
-  return {
-    type: CLEAR_MACRO_APPLY_ERROR,
-    payload: ''
-  };
-}
-const macroApplyError:Reducer = (state:string = '', action:Action<string>) => {
-  switch (action.type) {
-    case SET_MACRO_APPLY_ERROR:
-      return action.payload;
-    case CLEAR_MACRO_APPLY_ERROR:
-      return '';
-    default:
-      return state;
   }
 }
 
-export const getMacroApplyError = (state):string => state.deskAgentCaseMacros.macroApplyError;
+export function clearMacroApplyError(): Action<string> {
+  return {
+    type: CLEAR_MACRO_APPLY_ERROR
+  }
+}
+
+
+export const getSelectedMacro = (state) => {
+  return state.deskAgentCaseMacros.macros.find( m => {
+    return m.id == state.deskAgentCaseMacros.selectedMacroId;
+  });
+}
+export const getMacroFilter = (state) => state.deskAgentCaseMacros.toJS();
+export const getFilteredMacros = (state) => {
+  if( state.deskAgentCaseMacros.macroFilter !== '' ) {
+    return state.deskAgentCaseMacros.macros.filter( macro => {
+      return -1 < macro.name.toLowerCase().indexOf(
+        state.deskAgentCaseMacros.macroFilter.toLowerCase()
+      );
+    });
+  } else {
+    return state.deskAgentCaseMacros.macros;
+  }
+}
 
 export function* failedToApplySaga (getState) {
   yield* takeLatest(SET_MACRO_APPLY_ERROR, clearError);
@@ -138,9 +119,9 @@ function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-export const macroReducers = combineReducers({
+/*export const macroReducers = combineReducers({
   macroFilter,
   selectedMacroId,
   macros,
   macroApplyError
-});
+});*/

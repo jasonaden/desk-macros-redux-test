@@ -1,19 +1,22 @@
 import {Store} from 'redux';
-import {ICase} from '../..//desk/resources/case';
-import {IMacro, getMacrosFromOpenCase} from '../../desk-agent-case-macros/states';
-import {getOpenCase} from '../states';
+import {ICase, getCaseById} from '../..//desk/resources/case';
+import {IMacro} from '../../desk-agent-case-macros/states';
+import {getOpenCase, getAppliedMacros, getSelectedMacroId} from '../states';
 
 const mapStateToThis = (state) => {
   return {
     openCase: getOpenCase(state),
-    caseMacros: getMacrosFromOpenCase(state)
+    selectedMacroId: getSelectedMacroId(state),
+    appliedMacros: getAppliedMacros(state)
   };
 }
 
 export class CaseDetailController {
+  openCase = null;
+  
   constructor ($scope, $ngRedux) {
     let unsubscribe = $ngRedux.connect(mapStateToThis)(this);
-    $scope.$on('$destroy', unsubscribe);
+    $scope.$on('$destroy', unsubscribe);   
   }
 };
 
@@ -30,9 +33,9 @@ export const CaseDetailComponent:ng.IComponentOptions = {
       <span>Type: {{$ctrl.openCase.type}}</span>
       <div>
         <h4>Applied Macros</h4>
-        <span ng-if='!$ctrl.caseMacros.length'>No macros</span>
-        <ul ng-if='$ctrl.caseMacros.length'>
-          <li ng-repeat='macro in $ctrl.caseMacros'>{{macro.name}}</li>
+        <span ng-if='!$ctrl.appliedMacros.length'>No macros</span>
+        <ul ng-if='$ctrl.appliedMacros.length'>
+          <li ng-repeat='macro in $ctrl.appliedMacros'>{{macro.name}}</li>
         </ul>
       </div>
     </div>
