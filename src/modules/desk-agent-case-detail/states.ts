@@ -7,27 +7,31 @@ import * as Immutable from 'immutable';
 import {ICase, getCases, getCaseById} from '../desk/resources/case';
 import {setMacroApplyError} from '../desk-agent-case-macros/states';
 
-export const Case = Immutable.Record({
-  openCase: null,
-  selectedMacro: -1,
-  appliedMacros: Immutable.Set()
+export const CaseDetails = Immutable.Record({
+  activeCaseId: -1,
+  cases: Immutable.Map()
 });
 
+export const CaseDetail = Immutable.Record({
+  kase: null,
+  appliedMacros: Immutable.Set(),
+  actions: Immutable.List()
+});
 
-
-export const SET_OPEN_CASE = 'SET_OPEN_CASE';
+export const SET_ACTIVE_CASE_ID = 'SET_ACTIVE_CASE_ID';
+export const SET_CASE_DETAIL = 'SET_CASE_DETAIL';
 export const SET_SELECTED_MACRO = 'SET_SELECTED_MACRO';
 export const APPLY_MACRO = 'APPLY_MACRO';
 export const APPLY_MACRO_TO_CASE = 'APPLY_MACRO_TO_CASE';
 
-export const caseDetail:Reducer = (state = new Case(), action:Action<any>) => {
+export const caseStore:Reducer = (state = new CaseDetails(), action:Action<any>) => {
   switch(action.type) {
-    case SET_OPEN_CASE:
-      return state.set('openCase', action.payload);
-    case SET_SELECTED_MACRO:
-      return state.set('selectedMacro', action.payload);
+    case SET_CASE_DETAIL:
+      return state.mergeIn(['cases', action.payload.caseId], action.payload.detail);
+    case SET_ACTIVE_CASE_ID:
+      return state.set('activeCaseId', action.payload);
     case APPLY_MACRO_TO_CASE:
-      return state.updateIn(['appliedMacros'], function(macros) {
+      return state.updateIn(['cases', state.activeCaseId, 'appliedMacros'], function(macros) {
         return macros.add(action.payload);
       });
     default:
@@ -35,47 +39,38 @@ export const caseDetail:Reducer = (state = new Case(), action:Action<any>) => {
   }
 }
 
-export function setOpenCase(payload: ICase): Action<Object> {
-  return {
-    type: SET_OPEN_CASE,
-    payload
-  };
+export function setActiveCaseId(payload: number): Action<Object> {
+  return { type: SET_ACTIVE_CASE_ID, payload };
+}
+export function setCaseDetail(payload: Object): Action<Object> {
+  return { type: SET_CASE_DETAIL, payload };
 }
 export function applyMacro(payload: Object): Action<Object> {
-  return {
-    type: APPLY_MACRO, 
-    payload
-  };
+  return { type: APPLY_MACRO, payload };
 }
 export function applyMacroToCase(payload: Object): Action<Object> {
-  return {
-    type: APPLY_MACRO_TO_CASE, 
-    payload
-  };
+  return { type: APPLY_MACRO_TO_CASE, payload };
 }
 export function setSelectedMacro(payload: number): Action<Object> {
-  return {
-    type: SET_SELECTED_MACRO,
-    payload
-  };
+  return { type: SET_SELECTED_MACRO, payload };
 }
 
-export const getOpenCase = (state):ICase => state.deskAgentCaseDetail.openCase;
-export const getSelectedMacroId = (state) => state.deskAgentCaseDetail.selectedMacroId;
-export const getAppliedMacros = (state) => state.deskAgentCaseDetail.appliedMacros.toJS();
+export const getCaseDetail = (state, id) => state.caseStore.cases.get(id);
+export const getActiveCaseDetail = (state) => state.caseStore.cases.get(state.caseStore.activeCaseId);
+export const getActiveCase = (state) => getActiveCaseDetail(state).get('kase');
+export const getAppliedMacros = (state) => getActiveCaseDetail(state).get('appliedMacros');
 
 export function* applyMacroSaga (getState) {
   while (true) {
     // wait for this action to be dispatched
     const action = yield take(APPLY_MACRO);
     // then process it
-    
+
     // if we've hit the limit, dispatch limit event rather than proceeding to add
-    const kase = getOpenCase(getState());
     const appliedMacros = getAppliedMacros(getState());
-    if (2 < appliedMacros.length) {
+    if (2 < appliedMacros.size) {
       yield put(setMacroApplyError('Macro limit reached!'));
-    } else if (-1 < appliedMacros.indexOf(action.payload)) {
+    } else if (appliedMacros.has(action.payload)) {
       yield put(setMacroApplyError('Macro already applied!'));
     } else {
       // add to case since limit not reached

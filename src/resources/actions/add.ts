@@ -12,7 +12,8 @@ export function add (config: config, payload: any, args?: IResourceRequestConfig
     
     return config.adapter.execute({
       url: config.url, 
-      method: 'POST'
+      method: 'POST',
+      data: payload
     })
     .then(
       res => {

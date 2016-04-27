@@ -1,13 +1,12 @@
 import {Store} from 'redux';
 import {ICase, getCaseById} from '../..//desk/resources/case';
 import {IMacro} from '../../desk-agent-case-macros/states';
-import {getOpenCase, getAppliedMacros, getSelectedMacroId} from '../states';
+import {getActiveCase, getAppliedMacros} from '../states';
 
 const mapStateToThis = (state) => {
   return {
-    openCase: getOpenCase(state),
-    selectedMacroId: getSelectedMacroId(state),
-    appliedMacros: getAppliedMacros(state)
+    kase: getActiveCase(state),
+    appliedMacros: getAppliedMacros(state).toJS()
   };
 }
 
@@ -28,9 +27,9 @@ export const CaseDetailComponent:ng.IComponentOptions = {
   },
 	template: `
     <div class='well'>
-      <h3>{{$ctrl.openCase.subject}}</h3>
-      <span>Status: {{$ctrl.openCase.status}}</span>
-      <span>Type: {{$ctrl.openCase.type}}</span>
+      <h3>{{$ctrl.kase.subject}}</h3>
+      <span>Status: {{$ctrl.kase.status}}</span>
+      <span>Type: {{$ctrl.kase.type}}</span>
       <div>
         <h4>Applied Macros</h4>
         <span ng-if='!$ctrl.appliedMacros.length'>No macros</span>

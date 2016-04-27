@@ -19,12 +19,36 @@ export const Filter = Immutable.Record({
   filterText: ''
 });
 
+export const Filters = Immutable.Record({
+  activeFilterId: -1,
+  filters: Immutable.Map()
+});
 
 export const SET_SELECTED_ID = "SET_SELECTED_ID";
 export const SET_FILTER_TEXT = "SET_FILTER_TEXT";
 export const SET_ITEMS = "SET_ITEMS";
 
-export const caseFilter:Reducer = (state = new Filter(), action:Action<any>) => {
+export const SET_FILTER = 'SET_FILTER';
+export const SET_ACTIVE_FILTER_ID = 'SET_ACTIVE_FILTER_ID';
+
+export const filterStore:Reducer = (state = new Filters(), action:Action<any>) => {
+  switch( action.type ) {
+    case SET_FILTER:
+      return state.mergeIn(['filters', action.payload.filterId], action.payload);
+    case SET_ACTIVE_FILTER_ID:
+      return state.set('activeFilterId', action.payload);
+    case SET_SELECTED_ID:
+      return state.setIn(['filters', state.activeFilterId, 'selectedId'], action.payload);
+    case SET_FILTER_TEXT:
+      return state.setIn(['filters', state.activeFilterId, 'filterText'], action.payload);
+    case SET_ITEMS:
+      return state.mergeIn(['filters', state.activeFilterId, 'items'], action.payload);
+    default:
+      return state;
+  }
+}
+
+/*export const caseFilter:Reducer = (state = new Filter(), action:Action<any>) => {
   switch( action.type ) {
     case SET_SELECTED_ID:
       return state.set('selectedId', action.payload);
@@ -35,6 +59,20 @@ export const caseFilter:Reducer = (state = new Filter(), action:Action<any>) => 
     default:
       return state;
   }
+}*/
+
+export function setFilter(payload): Action<any> {
+  return {
+    type: SET_FILTER,
+    payload
+  };
+}
+
+export function setActiveFilterId(payload): Action<any> {
+  return {
+    type: SET_ACTIVE_FILTER_ID,
+    payload
+  };
 }
 
 export function setItems(payload): Action<any> {
@@ -58,13 +96,15 @@ export function setFilterText(payload: string): Action<string> {
   };
 }
 
-export const getFilter = (state) => {
-  return state.filter.toJS();
+export const getActiveFilter = (state) => {
+  if (state.filterStore.activeFilterId == -1) { return null; }
+  return state.filterStore.filters.get(state.filterStore.activeFilterId);
 }
 export const getFilteredItems = (state) => {
-  return state.filter.items.filter( item => {
+  const activeFilter = getActiveFilter(state);
+  return activeFilter.get('items').filter( item => {
     return -1 < item.subject.toLowerCase().indexOf(
-      state.filter.filterText.toLowerCase()
+      activeFilter.get('filterText').toLowerCase()
     );
-  }).toJS();
+  });
 }

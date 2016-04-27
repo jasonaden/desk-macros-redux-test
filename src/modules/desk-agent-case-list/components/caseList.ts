@@ -1,10 +1,9 @@
 
-import {ICase} from '../../desk/resources/case';
-import {getFilter, getFilteredItems, setSelectedId, setFilterText} from '../states';
+import {getActiveFilter, getFilteredItems, setSelectedId, setFilterText} from '../states';
 
 const mapStateToThis = (state) => {
   return {
-    filter: getFilter(state),
+    filter: getActiveFilter(state).toJS(),
     filteredItems: getFilteredItems(state)
   };
 }
@@ -30,7 +29,7 @@ export class CaseList {
     $scope.$on('$destroy', unsubscribe);
   }
   
-  getCaseDisplay (kase: ICase) {
+  getCaseDisplay (kase) {
     return kase.subject;
   }
   
