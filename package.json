@@ -25,6 +25,7 @@
     "redux-logger": "~2.6.1",
     "redux-saga": "~0.9.3",
     "redux-thunk": "^1.0.3",
+    "redux-ui-router": "~0.5.1",
     "reselect": "^2.0.2",
     "rx": "^4.0.8",
     "rx-angular": "~1.1.3"

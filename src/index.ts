@@ -7,10 +7,13 @@ import "./styles/index.scss";
 // Import application modules
 import './modules/desk/module';
 
+import ngReduxUiRouter from 'redux-ui-router';
+
 // export const DeskStore:Store = createStore(rootReducer);
 export const deskMod = angular.module('app', [
   'ngRedux', 
-  'ui.router',   
+  'ui.router',
+  ngReduxUiRouter,
   'desk'
 ]);
 

@@ -1,3 +1,4 @@
+import {stateGo} from 'redux-ui-router';
 
 import {getActiveFilter, getFilteredItems, setSelectedId, setFilterText} from '../states';
 
@@ -15,26 +16,22 @@ const mapDispatchToThis = (dispatch) => {
     },
     onFilterChange: (filter:string) => {
       dispatch(setFilterText(filter));
+    },
+    goToCase: (id:number) => {
+      dispatch(stateGo('desk.agent.case.detail', {id}));
     }
   }
 }
 
 export class CaseList {
-  $state: {go: (string, {id: number}) => void};
 
-  constructor ($scope, $state, $ngRedux) {
-    this.$state = $state;
-
+  constructor ($scope, $ngRedux) {
     let unsubscribe = $ngRedux.connect(mapStateToThis, mapDispatchToThis)(this);
     $scope.$on('$destroy', unsubscribe);
   }
   
   getCaseDisplay (kase) {
     return kase.subject;
-  }
-  
-  goToCase (caseId: number) {
-    return this.$state.go('desk.agent.case.detail', {id: caseId});
   }
   
 };
