@@ -7,6 +7,7 @@ import {ICase, getCases} from '../desk/resources/case';
 
 export const Filter = Immutable.Record({
   filterId: -1,
+  type: 'case',
   sortDirection: 'desc',
   sortField: 'updated_at',
   routingEnabled: false,
@@ -47,19 +48,6 @@ export const filterStore:Reducer = (state = new Filters(), action:Action<any>) =
       return state;
   }
 }
-
-/*export const caseFilter:Reducer = (state = new Filter(), action:Action<any>) => {
-  switch( action.type ) {
-    case SET_SELECTED_ID:
-      return state.set('selectedId', action.payload);
-    case SET_FILTER_TEXT:
-      return state.set('filterText', action.payload);
-    case SET_ITEMS:
-      return state.mergeIn(['items'], action.payload);
-    default:
-      return state;
-  }
-}*/
 
 export function setFilter(payload): Action<any> {
   return {
@@ -103,7 +91,7 @@ export const getActiveFilter = (state) => {
 export const getFilteredItems = (state) => {
   const activeFilter = getActiveFilter(state);
   return activeFilter.get('items').filter( item => {
-    return -1 < item.subject.toLowerCase().indexOf(
+    return -1 < item.get('subject').toLowerCase().indexOf(
       activeFilter.get('filterText').toLowerCase()
     );
   });

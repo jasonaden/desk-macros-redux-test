@@ -5,7 +5,7 @@ import {getActiveFilter, getFilteredItems, setSelectedId, setFilterText} from '.
 const mapStateToThis = (state) => {
   return {
     filter: getActiveFilter(state).toJS(),
-    filteredItems: getFilteredItems(state)
+    filteredItems: getFilteredItems(state).toJS()
   };
 }
 
@@ -24,7 +24,7 @@ const mapDispatchToThis = (dispatch) => {
 }
 
 export class CaseList {
-
+  
   constructor ($scope, $ngRedux) {
     let unsubscribe = $ngRedux.connect(mapStateToThis, mapDispatchToThis)(this);
     $scope.$on('$destroy', unsubscribe);
@@ -33,7 +33,7 @@ export class CaseList {
   getCaseDisplay (kase) {
     return kase.subject;
   }
-  
+
 };
 
 export const CaseListComponent = {

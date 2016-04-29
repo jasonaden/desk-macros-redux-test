@@ -1,4 +1,6 @@
 import {Action} from 'flux-standard-action';
+import * as Immutable from 'immutable';
+
 import {Resource, defaultReducer} from '../../../resources';
 import {caseSchema} from './config/schemas';
 
@@ -33,13 +35,15 @@ export class Case extends Resource<ICase> {
 export const kase = defaultReducer(NAME);
 
 
-export const getCases = (state): ICase[] => {
+export const getCases = (state) => {
   state = state.entities.case;
-  return state.result.map(id => state.items[id]);
+  let cases = Immutable.Set();
+  state.result.map(id => cases = cases.add(state.items.get(id)));
+  return cases;
 }
 
-export const getCaseById = (state, id):ICase =>{
-  return getCases(state).find(kase => kase.id==id);
+export const getCaseById = (state, id) => {
+  return getCases(state).find(kase => kase.get('id')==id);
 }
 
 export const APPLY_MACRO = 'APPLY_MACRO';

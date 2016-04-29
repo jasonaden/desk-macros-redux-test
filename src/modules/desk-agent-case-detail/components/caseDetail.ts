@@ -1,22 +1,27 @@
 import {Store} from 'redux';
 import {ICase, getCaseById} from '../..//desk/resources/case';
 import {IMacro} from '../../desk-agent-case-macros/states';
-import {getActiveCase, getAppliedMacros} from '../states';
+import {getActiveCase, getAppliedMacros, updateCase} from '../states';
 
 const mapStateToThis = (state) => {
   return {
-    kase: getActiveCase(state),
+    kase: getActiveCase(state).toJS(),
     appliedMacros: getAppliedMacros(state).toJS()
   };
 }
 
 export class CaseDetailController {
-  openCase = null;
   
   constructor ($scope, $ngRedux) {
+
     let unsubscribe = $ngRedux.connect(mapStateToThis)(this);
     $scope.$on('$destroy', unsubscribe);   
+
   }
+  
+  /*updateCase () {
+    $ngRedux.dispatch(updateCase($ngRedux.getState(), this.kase));
+  }*/
 };
 
 
@@ -28,6 +33,9 @@ export const CaseDetailComponent:ng.IComponentOptions = {
 	template: `
     <div class='well'>
       <h3>{{$ctrl.kase.subject}}</h3>
+      <div class='row'>
+        <input class='col-md-12' type="text" ng-model="$ctrl.kase.subject">
+      </div>
       <span>Status: {{$ctrl.kase.status}}</span>
       <span>Type: {{$ctrl.kase.type}}</span>
       <div>

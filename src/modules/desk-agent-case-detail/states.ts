@@ -14,6 +14,9 @@ export const CaseDetails = Immutable.Record({
 
 export const CaseDetail = Immutable.Record({
   kase: null,
+  isDirty: false,
+  canUpdate: false,
+  canSend: false,
   appliedMacros: Immutable.Set(),
   actions: Immutable.List()
 });
@@ -30,6 +33,8 @@ export const caseStore:Reducer = (state = new CaseDetails(), action:Action<any>)
       return state.mergeIn(['cases', action.payload.caseId], action.payload.detail);
     case SET_ACTIVE_CASE_ID:
       return state.set('activeCaseId', action.payload);
+    case 'UPDATE_CASE':
+      state.mergeIn(['cases', action.payload.caseId, 'kase'], action.payload);
     case APPLY_MACRO_TO_CASE:
       return state.updateIn(['cases', state.activeCaseId, 'appliedMacros'], function(macros) {
         return macros.add(action.payload);
@@ -38,7 +43,9 @@ export const caseStore:Reducer = (state = new CaseDetails(), action:Action<any>)
       return state;
   }
 }
-
+export function updateCase(payload) {
+  return { type: 'UPDATE_CASE', payload };
+}
 export function setActiveCaseId(payload: number): Action<Object> {
   return { type: SET_ACTIVE_CASE_ID, payload };
 }
