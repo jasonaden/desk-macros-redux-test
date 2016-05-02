@@ -197,7 +197,7 @@ export class RxPoller {
    * @param fn Action function to be called for each iteration of the poller. This method should return a Promise.
    */
   setAction (fn) {
-    this._action = () => fn;
+    this._action = () => fn();
   }
   
   /**
