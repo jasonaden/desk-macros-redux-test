@@ -8,8 +8,10 @@ import "redux-logger";
 import "rx-angular";
 import "redux-immutable";
 import "immutable";
+import "immutable-devtools";
 import "lodash";
 import "redux-ui-router";
+
 
 // load our default (non specific) css
 import "font-awesome/css/font-awesome.css";
