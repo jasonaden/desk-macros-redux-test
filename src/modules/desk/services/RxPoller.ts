@@ -127,7 +127,7 @@ export class RxPoller {
    * When a poll action (Promise) fails, or is rejected, 
    * we will exponentially back off the interval until the max is reached.
    */
-  private _maxInterval$:BehaviorSubject<any> = new BehaviorSubject(8000);  
+  private _maxInterval$:BehaviorSubject<any> = new BehaviorSubject(0);  
   
   /**
    * An Observable which presents the active polling delay between each iteration of the poller.
@@ -206,7 +206,7 @@ export class RxPoller {
    */
   setConfig (config: IRxPollerConfig) {
     this._interval$.onNext(config.interval || this._interval$.getValue() || 8000);
-    this._maxInterval$.onNext(config.maxInterval || this._maxInterval$.getValue() || config.interval || 300000);
+    this._maxInterval$.onNext(config.maxInterval || this._maxInterval$.getValue() || 300000);
     return this;
   }
   
