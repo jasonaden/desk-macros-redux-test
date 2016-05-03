@@ -1,12 +1,3 @@
-import {applyMiddleware} from 'redux';
-import {ngRedux, Middleware} from 'ng-redux';
-import * as thunk from 'redux-thunk';
-import * as createLogger from 'redux-logger';
-import createSagaMiddleware from 'redux-saga';
-
-import {failedToApplySaga, setMacros} from '../desk-agent-case-macros/states';
-import {applyMacroSaga} from '../desk-agent-case-detail/states';
-
 import {
   Case, 
   Customer,
@@ -22,14 +13,21 @@ import '../../resources/module';
 import * as comp from './components';
 import {routes} from './config/routes';
 
-import {rootReducer} from './states';
-
-
-// pre-load from fixture data
-import {macroList} from '../../data/macros';
-import {caseList} from '../../data/cases';
 
 import {RxPollerFactory} from './services/RxPoller';
+import {rootReducer} from './states';
+import {combineReducers} from 'redux';
+import {router} from 'redux-ui-router';
+import {applyMiddleware} from 'redux';
+import {ngRedux, Middleware} from 'ng-redux';
+import * as thunk from 'redux-thunk';
+import * as createLogger from 'redux-logger';
+import createSagaMiddleware from 'redux-saga';
+import {failedToApplySaga, setMacros} from '../desk-agent-case-macros/states';
+import {applyMacroSaga} from '../desk-agent-case-detail/states';
+import {macroList} from '../../data/macros';
+import * as storage from 'redux-storage';
+import createEngine from 'redux-storage-engine-localstorage';
 
 // export const DeskStore:Store = createStore(rootReducer);
 export const deskMod = angular.module('desk', [
@@ -43,9 +41,18 @@ export const deskMod = angular.module('desk', [
 ]);
 
 deskMod.config($ngReduxProvider => {
-  $ngReduxProvider.createStoreWith(
+  const engine = createEngine('desk');
+  const storageMiddleware = storage.createMiddleware(engine);
+
+  const store = $ngReduxProvider.createStoreWith(
     rootReducer,
-    [thunk, createLogger(), 'ngUiRouterMiddleware', createSagaMiddleware(applyMacroSaga, failedToApplySaga)]
+    [
+      thunk, 
+      createLogger(), 
+      'ngUiRouterMiddleware', 
+      createSagaMiddleware(applyMacroSaga, failedToApplySaga),
+      storageMiddleware 
+    ]
   );
 })
 .run(($ngRedux) => {
