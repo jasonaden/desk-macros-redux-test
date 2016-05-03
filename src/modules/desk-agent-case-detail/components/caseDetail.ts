@@ -41,12 +41,22 @@ export class CaseDetailController {
   setSnapCase;
 
   constructor ($rootScope, $q, $scope, $ngRedux, RxPoller, Case) {
-    
-    // save changes to editCase when the poller kicks off
-    // and refresh our local copy when loading completes
-    $scope.$watch(() => Case.store.getState().entities.case.loadingOne, (loading, prevLoading) => {
 
-      if (!loading && prevLoading) {
+    // make local copy from case detail
+    this.kase = getActiveCase($ngRedux.getState()).toJS();
+
+    // connect redux items to controller
+    let unsubscribe = $ngRedux.connect(mapState, mapDispatch)(this);
+    
+    // save unsaved changes when navigating away
+    watchExit = $rootScope.$on('$stateChangeStart', (event) => {
+      this.storeChanges(this.kase);
+    });
+
+    // poll case
+    let poller = new RxPoller('case', { interval:20000 })
+      .setAction(() => Case.findOne(this.kase.id))
+      .subscribe(() => {
         // push local changes into editCase
         this.storeChanges(this.kase);
         
@@ -90,28 +100,12 @@ export class CaseDetailController {
 
         // update case on scope
         this.kase = mergedCase.toJS();
-      }
-    });
-
-    // make local copy from case detail
-    this.kase = getActiveCase($ngRedux.getState()).toJS();
-
-    // connect redux items to controller
-    let unsubscribe = $ngRedux.connect(mapState, mapDispatch)(this);
-    
-    // save unsaved changes when navigating away
-    watchExit = $rootScope.$on('$stateChangeStart', (event) => {
-      this.storeChanges(this.kase);
-    });
-
-    // poll case
-    let poller = new RxPoller('case', { interval:20000 })
-      .setAction(() => Case.findOne(this.kase.id))
+      })
       .start();
 
     $scope.$on('$destroy', () => {
       unsubscribe();
-      watchExit();
+      poller.stop();
     });   
   }
 
