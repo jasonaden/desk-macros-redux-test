@@ -2,6 +2,7 @@ import ngReduxUiRouter from 'redux-ui-router';
 
 // active custom devtools formatters for chrome
 import * as Immutable from 'immutable';
+
 import * as immutableDevTools from 'immutable-devtools';
 immutableDevTools(Immutable);
 
