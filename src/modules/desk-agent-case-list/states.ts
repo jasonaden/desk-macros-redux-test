@@ -28,7 +28,6 @@ export const Filters = Immutable.Record({
 export const SET_SELECTED_ID = "SET_SELECTED_ID";
 export const SET_FILTER_TEXT = "SET_FILTER_TEXT";
 export const SET_ITEMS = "SET_ITEMS";
-
 export const SET_FILTER = 'SET_FILTER';
 export const SET_ACTIVE_FILTER_ID = 'SET_ACTIVE_FILTER_ID';
 
@@ -88,11 +87,12 @@ export const getActiveFilter = (state) => {
   if (state.filterStore.activeFilterId == -1) { return null; }
   return state.filterStore.filters.get(state.filterStore.activeFilterId);
 }
-export const getFilteredItems = (state) => {
-  const activeFilter = getActiveFilter(state);
-  return activeFilter.get('items').filter( item => {
-    return -1 < item.get('subject').toLowerCase().indexOf(
-      activeFilter.get('filterText').toLowerCase()
-    );
+export const getFilteredItems = createSelector(
+  getActiveFilter,
+  (activeFilter) => {
+    return activeFilter.get('items').filter( item => {
+      return -1 < item.get('subject').toLowerCase().indexOf(
+        activeFilter.get('filterText').toLowerCase()
+      );
+    });
   });
-}

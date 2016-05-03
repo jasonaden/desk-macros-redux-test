@@ -9,6 +9,8 @@ import "rx-angular";
 import "redux-immutable";
 import "immutable";
 import "immutable-devtools";
+import "immutablediff";
+import "immutablepatch";
 import "lodash";
 import "redux-ui-router";
 

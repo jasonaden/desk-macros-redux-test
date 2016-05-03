@@ -17,9 +17,9 @@ export const routes = ($stateProvider, $urlRouterProvider, $locationProvider) =>
           $ngRedux.dispatch(setActiveCaseId(id));
         } else {
           const kase = getCaseById($ngRedux.getState(), id);
-          const caseDetail = new CaseDetail({kase: kase});
-          $ngRedux.dispatch(setActiveCaseId(kase.id));
-          $ngRedux.dispatch(setCaseDetail({caseId: kase.id, detail: caseDetail}));
+          const caseDetail = new CaseDetail({snapCase: kase, editCase: kase});
+          $ngRedux.dispatch(setActiveCaseId(kase.get('id')));
+          $ngRedux.dispatch(setCaseDetail({caseId: kase.get('id'), detail: caseDetail}));
         }
         return;
       }

@@ -16,6 +16,8 @@
     "bootstrap": "3.3.6",
     "font-awesome": "4.5.0",
     "immutable": "~3.8.1",
+    "immutablediff": "~0.4.2",
+    "immutablepatch": "~0.2.2",
     "jquery": "2.2.0",
     "lodash": "^4.2.0",
     "ng-redux": "^3.3.3",

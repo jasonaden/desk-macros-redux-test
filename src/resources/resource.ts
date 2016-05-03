@@ -211,7 +211,7 @@ export class Resource<T> {
    */
   findOne(id: number, config?: IResourceRequestConfig): ng.IPromise<any> {
     return this.$q.when(this.beforeFindOne(id, config))
-    .then(args => this.store.dispatch(findOne(this, args)))
+    .then(args => this.store.dispatch(findOne(this, id)))
     .then(data => this.afterFindOne(data));
   }
   

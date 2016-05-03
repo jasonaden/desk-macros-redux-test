@@ -100,8 +100,10 @@ export function defaultReducer<T> (type: string): Reducer {
         
         return state;
       // LOAD_MANY_CASE
+      case t(FIND_ONE, type): // LOAD_ONE_CASE
+        return state.setIn(['items', '/cases/' + action.payload.id], Immutable.fromJS(action.payload));
       case t(ADD, type): // ADD_SOMETHING
-        return state.setIn(['items', action.payload._links.self.href], action.payload);
+        return state.setIn(['items', action.payload._links.self.href], Immutable.fromJS(action.payload));
       // TODO: ERROR CASE
       default:
         return state;

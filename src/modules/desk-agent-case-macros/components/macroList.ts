@@ -65,7 +65,7 @@ export const MacroListComponent = {
           item-name="$ctrl.getMacroDisplay(item)"></filter-list>
       </list>
     </filter-list-selector>
-    <input ng-show='$ctrl.macroFilter.selectedMacroId' type="button" class='btn btn-primary' ng-click="$ctrl.applyMacro($ctrl.selectedMacro)" value="Apply Macro To Case"></input>
+    <input ng-show='$ctrl.macroFilter.selectedMacroId > -1' type="button" class='btn btn-primary' ng-click="$ctrl.applyMacro($ctrl.selectedMacro)" value="Apply Macro To Case"></input>
     <span class='danger' ng-show='$ctrl.macroFilter.macroApplyError'>{{$ctrl.macroFilter.macroApplyError}}</span>
 	`
 }

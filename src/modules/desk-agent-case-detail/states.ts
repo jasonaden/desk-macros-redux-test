@@ -3,8 +3,11 @@ import {Reducer, combineReducers} from 'redux';
 import {Action} from 'flux-standard-action';
 import {take, put, call, fork, cancel} from 'redux-saga/effects';
 import * as Immutable from 'immutable';
+import * as diff from 'immutablediff';
+import * as patch from 'immutablepatch';
 
-import {ICase, getCases, getCaseById} from '../desk/resources/case';
+import {FIND_ONE} from '../../resources/constants';
+import {Case} from '../desk/resources/case';
 import {setMacroApplyError} from '../desk-agent-case-macros/states';
 
 export const CaseDetails = Immutable.Record({
@@ -13,7 +16,8 @@ export const CaseDetails = Immutable.Record({
 });
 
 export const CaseDetail = Immutable.Record({
-  kase: null,
+  snapCase: null,
+  editCase: null,
   isDirty: false,
   canUpdate: false,
   canSend: false,
@@ -26,6 +30,7 @@ export const SET_CASE_DETAIL = 'SET_CASE_DETAIL';
 export const SET_SELECTED_MACRO = 'SET_SELECTED_MACRO';
 export const APPLY_MACRO = 'APPLY_MACRO';
 export const APPLY_MACRO_TO_CASE = 'APPLY_MACRO_TO_CASE';
+export const UPDATE_CASE = 'UPDATE_CASE';
 
 export const caseStore:Reducer = (state = new CaseDetails(), action:Action<any>) => {
   switch(action.type) {
@@ -33,8 +38,47 @@ export const caseStore:Reducer = (state = new CaseDetails(), action:Action<any>)
       return state.mergeIn(['cases', action.payload.caseId], action.payload.detail);
     case SET_ACTIVE_CASE_ID:
       return state.set('activeCaseId', action.payload);
-    case 'UPDATE_CASE':
-      state.mergeIn(['cases', action.payload.caseId, 'kase'], action.payload);
+    case UPDATE_CASE:
+      return state.mergeIn(['cases', action.payload.get('id'), 'editCase'], action.payload);
+    case FIND_ONE + '_CASE':
+      if ( state.activeCaseId == action.payload.id ) {
+        // snapshot of case where we initially forked for editing
+        const snapCase = state.cases.get(state.activeCaseId).get('snapCase');
+        // unsaved edited version of case
+        const editCase = state.cases.get(state.activeCaseId).get('editCase');
+        // externally changed version of case
+        const foundCase = Immutable.fromJS(action.payload);
+        
+        // how external changes differ from our fork point
+        const remoteChanges = diff(snapCase, foundCase);
+        // nothing to do if there are no remote changes
+        if (remoteChanges.count() == 0) { return state; }
+        
+        // how our local changes differ from our fork point 
+        const localChanges = diff(snapCase, editCase);
+        // if there are no local changes, accept remote as snap and edit version
+        if (localChanges.count() == 0) {
+          state = state.mergeIn(['cases', state.activeCaseId, 'editCase'], foundCase);
+          state = state.mergeIn(['cases', state.activeCaseId, 'snapCase'], foundCase);
+          return state;
+        }
+        
+        // merged set of changes with local changes at the end
+        const changes = remoteChanges.concat(localChanges);
+       
+        // updated case which merges remote and local changes,
+        // giving preference to our local changes
+        const mergedCase = patch(editCase, changes);
+        
+        // update store's edited case with the merge
+        state = state.mergeIn(['cases', state.activeCaseId, 'editCase'], mergedCase);
+        
+        // update store's snapshot to the new remote version
+        state = state.mergeIn(['cases', state.activeCaseId, 'snapCase'], foundCase);
+        
+        return state;
+      }
+      return state;
     case APPLY_MACRO_TO_CASE:
       return state.updateIn(['cases', state.activeCaseId, 'appliedMacros'], function(macros) {
         return macros.add(action.payload);
@@ -43,8 +87,8 @@ export const caseStore:Reducer = (state = new CaseDetails(), action:Action<any>)
       return state;
   }
 }
-export function updateCase(payload) {
-  return { type: 'UPDATE_CASE', payload };
+export function updateCase(payload:Object): Action<Object> {
+  return { type: UPDATE_CASE, payload };
 }
 export function setActiveCaseId(payload: number): Action<Object> {
   return { type: SET_ACTIVE_CASE_ID, payload };
@@ -64,7 +108,7 @@ export function setSelectedMacro(payload: number): Action<Object> {
 
 export const getCaseDetail = (state, id) => state.caseStore.cases.get(id);
 export const getActiveCaseDetail = (state) => state.caseStore.cases.get(state.caseStore.activeCaseId);
-export const getActiveCase = (state) => getActiveCaseDetail(state).get('kase');
+export const getActiveCase = (state) => getActiveCaseDetail(state).get('editCase');
 export const getAppliedMacros = (state) => getActiveCaseDetail(state).get('appliedMacros');
 
 export function* applyMacroSaga (getState) {

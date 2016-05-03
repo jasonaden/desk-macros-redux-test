@@ -36,9 +36,9 @@ export const kase = defaultReducer(NAME);
 
 
 export const getCases = (state) => {
-  state = state.entities.case;
+  let entities = state.entities.case;
   let cases = Immutable.Set();
-  state.result.map(id => cases = cases.add(state.items.get(id)));
+  entities.result.map(id => cases = cases.add(entities.items.get(id)));
   return cases;
 }
 

@@ -198,6 +198,7 @@ export class RxPoller {
    */
   setAction (fn) {
     this._action = () => fn();
+    return this;
   }
   
   /**
@@ -205,7 +206,8 @@ export class RxPoller {
    */
   setConfig (config: IRxPollerConfig) {
     this._interval$.onNext(config.interval || this._interval$.getValue() || 8000);
-    this._maxInterval$.onNext(config.maxInterval || this._maxInterval$.getValue() || 300000);
+    this._maxInterval$.onNext(config.maxInterval || this._maxInterval$.getValue() || config.interval || 300000);
+    return this;
   }
   
   /**
@@ -214,7 +216,8 @@ export class RxPoller {
    * @param cb Function to be called with the results of each interation of the poller.
    */
   subscribe (cb) {
-    this._poller$.subscribe(cb);  
+    this._poller$.subscribe(cb);
+    return this;
   }
   
   /**
