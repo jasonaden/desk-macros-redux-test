@@ -13,7 +13,6 @@ import '../../resources/module';
 import * as comp from './components';
 import {routes} from './config/routes';
 
-
 import {RxPollerFactory} from './services/RxPoller';
 import {rootReducer} from './states';
 import {combineReducers} from 'redux';
@@ -61,6 +60,9 @@ deskMod.config($ngReduxProvider => {
 
 deskMod
   .config(routes)
+  .provider('autoSaveFormDefaults', comp.autoSaveFormProvider)
+  .directive('autoSaveForm', comp.autoSaveForm.factory())
+  .directive('autoSaveFormProperty', comp.autoSaveFormProperty.factory())
   .component('filterList', comp.FilterListComponent)
   .component('filterListSelector', comp.FilterListSelectorComponent)
   .component('filterListFilter', comp.FilterListFilterComponent)

@@ -44,7 +44,7 @@ export class CaseDetailController {
 
     // make local copy from case detail
     this.kase = getActiveCase($ngRedux.getState()).toJS();
-
+    
     // connect redux items to controller
     let unsubscribe = $ngRedux.connect(mapState, mapDispatch)(this);
     
@@ -107,8 +107,13 @@ export class CaseDetailController {
       unsubscribe();
       poller.stop();
     });   
+    
+    $scope.autoSaveCallback = () => {
+      this.storeChanges(this.kase);
+    }
+       
   }
-
+  
 };
 
 
@@ -122,9 +127,9 @@ export const CaseDetailComponent:ng.IComponentOptions = {
       <button class='btn btn-primary' ng-click='$ctrl.goBack()'>Back to Case List</button>
       <button class='btn btn-primary' ng-click='$ctrl.storeChanges($ctrl.kase)'>Save Local</button>
       <h3>{{$ctrl.kase.subject}}</h3>
-      <div class='row'>
+      <ng-form class='row' name='caseDetailForm' auto-save-form='autoSaveCallback'>
         <input class='col-md-12' type="text" ng-model="$ctrl.kase.subject">
-      </div>
+      </ng-form>
       <span>Status: {{$ctrl.kase.status}}</span>
       <span>Type: {{$ctrl.kase.type}}</span>
       <div>
