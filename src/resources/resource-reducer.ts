@@ -83,7 +83,7 @@ export function defaultReducer<T> (type: string): Reducer {
         return state.set('adding', true);
       
       // LOAD_MANY_CASE
-      case t(FIND, type):
+      case t(FOUND, type):
         // Turn off loading indicator
         state = state.set('loadingMany', false);
 
@@ -101,7 +101,7 @@ export function defaultReducer<T> (type: string): Reducer {
         return state;
 
       // LOAD_ONE_CASE
-      case t(FIND_ONE, type):
+      case t(FOUND_ONE, type):
         // turn off loading indicator
         state = state.set('loadingOne', false);
         

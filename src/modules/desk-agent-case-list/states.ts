@@ -5,6 +5,11 @@ import * as Immutable from 'immutable';
 
 import {ICase, getCases} from '../desk/resources/case';
 
+export const Filters = Immutable.Record({
+  activeFilterId: -1,
+  filters: Immutable.Map()
+});
+
 export const Filter = Immutable.Record({
   filterId: -1,
   type: 'case',
@@ -20,10 +25,7 @@ export const Filter = Immutable.Record({
   filterText: ''
 });
 
-export const Filters = Immutable.Record({
-  activeFilterId: -1,
-  filters: Immutable.Map()
-});
+
 
 export const SET_SELECTED_ID = "SET_SELECTED_ID";
 export const SET_FILTER_TEXT = "SET_FILTER_TEXT";

@@ -1,7 +1,7 @@
 
 import {normalize, arrayOf} from 'normalizr';
 import {action} from '../actions/action';
-import {FIND, ADD} from '../constants';
+import {FOUND, ADD} from '../constants';
 
 export function splitSchema (schema, name: string, data) {
   return (dispatch, store) => {
@@ -14,7 +14,7 @@ export function splitSchema (schema, name: string, data) {
     }
     // Dispatch event for the main data that was gathered on this request.
     // This includes metadata about the collection.
-    dispatch(action(FIND, name.toUpperCase(), {
+    dispatch(action(FOUND, name.toUpperCase(), {
       result: normalized.result,
       items: normalized.entities[name.toLowerCase()],
       meta: {

@@ -25,9 +25,16 @@ const mapDispatchToThis = (dispatch) => {
 
 export class CaseList {
   
-  constructor ($scope, $ngRedux) {
+  constructor ($scope, $ngRedux, Case, RxPoller) {
     let unsubscribe = $ngRedux.connect(mapStateToThis, mapDispatchToThis)(this);
-    $scope.$on('$destroy', unsubscribe);
+    let poller = new RxPoller('case-list', { interval:20000 })
+      .setAction(() => Case.find())
+      .start();
+
+    $scope.$on('$destroy', () => {
+      unsubscribe();
+      poller.stop();
+    });
   }
   
   getCaseDisplay (kase) {
