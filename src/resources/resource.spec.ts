@@ -102,7 +102,7 @@ describe('Resource', () => {
     it ('dispatches the proper actions on success', () => {
       let actions = [
         { type: 'FINDING_CASE', payload: undefined},
-        { type: 'FIND_CASE', payload: {
+        { type: 'FOUND_CASE', payload: {
             result: [ '/cases/1' ],
             items: {
               '/cases/1': {

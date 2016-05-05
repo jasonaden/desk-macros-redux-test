@@ -1,6 +1,7 @@
-import {defaultReducer} from './resource-reducer';
+import {defaultReducer, defaultEntityState} from './resource-reducer';
 import {IEntityState} from './interfaces';
 import {Reducer} from 'redux';
+import * as Immutable from 'immutable';
 import 'angular-mocks';
 
 import {
@@ -17,147 +18,97 @@ import {
 let type: string = 'CASE';
 let reducer: Reducer;
 
+
 describe('defaultReducer', () => {
   
   beforeEach(() => {
     reducer = defaultReducer(type);    
   })
         
-  it ('returns a default state', () => {   
+  it ('returns a default entity state', () => {   
     expect(
        reducer(undefined, {})
-     ).toEqual(
-       {
-          result: [],
-          loadingMany: false,
-          loadingOne: false,
-          deleting: false,
-          patching: false,
-          adding: false,
-          items: {}
-        }
-     );
+     ).toEqual(new defaultEntityState());
   });  
   
   it ('should handle FINDING_CASE', () => {
     expect(
-       reducer(undefined, {
-         type: `${FINDING}_${type}`
-       })
-     ).toEqual(
-       {
-          result: [],
-          loadingMany: true,
-          loadingOne: false,
-          deleting: false,
-          patching: false,
-          adding: false,
-          items: {}
-        }
-     );
+      Immutable.is(
+        reducer(undefined, {
+         type: `${FINDING}_${type}`,
+        }),
+        new defaultEntityState({ loadingMany: true })
+    )).toBe(true);
   });
   
   it ('should handle FINDING_ONE_CASE', () => {
     expect(
-       reducer(undefined, {
+      Immutable.is(
+        reducer(undefined, {
          type: `${FINDING_ONE}_${type}`,
-       })
-     ).toEqual(
-       {
-          result: [],
-          loadingMany: false,
-          loadingOne: true,
-          deleting: false,
-          patching: false,
-          adding: false,
-          items: {}
-        }
-     );
+        }),
+        new defaultEntityState({ loadingOne: true })
+    )).toBe(true);
   });
   
   it ('should handle DESTROYING_CASE', () => {
     expect(
-       reducer(undefined, {
-         type: `${DESTROYING}_${type}`
-       })
-     ).toEqual(
-       {
-          result: [],
-          loadingMany: false,
-          loadingOne: false,
-          deleting: true,
-          patching: false,
-          adding: false,
-          items: {}
-        }
-     );
+      Immutable.is(
+        reducer(undefined, {
+         type: `${DESTROYING}_${type}`,
+        }),
+        new defaultEntityState({ deleting: true })
+    )).toBe(true);
   });
   
   it ('should handle PATCHING_CASE', () => {
     expect(
-       reducer(undefined, {
-         type: `${PATCHING}_${type}`
-       })
-     ).toEqual(
-       {
-          result: [],
-          loadingMany: false,
-          loadingOne: false,
-          deleting: false,
-          patching: true,
-          adding: false,
-          items: {}
-        }
-     );
+      Immutable.is(
+        reducer(undefined, {
+         type: `${PATCHING}_${type}`,
+        }),
+        new defaultEntityState({ patching: true })
+    )).toBe(true);
   });
   
   it ('should handle ADDING_CASE', () => {
     expect(
-       reducer(undefined, {
-         type: `${ADDING}_${type}`
-       })
-     ).toEqual(
-       {
-          result: [],
-          loadingMany: false,
-          loadingOne: false,
-          deleting: false,
-          patching: false,
-          adding: true,
-          items: {}
-        }
-     );
+      Immutable.is(
+        reducer(undefined, {
+         type: `${ADDING}_${type}`,
+        }),
+        new defaultEntityState({ adding: true })
+    )).toBe(true);
   });
   
-  it ('should handle FIND_CASE', () => {
+  it ('should handle FIND_CASE', () => {  
+    let actual = reducer(undefined, {
+      type: `${FOUND}_${type}`,
+      payload: {
+        result: ['/cases/1'],
+        items: {
+          '/cases/1': { _links: {self: {href: '/cases/1'}}, _embedded: {entries: [{}]} }
+        },
+        meta: null
+      }        
+    });
+    
+    let expected = new defaultEntityState({ 
+      result: Immutable.List(['/cases/1']),
+      items: Immutable.Map({
+        '/cases/1': Immutable.fromJS({
+          _links: {self: {href: '/cases/1'}}, _embedded: {entries: [{}]}
+        })
+      }),
+      meta: null
+    });
+     
     expect(
-       reducer(undefined, {
-         type: `${FIND}_${type}`,
-         payload: {
-           result: ['/cases/1'],
-           items: {
-             '/cases/1': {
-               _links: {self: {href: '/cases/1'}}, _embedded: {entries: [{}]}
-             }
-           }
-         }
-       })
-     ).toEqual(
-       {
-          result: ['/cases/1'],
-          loadingMany: false,
-          loadingOne: false,
-          deleting: false,
-          patching: false,
-          adding: false,
-          items: {
-            '/cases/1': {
-               _links: {self: {href: '/cases/1'}}, _embedded: {entries: [{}]}
-             }
-          },
-          meta: {}
-        }
-     );
+      Immutable.is(
+        actual,
+        expected
+    )).toBe(true);
+        
   });
   
 });
