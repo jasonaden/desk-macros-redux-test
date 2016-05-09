@@ -93,6 +93,12 @@ export class RxPoller {
   private static _pollers = new Map<String, RxPoller>();
   
   /**
+   * The name of the poller. Mainly to be used for poller.destroy(), 
+   * so the instance can clean itself up.
+   */
+  private _name;
+
+  /**
    * A private cached function to be called for each iteration of the poller.
    * @returns Must return a promise.
    */
@@ -165,6 +171,7 @@ export class RxPoller {
    */
   constructor (name: string, config: IRxPollerConfig) {
     this.setConfig(config);
+    this._name = name;
     RxPoller.setPoller(name, this);
     return this;
   }
@@ -229,6 +236,7 @@ export class RxPoller {
     Observable.timer(forceStart ? 0 : this._interval$.getValue()).subscribe( _ => {
       this._connection = this._poller$.connect(); 
     });
+    return this;
   }
   
   /**
@@ -236,7 +244,16 @@ export class RxPoller {
    */
   stop () {
     this._connection.dispose();
-  }  
+  }
+  
+  destroy () {
+    this.stop();
+    RxPoller.removePoller(this._name);
+  }
+  
+  static removePoller (name) {
+    delete this._pollers[name];
+  }
 }
 
 export const RxPollerFactory = () => RxPoller

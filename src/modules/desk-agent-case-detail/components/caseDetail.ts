@@ -27,6 +27,9 @@ const mapDispatch = (dispatch) => {
     },
     goBack: () => {
       dispatch(stateGo('desk.agent.case.list'));
+    },
+    goToCase: (id) => {
+      dispatch(stateGo('desk.agent.case.detail', {id:id}));
     }
   };
 }
@@ -54,7 +57,8 @@ export class CaseDetailController {
     });
 
     // poll case
-    let poller = new RxPoller('case', { interval:20000 })
+    let poller = RxPoller.getPoller('case') || new RxPoller('case', { interval:20000 });
+    poller
       .setAction(() => Case.findOne(this.kase.id))
       .subscribe(() => {
         // push local changes into editCase
@@ -126,6 +130,7 @@ export const CaseDetailComponent:ng.IComponentOptions = {
     <div class='well'>
       <button class='btn btn-primary' ng-click='$ctrl.goBack()'>Back to Case List</button>
       <button class='btn btn-primary' ng-click='$ctrl.storeChanges($ctrl.kase)'>Save Local</button>
+      <input ng-model='$ctrl.goToCaseId'><button ng-click='$ctrl.goToCase($ctrl.goToCaseId)'>Go to Case</button>
       <h3>{{$ctrl.kase.subject}}</h3>
       <ng-form class='row' name='caseDetailForm' auto-save-form='autoSaveCallback'>
         <input class='col-md-12' type="text" ng-model="$ctrl.kase.subject">

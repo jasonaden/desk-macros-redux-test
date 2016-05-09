@@ -43,7 +43,7 @@ export const getCases = (state) => {
 }
 
 export const getCaseById = (state, id) => {
-  return getCases(state).find(kase => kase.get('id')==id);
+  return state.entities.case.items.get('/cases/'+id);
 }
 
 export const APPLY_MACRO = 'APPLY_MACRO';

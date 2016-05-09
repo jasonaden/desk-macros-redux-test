@@ -25,8 +25,6 @@ import createSagaMiddleware from 'redux-saga';
 import {failedToApplySaga, setMacros} from '../desk-agent-case-macros/states';
 import {applyMacroSaga} from '../desk-agent-case-detail/states';
 import {macroList} from '../../data/macros';
-import * as storage from 'redux-storage';
-import createEngine from 'redux-storage-engine-localstorage';
 
 // export const DeskStore:Store = createStore(rootReducer);
 export const deskMod = angular.module('desk', [
@@ -40,8 +38,6 @@ export const deskMod = angular.module('desk', [
 ]);
 
 deskMod.config($ngReduxProvider => {
-  const engine = createEngine('desk');
-  const storageMiddleware = storage.createMiddleware(engine);
 
   const store = $ngReduxProvider.createStoreWith(
     rootReducer,
@@ -49,8 +45,7 @@ deskMod.config($ngReduxProvider => {
       thunk, 
       createLogger(), 
       'ngUiRouterMiddleware', 
-      createSagaMiddleware(applyMacroSaga, failedToApplySaga),
-      storageMiddleware 
+      createSagaMiddleware(applyMacroSaga, failedToApplySaga)
     ]
   );
 })

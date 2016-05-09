@@ -13,9 +13,6 @@ import "immutablediff";
 import "immutablepatch";
 import "lodash";
 import "redux-ui-router";
-import 'redux-storage';
-import 'redux-storage-engine-localstorage';
-import 'redux-storage-merger-immutablejs';
 
 
 // load our default (non specific) css
