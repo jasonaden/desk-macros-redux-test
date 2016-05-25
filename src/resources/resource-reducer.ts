@@ -1,6 +1,5 @@
 import {Reducer} from 'redux';
 import {IEntityState} from './interfaces';
-import {Record} from 'immutable';
 
 import {
   FIND_ONE, FINDING_ONE, FOUND_ONE,
@@ -13,7 +12,7 @@ import {
   ERROR
 } from './constants';
 
-function defaultEntityState (): Record<IEntityState> {
+function defaultEntityState (): IEntityState {
   return {
     result: [],
     loadingMany: false,
@@ -83,8 +82,8 @@ export function defaultReducer<T> (type: string): Reducer {
       case `${ADDING}_${type}`:               // ADDING
         return Object.assign(s, {adding: true});
       
-      // LOAD_MANY_CASE
-      case t(FIND, type): // LOAD_MANY_CASE
+      // This is the load many action. FIND_CASE for instance vs FIND_ONE_CASE.
+      case t(FIND, type):
         // Turn off loading indicator
         s.loadingMany = false;
         
@@ -101,7 +100,11 @@ export function defaultReducer<T> (type: string): Reducer {
         s.meta = Object.assign({}, action.payload.meta);
         
         return s;
-      // LOAD_MANY_CASE
+      
+      case t(FIND_ONE, type):
+        debugger 
+        return s;
+        
       case t(ADD, type): // ADD_SOMETHING
         s.items = Object.assign({}, s.items);
         s.items[action.payload._links.self.href] = action.payload;

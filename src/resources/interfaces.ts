@@ -1,4 +1,4 @@
-
+import {ResourceAdapterConfig} from './resource-adapter-config';
 /**
  * Instance configuration for a ResourceAdapter. These are the configurable properties
  * that can be adjusted in the constructor for a Resource Adapter.
@@ -46,7 +46,7 @@ export interface IResourceAdapter extends IResourceAdapterConfig {
    * method gives a single interface for executing on actions.
    */
   generateSlug: (entity: any) => string;
-  execute: (config: IResourceRequestConfig) => ng.IPromise<any>;
+  execute: (config: ResourceAdapterConfig) => ng.IPromise<any>;
   reviver: (key: string, value: any) => any;
   doRequest: (config: IResourceRequestConfig) => ng.IPromise<any>;
   transformResponse: (data: any, headers: any) => any;

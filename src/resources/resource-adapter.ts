@@ -1,9 +1,8 @@
 
-import * as ng from 'angular';
-
 import {joinUrl, parseJson, generateConfig} from './utils';
 
 import {IResourceAdapter, IResourceAdapterConfig, IResourceRequestConfig} from './interfaces';
+import {ResourceAdapterConfig} from './resource-adapter-config';
 
 /*
 * Base Adapter for an API. The adapter handles
@@ -28,8 +27,8 @@ export class ResourceAdapter implements IResourceAdapter {
   }
 
   // Execute request based on given DsResourceAdapterConfig
-  execute (config: IResourceRequestConfig): ng.IPromise<any> {
-    return this.doRequest(config);
+  execute (config: ResourceAdapterConfig): ng.IPromise<any> {
+    return this.doRequest(config.build());
   }
     
   // Default reviver (override this)
@@ -63,5 +62,5 @@ export class ResourceAdapter implements IResourceAdapter {
   // Default interceptors
   interceptors: ng.IHttpInterceptor | ng.IHttpInterceptor[];
 
-
 }
+

@@ -1,21 +1,21 @@
 import {Resource} from './resource';
 import * as configureMockStore from 'redux-mock-store';
 import * as thunk from 'redux-thunk';
+import {Schema} from 'normalizr';
 
 const middlewares = [ thunk ]
 const mockStore = configureMockStore(middlewares)
 
 let $httpBackend: ng.IHttpBackendService;
 let $rootScope: ng.IRootScopeService;
-let Case;
 let store = mockStore({});;
-let url: string = 'http://localhost:8888/api/v2/cases';
+let url: string = 'http://localhost:8888/api/v2/testResource';
 let response = {
    "total_entries": 1,
    "page": 1,
    "_links": {
       "self": {
-         "href": "/api/v2/cases?page=1&per_page=50",
+         "href": "/api/v2/testResource?page=1&per_page=50",
          "class": "page"
       }
    },
@@ -23,34 +23,12 @@ let response = {
       "entries": [
          {
             "id": 1,
-            "subject": "Test case subject",
+            "subject": "Test Resource subject",
             "_links": {
               "self": {
-                "href": "/api/v2/cases/1",
-                "class": "page"
+                "href": "/api/v2/testResource/1",
+                "class": "testResource"
               }
-            },
-            "_embedded": {
-               "customer": {
-                  "id": 10,
-                  "name": "John Smith",
-                  "_links": {
-                    "self": {
-                      "href": "/api/v2/customers/10",
-                      "class": "page"
-                    }
-                  }
-               },
-               "message": {
-                  "id": 20,
-                  "body": "Message body",
-                  "_links": {
-                    "self": {
-                      "href": "/api/v2/cases/1/message",
-                      "class": "page"
-                    }
-                  }
-               }
             }
          }
       ]
@@ -58,18 +36,33 @@ let response = {
 }
 
 describe('Resource', () => {
+  
+  var schema = new Schema('testResource');
+  
+  class _TestResource_ extends Resource<any> {
+    className = 'TEST_RESOURCE';
+    url = '/testResource';
+    constructor ($ngRedux, $http, $q, ApiV2Adapter) {
+      super($ngRedux, $http, $q, ApiV2Adapter, schema);
+    }
+  }
+  let TestResource: Resource<_TestResource_>;
 
   beforeEach(angular.mock.module('app'));
+  
+  beforeEach(angular.mock.module($provide => {
+    $provide.service('TestResource', _TestResource_);
+  }));
 
-  beforeEach(inject(function(_$httpBackend_, _$rootScope_, _Case_) {
+  beforeEach(inject(function(_$httpBackend_, _$rootScope_, _TestResource_) {
     $httpBackend = _$httpBackend_;
     $rootScope = _$rootScope_;
-    Case = _Case_;
+    TestResource = _TestResource_;
 
     // Mock the store
-    Case.store = store;
+    TestResource.store = store;
 
-    Case.store.clearActions();
+    TestResource.store.clearActions();
   }));
 
   afterEach(() => {
@@ -78,97 +71,82 @@ describe('Resource', () => {
   });
 
   it ('should have isLoading method default to false', () => {
-    expect(Case.isLoading()).toBe(false);
+    expect(TestResource.isLoading()).toBe(false);
   });
 
   it ('should have isLoading(id) method default to false', () => {
-    expect(Case.isLoading(1)).toBe(false);
+    expect(TestResource.isLoading(1)).toBe(false);
   });
   
   describe ('find()', () => {
     it ('dispatches the proper actions on error', () => {
       let actions;
       $httpBackend.whenGET(url).respond(500, response);
-      Case.find().catch((error) => {
+      TestResource.find().catch((error) => {
         actions = [
-          { type: 'FINDING_CASE', payload: undefined},
-          { type: 'ERROR_CASE', payload: error}
+          { type: 'FINDING_TEST_RESOURCE', payload: undefined},
+          { type: 'ERROR_TEST_RESOURCE', payload: error}
         ];
       });
       $httpBackend.flush();
-      expect(Case.store.getActions()).toEqual(actions);
+      expect(TestResource.store.getActions()).toEqual(actions);
     });
-
+    
     it ('dispatches the proper actions on success', () => {
       let actions = [
-        { type: 'FINDING_CASE', payload: undefined},
-        { type: 'FIND_CASE', payload: {
-            result: [ '/cases/1' ],
+        { type: 'FINDING_TEST_RESOURCE', payload: undefined},
+        { type: 'FIND_TEST_RESOURCE', payload: {
+            result: [ 1 ],
             items: {
-              '/cases/1': {
-                id: 1,
-                subject: 'Test case subject',
-                _links: {
-                  self: {
-                    href: '/api/v2/cases/1',
-                    class: 'page'
+              '1': {
+                "id": 1,
+                "subject": "Test Resource subject",
+                "_links": {
+                  "self": {
+                    "href": "/api/v2/testResource/1",
+                    "class": "testResource"
                   }
-                },
-                _embedded: {
-                  customer: {
-                    "id": 10,
-                    "name": "John Smith",
-                    "_links": {
-                      "self": {
-                        "href": "/api/v2/customers/10",
-                        "class": "page"
-                      }
-                    }
-                },
-                  message: {
-                    "id": 20,
-                    "body": "Message body",
-                    "_links": {
-                      "self": {
-                        "href": "/api/v2/cases/1/message",
-                        "class": "page"
-                      }
-                    }
-                  }
-                },
-                customer: '/customers/10',
-                message: '/cases/1/message' }
+                }
+              }
             },
             meta: {
               count: 1,
               page: 1,
               links: {
                 self: {
-                  href: '/api/v2/cases?page=1&per_page=50',
+                  href: '/api/v2/testResource?page=1&per_page=50',
                   class: 'page'
                 }
               }
             }
           }
-        },
-        { type: 'ADD_CUSTOMER', payload: response._embedded.entries[0]._embedded.customer},
-        { type: 'ADD_INTERACTION', payload: response._embedded.entries[0]._embedded.message}
+        }
       ];
       $httpBackend.whenGET(url).respond(200, response);
-      Case.find();
+      TestResource.find();
       $httpBackend.flush();
-      expect(Case.store.getActions()).toEqual(actions);
+      expect(TestResource.store.getActions()).toEqual(actions);
     });
     
     it ('calls before and after lifecycle hooks', () => {
-      spyOn(Case, 'beforeFind').and.callThrough();
-      spyOn(Case, 'afterFind').and.callThrough();      
+      spyOn(TestResource, 'beforeFind').and.callThrough();
+      spyOn(TestResource, 'afterFind').and.callThrough();      
       $httpBackend.whenGET(url).respond(200, response);
-      Case.find();
+      TestResource.find();
       $httpBackend.flush();
-      expect(Case.beforeFind).toHaveBeenCalled();
-      expect(Case.afterFind).toHaveBeenCalled();
+      expect(TestResource.beforeFind).toHaveBeenCalled();
+      expect(TestResource.afterFind).toHaveBeenCalled();
     });
+    
+    it('returns a promise resolving with listing data from API', () => {
+      $httpBackend.whenGET(url).respond(200, response);
+      TestResource.find().then(cases => {
+        expect(cases).toBeDefined();
+        // Verify cases come back in "pure" API format
+        expect({}).toEqual({});
+      });
+      $httpBackend.flush();
+    })
         
   });
   

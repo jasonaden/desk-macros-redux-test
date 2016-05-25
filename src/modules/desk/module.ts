@@ -46,7 +46,8 @@ export const deskMod = angular.module('desk', [
 deskMod.config($ngReduxProvider => {
   $ngReduxProvider.createStoreWith(
     rootReducer,
-    [thunk, createLogger(), createSagaMiddleware(applyMacroSaga, failedToApplySaga)]
+    [thunk, createSagaMiddleware(applyMacroSaga, failedToApplySaga)]
+    // [thunk, createLogger(), createSagaMiddleware(applyMacroSaga, failedToApplySaga)]
   );
 })
 .run(($ngRedux) => {
