@@ -16,7 +16,7 @@ export class ResourceAdapter implements IResourceAdapter {
   // Date pattern to be used to find dates in returns from the API
   datePattern: RegExp = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
   
-  constructor (public $http: ng.IHttpService, public $q: ng.IQService) {
+  constructor (public $http: ng.IHttpService, public $q: ng.IQService, public config: ResourceAdapterConfig = new ResourceAdapterConfig()) {
     if (!this.interceptors) {
       this.interceptors = [];  
     }
@@ -27,8 +27,9 @@ export class ResourceAdapter implements IResourceAdapter {
   }
 
   // Execute request based on given DsResourceAdapterConfig
-  execute (config: ResourceAdapterConfig): ng.IPromise<any> {
-    return this.doRequest(config.build());
+  execute (config: any): ng.IPromise<any> {
+    let requestConfig = this.config.extend(config).build();
+    return this.doRequest(requestConfig);
   }
     
   // Default reviver (override this)

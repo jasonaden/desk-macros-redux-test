@@ -46,7 +46,7 @@ export interface IResourceAdapter extends IResourceAdapterConfig {
    * method gives a single interface for executing on actions.
    */
   generateSlug: (entity: any) => string;
-  execute: (config: ResourceAdapterConfig) => ng.IPromise<any>;
+  execute: (config: any) => ng.IPromise<any>;
   reviver: (key: string, value: any) => any;
   doRequest: (config: IResourceRequestConfig) => ng.IPromise<any>;
   transformResponse: (data: any, headers: any) => any;

@@ -1,4 +1,4 @@
-import {IResourceRequestConfig} from '../interfaces';
+import {IResourceAdapter} from '../interfaces';
 
 export declare type config = {
   adapter: IResourceAdapter,

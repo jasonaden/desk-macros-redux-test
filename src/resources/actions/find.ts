@@ -12,10 +12,7 @@ export function find (config: config, args?: IResourceRequestConfig) {
     // TODO: This should not be tied to an HTTP request. What if the 
     // data needs to be stored in local storage? Should simply tell 
     // the adapter to load something and pass config data.
-    return config.adapter.execute({
-      url: config.url, 
-      method: 'GET'
-    })
+    return config.adapter.execute(config)
     .then(
       res => {
         dispatch(splitSchema(config.schema, config.className, res.data));

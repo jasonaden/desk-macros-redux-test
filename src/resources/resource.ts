@@ -5,6 +5,7 @@ import { normalize, Schema, arrayOf } from 'normalizr';
 
 import {INgRedux, ngRedux, Middleware} from 'ng-redux';
 import {IResourceAdapter, IResourceRequestConfig, IEntityState} from './interfaces';
+import {ResourceAdapterConfig} from './resource-adapter-config';
 
 import {find} from './actions/find';
 import {findOne} from './actions/findOne';
