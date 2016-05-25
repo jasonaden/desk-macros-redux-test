@@ -1,6 +1,6 @@
 import {ResourceAdapterConfig} from './resource-adapter-config';
 
-fdescribe("ResourceAdapterConfig", () => {
+describe("ResourceAdapterConfig", () => {
   let adapterConfig: ResourceAdapterConfig;
   beforeEach(() => {
     adapterConfig = new ResourceAdapterConfig({

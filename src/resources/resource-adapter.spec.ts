@@ -38,7 +38,7 @@ describe('ResourceAdapter', () => {
 
   describe('makes GET requests', () => {
     beforeEach(() => {
-      config.extend({
+      config = config.extend({
         url: '/foo/{{@id}}',
         method: 'GET'
       });
@@ -52,7 +52,7 @@ describe('ResourceAdapter', () => {
     
     it('to item URLs', () => {
       
-      config.extend({data: {
+      config = config.extend({data: {
         id: 1
       }});
       
@@ -62,7 +62,7 @@ describe('ResourceAdapter', () => {
     });
     
     it('adds params to query string', () => {
-      config.extend({
+      config = config.extend({
         data: {id: 1},
         params: {order: 'desc'}
       });
@@ -76,7 +76,7 @@ describe('ResourceAdapter', () => {
 
   describe('makes POST requests', () => {
     beforeEach(() => {
-      config.extend({
+      config = config.extend({
         url: '/foo/{{@id}}',
         method: 'POST',
         data: {
@@ -93,7 +93,7 @@ describe('ResourceAdapter', () => {
     
     it('drops ID param on POST even if it exists in data prop', () => {
       
-      config.extend({
+      config = config.extend({
         data: {
           id: 1,
           subject: "New Item"
@@ -106,7 +106,7 @@ describe('ResourceAdapter', () => {
     });
     
     it('adds params to query string', () => {
-      config.extend({
+      config = config.extend({
         params: {order: 'desc'}
       });
       
@@ -119,7 +119,7 @@ describe('ResourceAdapter', () => {
   
   describe('makes PUT & PATCH requests', () => {
     beforeEach(() => {
-      config.extend({
+      config = config.extend({
         url: '/foo/{{@id}}',
         method: 'PUT',
         data: {
@@ -136,13 +136,13 @@ describe('ResourceAdapter', () => {
       $httpBackend.flush();
       // PATCH
       $httpBackend.expectPATCH('/foo/101').respond(200);
-      config.extend({method: 'PATCH'})  
+      config = config.extend({method: 'PATCH'})  
       adapter.execute(config);
       $httpBackend.flush();
     });
     
     it('adds params to query string', () => {
-      config.extend({
+      config = config.extend({
         params: {order: 'desc'}
       });
       // PUT
@@ -151,7 +151,7 @@ describe('ResourceAdapter', () => {
       $httpBackend.flush();
       // PATCH
       $httpBackend.expectPATCH('/foo/101?order=desc').respond(200);
-      config.extend({method: 'PATCH'})    
+      config = config.extend({method: 'PATCH'})    
       adapter.execute(config);  
       $httpBackend.flush();
     });
@@ -162,14 +162,14 @@ describe('ResourceAdapter', () => {
   describe('performs transformations', () => {
     
     beforeEach(() => {
-      config.extend({
+      config = config.extend({
         method: 'GET',
         url: '/foo/bar'
       });
     });
     
     it('on a response', () => {
-      config.extend({
+      config = config.extend({
         transformResponse: (response) => {
           response.name = 'Mr. ' + response.name;
           return response;
@@ -183,7 +183,7 @@ describe('ResourceAdapter', () => {
     });   
       
     it('on  a request', () => {
-      config.extend({
+      config = config.extend({
         method: 'POST',
         data: { name: 'Smith' },
         transformRequest: (request) => {
@@ -200,7 +200,7 @@ describe('ResourceAdapter', () => {
   
   describe('allows custom interceptors', () => {
     beforeEach(() => {
-      config.extend({
+      config = config.extend({
         method: 'GET',
         url: '/foo/bar'
       });
@@ -208,7 +208,7 @@ describe('ResourceAdapter', () => {
     
     it('allows custom interceptors for a response', () => {
       let response = null;
-      config.extend({
+      config = config.extend({
         interceptors: {
           response: (cfg) => {
             cfg.data.name = 'Mr. ' + cfg.data.name;
@@ -228,7 +228,7 @@ describe('ResourceAdapter', () => {
     it('allows custom interceptors for a response error', () => {
       let error = null;
       let errorResponse = 'Error!'
-      config.extend({
+      config = config.extend({
         interceptors: {
           responseError: (rejection) => {
             rejection.data = errorResponse;
