@@ -13,7 +13,7 @@ import "immutablediff";
 import "immutablepatch";
 import "lodash";
 import "redux-ui-router";
-
+import "rx-poller";
 
 // load our default (non specific) css
 import "font-awesome/css/font-awesome.css";
