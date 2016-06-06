@@ -14,6 +14,7 @@ import "immutablepatch";
 import "lodash";
 import "redux-ui-router";
 import "rx-poller";
+import "restore";
 
 // load our default (non specific) css
 import "font-awesome/css/font-awesome.css";

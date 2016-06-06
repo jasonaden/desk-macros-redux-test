@@ -1,7 +1,7 @@
 import {Action} from 'flux-standard-action';
 import {normalize, Schema, arrayOf} from 'normalizr';
 
-import {Resource, defaultReducer} from '../../../resources';
+import {Resource, defaultReducer} from 'restore';
 
 import {customerSchema} from './config/schemas';
 

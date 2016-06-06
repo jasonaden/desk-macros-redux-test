@@ -1,7 +1,7 @@
 
 import * as ng from 'angular';
 
-import {IResourceAdapter, ResourceAdapter, flattenEmbedded} from '../../../../resources';
+import {IResourceAdapter, ResourceAdapter, flattenEmbedded} from 'restore';
 
 /*
 * Base Adapter for an API

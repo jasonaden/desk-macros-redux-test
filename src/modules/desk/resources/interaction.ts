@@ -1,5 +1,5 @@
 
-import {Resource, defaultReducer} from '../../../resources';
+import {Resource, defaultReducer} from 'restore';
 import {interactionSchema} from './config/schemas';
 
 

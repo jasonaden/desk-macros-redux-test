@@ -1,7 +1,7 @@
 import {Action} from 'flux-standard-action';
 import * as Immutable from 'immutable';
 
-import {Resource, defaultReducer} from '../../../resources';
+import {Resource, defaultReducer} from 'restore';
 import {caseSchema} from './config/schemas';
 
 /**

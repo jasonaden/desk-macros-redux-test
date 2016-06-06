@@ -1,0 +1,8 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "/dev_exclusions/desk-macros-redux-test/node_modules/immutable/dist/immutable-nonambient.d.ts",
+    "raw": "npm:immutable/dist/immutable-nonambient.d.ts",
+    "typings": "/dev_exclusions/desk-macros-redux-test/node_modules/immutable/dist/immutable-nonambient.d.ts"
+  }
+}
