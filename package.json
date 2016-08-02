@@ -12,7 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "angular": "^1.5.0",
-    "angular-ui-router": "^0.2.18",
+    "angular-ui-router": "^0.3.1",
     "bootstrap": "3.3.6",
     "font-awesome": "4.5.0",
     "immutable": "~3.8.1",
@@ -26,9 +26,6 @@
     "redux-immutable": "~3.0.6",
     "redux-logger": "~2.6.1",
     "redux-saga": "~0.9.3",
-    "redux-storage": "~4.0.0",
-    "redux-storage-engine-localstorage": "~1.1.0",
-    "redux-storage-merger-immutablejs": "~1.0.1",
     "redux-thunk": "^1.0.3",
     "redux-ui-router": "~0.5.1",
     "reselect": "^2.0.2",

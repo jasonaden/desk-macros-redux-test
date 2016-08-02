@@ -12,7 +12,7 @@ import '../desk-agent-case-macros/module';
 import '../../resources/module';
 import * as comp from './components';
 import {routes} from './config/routes';
-
+import {ReduxWatch} from './services/ReduxWatch';
 import {RxPollerFactory} from './services/RxPoller';
 import {rootReducer} from './states';
 import {combineReducers} from 'redux';
@@ -64,6 +64,7 @@ deskMod
   .component('testArea', comp.TestAreaComponent)
   .component('desk', comp.DeskComponent)
   .factory('RxPoller', RxPollerFactory)
+  .service('ReduxWatch', ReduxWatch)
   .service('Case', Case)
   .service('Customer', Customer)
   .service('ApiV2Adapter', ApiV2Adapter);

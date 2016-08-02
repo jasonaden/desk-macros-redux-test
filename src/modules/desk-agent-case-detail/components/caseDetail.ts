@@ -1,8 +1,6 @@
 import {Store} from 'redux';
 import {stateGo} from 'redux-ui-router';
 import * as Immutable from 'immutable';
-import * as diff from 'immutablediff';
-import * as patch from 'immutablepatch';
 
 import {getCaseById} from '../../desk/resources/case';
 import {IMacro} from '../../desk-agent-case-macros/states';
@@ -10,7 +8,8 @@ import {getActiveCase, getAppliedMacros, getSnapCase, setEditCase, setSnapCase} 
 
 const mapState = (state) => {
   return {
-    appliedMacros: getAppliedMacros(state).toJS()
+    appliedMacros: getAppliedMacros(state).toJS(),
+    kase: getActiveCase(state).toJS()
   };
 }
 
@@ -18,12 +17,6 @@ const mapDispatch = (dispatch) => {
   return {
     storeChanges: (kase) => {
       dispatch(setEditCase(Immutable.fromJS(kase)));
-    },
-    setEditCase: (kase) => {
-      dispatch(setEditCase(kase));
-    },
-    setSnapCase: (kase) => {
-      dispatch(setSnapCase(kase));
     },
     goBack: () => {
       dispatch(stateGo('desk.agent.case.list'));
@@ -38,84 +31,20 @@ let watchExit = null;
 
 export class CaseDetailController {
   kase;
-  Case;
+  autoSaveCallback;
   storeChanges;
-  setEditCase;
-  setSnapCase;
 
-  constructor ($rootScope, $q, $scope, $ngRedux, RxPoller, Case) {
+  constructor ($scope, $ngRedux, CaseDetailService) {
+    // allow forms to keep redux in sync with UI    
+    this.autoSaveCallback = () => this.storeChanges(this.kase); 
 
     // make local copy from case detail
-    this.kase = getActiveCase($ngRedux.getState()).toJS();
-    
+    CaseDetailService.sync(this.autoSaveCallback);
+
     // connect redux items to controller
     let unsubscribe = $ngRedux.connect(mapState, mapDispatch)(this);
-    
-    // save unsaved changes when navigating away
-    watchExit = $rootScope.$on('$stateChangeStart', (event) => {
-      this.storeChanges(this.kase);
-    });
-
-    // poll case
-    let poller = RxPoller.getPoller('case') || new RxPoller('case', { interval:20000 });
-    poller
-      .setAction(() => Case.findOne(this.kase.id))
-      .subscribe(() => {
-        // push local changes into editCase
-        this.storeChanges(this.kase);
-        
-        // get state after stashing local changes
-        const state = $ngRedux.getState();
-        
-        // snapshot of case where we initially forked for editing
-        const snapCase = getSnapCase(state);
-        // un-"saved" edited version of case
-        const editCase = getActiveCase(state);
-        // externally changed version of case
-        const entityCase = getCaseById(state, this.kase.id);
-        
-        // how external changes differ from our fork point
-        const remoteChanges = diff(snapCase, entityCase);
-        // nothing to do if there are no remote changes
-        if (remoteChanges.count() == 0) { return;  }
-        
-        // how our local changes differ from our fork point 
-        const localChanges = diff(snapCase, editCase);
-        // if there are no local changes, accept remote as snap and edit version
-        if (localChanges.count() == 0) {
-          this.setEditCase(entityCase);
-          this.setSnapCase(entityCase);
-          // update case on scope
-          this.kase = entityCase.toJS();
-          return;
-        }
-        
-        // merged set of changes with local changes at the end
-        const changes = remoteChanges.concat(localChanges);
-       
-        // updated case which merges remote and local changes,
-        // giving preference to our local changes
-        const mergedCase = patch(editCase, changes);
-        
-        // update store's edited case with the merge
-        this.setEditCase(mergedCase);      
-        // update store's snapshot to the new remote version
-        this.setSnapCase(entityCase);
-
-        // update case on scope
-        this.kase = mergedCase.toJS();
-      })
-      .start();
-
-    $scope.$on('$destroy', () => {
-      unsubscribe();
-      poller.stop();
-    });   
-    
-    $scope.autoSaveCallback = () => {
-      this.storeChanges(this.kase);
-    }
-       
+    $scope.$on('$destroy', () => { unsubscribe(); });   
+   
   }
   
 };
@@ -123,16 +52,13 @@ export class CaseDetailController {
 
 export const CaseDetailComponent:ng.IComponentOptions = {
   controller: CaseDetailController,
-  bindings: {
-    resolvedCase: '<'
-  },
 	template: `
     <div class='well'>
       <button class='btn btn-primary' ng-click='$ctrl.goBack()'>Back to Case List</button>
       <button class='btn btn-primary' ng-click='$ctrl.storeChanges($ctrl.kase)'>Save Local</button>
       <input ng-model='$ctrl.goToCaseId'><button ng-click='$ctrl.goToCase($ctrl.goToCaseId)'>Go to Case</button>
       <h3>{{$ctrl.kase.subject}}</h3>
-      <ng-form class='row' name='caseDetailForm' auto-save-form='autoSaveCallback'>
+      <ng-form class='row' name='caseDetailForm' auto-save-form='$ctrl.autoSaveCallback'>
         <input class='col-md-12' type="text" ng-model="$ctrl.kase.subject">
       </ng-form>
       <span>Status: {{$ctrl.kase.status}}</span>

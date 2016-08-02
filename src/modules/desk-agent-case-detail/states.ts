@@ -75,10 +75,13 @@ export function setSelectedMacro(payload: number): Action<Object> {
   return { type: SET_SELECTED_MACRO, payload };
 }
 
+export const getActiveCaseId = (state) => state.caseStore.activeCaseId;
 export const getSnapCase = (state) => getActiveCaseDetail(state).get('snapCase');
 export const getCaseDetail = (state, id) => state.caseStore.cases.get(id);
 export const getActiveCaseDetail = (state) => state.caseStore.cases.get(state.caseStore.activeCaseId);
-export const getActiveCase = (state) => getActiveCaseDetail(state).get('editCase');
+export const getActiveCase = (state) => {
+  return getActiveCaseDetail(state).get('editCase');
+}
 export const getAppliedMacros = (state) => getActiveCaseDetail(state).get('appliedMacros');
 
 export function* applyMacroSaga (getState) {
