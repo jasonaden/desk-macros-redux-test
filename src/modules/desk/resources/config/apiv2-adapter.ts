@@ -1,16 +1,23 @@
 
 import * as ng from 'angular';
 
-import {IResourceAdapter, ResourceAdapter, flattenEmbedded} from 'restore';
+import {Store} from 'redux';
+import {
+  IResourceAdapter, 
+  IPersistor, 
+  BaseAdapter, 
+  flattenEmbedded, 
+  $httpPersistor
+} from 'restore';
 
 /*
 * Base Adapter for an API
 */
-export class ApiV2Adapter extends ResourceAdapter implements IResourceAdapter {
+export class ApiV2Adapter extends BaseAdapter {
 
   // Base URL for the API
-  baseUrl: string = 'http://localhost:8888/api/v2';
-  
+  public baseUrl: string = 'http://localhost:8888/api/v2';
+
   static generateSlug = function (entity) {
     let key = (entity._links && entity._links.self && entity._links.self.href) || entity.id;
     if (!key) {
@@ -22,17 +29,10 @@ export class ApiV2Adapter extends ResourceAdapter implements IResourceAdapter {
     return key;
   }
   
-  constructor ($http: ng.IHttpService, $q: ng.IQService) {
-    super($http, $q);
-    
-    /**
-     * Extend transformResponse by adding HAL parsing.
-     */
-    this.transformResponse = (data, headers) => {
-      return flattenEmbedded(super.transformResponse(data, headers), headers); 
-    }
+  constructor (schema: Object, store: Store, persistor?: IPersistor) {
+    super(schema, store, persistor || new $httpPersistor());
   }
-  
+
   generateSlug (entity: any) {
     return ApiV2Adapter.generateSlug(entity);
   }

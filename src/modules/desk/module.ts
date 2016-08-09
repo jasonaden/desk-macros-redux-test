@@ -1,5 +1,5 @@
 import {
-  Case, 
+  Case,
   Customer,
   ApiV2Adapter
 } from './resources';
@@ -9,7 +9,6 @@ import '../desk-agent-case/module';
 import '../desk-agent-case-detail/module';
 import '../desk-agent-case-list/module';
 import '../desk-agent-case-macros/module';
-import '../../resources/module';
 import * as comp from './components';
 import {routes} from './config/routes';
 import {ReduxWatch} from './services/ReduxWatch';
@@ -28,13 +27,12 @@ import {macroList} from '../../data/macros';
 
 // export const DeskStore:Store = createStore(rootReducer);
 export const deskMod = angular.module('desk', [
-  'desk.agent', 
-  'desk.agent.case', 
-  'desk.agent.case.list', 
-  'desk.agent.case.macros', 
+  'desk.agent',
+  'desk.agent.case',
+  'desk.agent.case.list',
+  'desk.agent.case.macros',
   'desk.agent.case.detail',
-  'rx',
-  'ds.resources'
+  'rx'
 ]);
 
 deskMod.config($ngReduxProvider => {
@@ -42,9 +40,9 @@ deskMod.config($ngReduxProvider => {
   const store = $ngReduxProvider.createStoreWith(
     rootReducer,
     [
-      thunk, 
-      createLogger(), 
-      'ngUiRouterMiddleware', 
+      thunk,
+      createLogger(),
+      'ngUiRouterMiddleware',
       createSagaMiddleware(applyMacroSaga, failedToApplySaga)
     ]
   );
@@ -66,6 +64,4 @@ deskMod
   .factory('RxPoller', RxPollerFactory)
   .service('ReduxWatch', ReduxWatch)
   .service('Case', Case)
-  .service('Customer', Customer)
-  .service('ApiV2Adapter', ApiV2Adapter);
-
+  .service('Customer', Customer);

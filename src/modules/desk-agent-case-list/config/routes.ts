@@ -1,27 +1,39 @@
 import {caseListMod} from '../module';
 import {setItems} from '../states';
-import {getCases} from '../../desk/resources/case';
+import {getCases} from '../resources/caseList';
 import {Filter, setFilter, setActiveFilterId} from '../states';
 
 export const routes = ($stateProvider, $urlRouterProvider) => {
   $urlRouterProvider.when('/', '/cases').when('', '/cases');
 
+  function setupFilterDetails(store, items) {
+    const filter = new Filter({
+      filterId: 1,
+      items
+    });
+    store.dispatch(setFilter(filter));
+    store.dispatch(setActiveFilterId(filter.filterId));  
+  }
+
   $stateProvider.state('desk.agent.case.list', {
     resolve: {
-      resolvedFilter: ($ngRedux, Case) => {
-        const items = getCases($ngRedux.getState());
-        if (items.size) {
-          setupFilterDetails(items);
+      resolvedFilter: ($ngRedux, Case, CaseList) => {
+        let cases = getCases($ngRedux.getState());
+        
+        if (cases.size) {
+      
+          setupFilterDetails($ngRedux, cases);
+        
         } else {
-          return Case.find().then(()=>setupFilterDetails(getCases($ngRedux.getState())));
-        }
-        function setupFilterDetails(items) {
-          const filter = new Filter({
-            filterId: 1,
-            items
+          debugger;
+          
+          return CaseList.find().then(() => {
+            
+            let cases = getCases($ngRedux.getState());
+            
+            return setupFilterDetails($ngRedux, cases);
+
           });
-          $ngRedux.dispatch(setFilter(filter));
-          $ngRedux.dispatch(setActiveFilterId(filter.filterId));  
         }
       }
     },

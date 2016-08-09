@@ -3,6 +3,7 @@ import * as Immutable from 'immutable';
 
 import {Resource, defaultReducer} from 'restore';
 import {caseSchema} from './config/schemas';
+import {ApiV2Adapter} from './config/apiv2-adapter';
 
 /**
  * Module name
@@ -12,34 +13,26 @@ export const NAME = "CASE";
 export interface ICase {
   id: number,
   subject: string,
+  adapter: any,
   macros: Number[]
-}
-
-export interface ICases extends Map<String, any> {
-  result: Number[];
-  entities: {cases: Map<Number, ICase>};
-  adding: boolean;
-  loading: boolean;
 }
 
 export class Case extends Resource<ICase> {
   url = '/cases';
   public className = NAME;
   
-  constructor(public $ngRedux, public $http, public $q, ApiV2Adapter) {
-    super($ngRedux, $http, $q, ApiV2Adapter, caseSchema);
+  constructor(public $ngRedux) {
+    super($ngRedux, new ApiV2Adapter(caseSchema, $ngRedux), caseSchema);
   }
   
 }
 
-export const kase = defaultReducer(NAME);
+export const CaseReducer = defaultReducer(NAME);
 
 
 export const getCases = (state) => {
   let entities = state.entities.case;
-  let cases = Immutable.Set();
-  entities.result.map(id => cases = cases.add(entities.items.get(id)));
-  return cases;
+  return entities.items.toList();
 }
 
 export const getCaseById = (state, id) => {

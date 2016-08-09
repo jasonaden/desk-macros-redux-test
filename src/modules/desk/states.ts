@@ -14,11 +14,13 @@ import {entitiesReducer} from './resources/root';
 import {failedToApplySaga, setMacros} from '../desk-agent-case-macros/states';
 import {applyMacroSaga} from '../desk-agent-case-detail/states';
 import {macroList} from '../../data/macros';
+import {CaseListReducer} from '../desk-agent-case-list/resources/caseList';
 
 export const rootReducer = combineReducers({
   router,
   entities: entitiesReducer,
   deskAgentCaseMacros: macroFilter,
   caseStore,
+  caseListStore: CaseListReducer,
   filterStore
 });
