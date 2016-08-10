@@ -1,31 +1,25 @@
 import {Action} from 'flux-standard-action';
 import * as Immutable from 'immutable';
-
+import {appSchema} from '../../desk/resources/config/schemas';
 import {ResourceList, defaultListReducer, $httpPersistor} from 'restore';
-import {caseSchema} from '../../desk/resources/config/schemas';
-import {ApiV2Adapter} from '../../desk/resources/config/apiv2-adapter';
+import {getCaseById} from '../../desk/resources/case';
+
 import * as ng from 'angular';
 
 /**
  * Module name
  */
-export const NAME = "CASE_LIST";
+export const NAME = "CASELIST";
 
 export class CaseList extends ResourceList<any> {
-  public url = '/cases';
+  public url = '/cases?embed=customer';
   public className = 'case';
-  
+  //public listName = 'caseList';
+
   private defaultParams;
-  private $q;
 
-  constructor($q, $http, $ngRedux) {
-    super('caseList', $ngRedux, new ApiV2Adapter(caseSchema, $ngRedux));
-
-    this.$q = $q;
-
-    this.adapter.persistor = new $httpPersistor();
-    $httpPersistor.setQ($q);
-    $httpPersistor.setHttp($http);
+  constructor($ngRedux, ApiV2Adapter) {
+    super('caseList', $ngRedux, ApiV2Adapter);
 
     this.defaultParams = {
       url: this.url,
@@ -33,8 +27,10 @@ export class CaseList extends ResourceList<any> {
     }
   }
 
-  beforeFind(params = {}) {
-    return this.$q.all([Object.assign({}, this.defaultParams, params)]);
+  beforeFind(config = {}) {
+    config.params = Object.assign({}, this.defaultParams, config.params)
+    config.listName = this.listName;
+    return Promise.all([config]);
   }
 
 }
@@ -42,5 +38,7 @@ export class CaseList extends ResourceList<any> {
 export const CaseListReducer = defaultListReducer(NAME);
 
 export const getCases = (state) => {
-  return state.caseListStore.result;
+  return state.caseListStore.result.map( (r) => {
+    return getCaseById(state, r);
+  });
 }

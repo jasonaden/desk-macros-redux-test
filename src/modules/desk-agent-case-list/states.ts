@@ -19,7 +19,7 @@ export const Filter = Immutable.Record({
   active: true,
   group: null,
   user: null,
-  items: Immutable.Set(),
+  items: Immutable.List(),
   actions: Immutable.List(),
   selectedId: -1,
   filterText: ''
@@ -92,9 +92,10 @@ export const getActiveFilter = (state) => {
 export const getFilteredItems = createSelector(
   getActiveFilter,
   (activeFilter) => {
-    return activeFilter.get('items').filter( item => {
+    return activeFilter.get('items');
+    /*.filter( item => {
       return -1 < item.get('subject').toLowerCase().indexOf(
         activeFilter.get('filterText').toLowerCase()
       );
-    });
+    });*/
   });

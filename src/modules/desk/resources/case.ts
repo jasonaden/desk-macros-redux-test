@@ -21,8 +21,8 @@ export class Case extends Resource<ICase> {
   url = '/cases';
   public className = NAME;
   
-  constructor(public $ngRedux) {
-    super($ngRedux, new ApiV2Adapter(caseSchema, $ngRedux), caseSchema);
+  constructor(public $ngRedux, ApiV2Adapter) {
+    super($ngRedux, ApiV2Adapter, caseSchema);
   }
   
 }
@@ -36,7 +36,7 @@ export const getCases = (state) => {
 }
 
 export const getCaseById = (state, id) => {
-  return state.entities.case.items.get('/cases/'+id);
+  return state.entities.case.items.get(id);
 }
 
 export const APPLY_MACRO = 'APPLY_MACRO';

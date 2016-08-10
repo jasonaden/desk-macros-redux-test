@@ -3,6 +3,11 @@ import {
   Customer,
   ApiV2Adapter
 } from './resources';
+import {
+  appSchema
+} from './resources/config/schemas';
+
+import {$httpPersistor} from 'restore';
 
 import '../desk-agent/module';
 import '../desk-agent-case/module';
@@ -24,6 +29,7 @@ import createSagaMiddleware from 'redux-saga';
 import {failedToApplySaga, setMacros} from '../desk-agent-case-macros/states';
 import {applyMacroSaga} from '../desk-agent-case-detail/states';
 import {macroList} from '../../data/macros';
+
 
 // export const DeskStore:Store = createStore(rootReducer);
 export const deskMod = angular.module('desk', [
@@ -64,4 +70,20 @@ deskMod
   .factory('RxPoller', RxPollerFactory)
   .service('ReduxWatch', ReduxWatch)
   .service('Case', Case)
-  .service('Customer', Customer);
+  .service('Customer', Customer)
+  .provider('$httpPersistor', () => {
+    return {
+      $get: ($http, $q) => {
+        $httpPersistor.setHttp($http);
+        $httpPersistor.setQ($q);
+        return new $httpPersistor();
+      }
+    };
+  })
+  .provider('ApiV2Adapter', () => {
+    return {
+      $get: ($ngRedux, $httpPersistor) => {
+        return new ApiV2Adapter(appSchema, $ngRedux, $httpPersistor);
+      }
+    };
+  });
