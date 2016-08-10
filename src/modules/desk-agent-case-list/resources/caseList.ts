@@ -32,10 +32,11 @@ export class CaseList extends ResourceList<any> {
       baseUrl: this.adapter.baseUrl
     }
   }
-  
+
   beforeFind(params = {}) {
     return this.$q.all([Object.assign({}, this.defaultParams, params)]);
   }
+
 }
 
 export const CaseListReducer = defaultListReducer(NAME);

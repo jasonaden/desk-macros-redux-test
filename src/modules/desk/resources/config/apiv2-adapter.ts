@@ -33,6 +33,19 @@ export class ApiV2Adapter extends BaseAdapter {
     super(schema, store, persistor || new $httpPersistor());
   }
 
+ 
+  afterFind(data) {
+    let entries = data._embedded.entries;
+    let count = data.total_entries;
+    let page = data.page;
+
+    for(let i in entries) {
+      this.store.dispatch({type:'SET_ONE_'+this.schema._key.toUpperCase(), payload: entries[i]});
+    }
+
+    return data;
+  }
+
   generateSlug (entity: any) {
     return ApiV2Adapter.generateSlug(entity);
   }
