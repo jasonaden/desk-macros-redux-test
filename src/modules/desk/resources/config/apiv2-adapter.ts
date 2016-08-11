@@ -68,13 +68,9 @@ export class ApiV2Adapter extends BaseAdapter {
     return Promise.all([split]); 
   }
 
-  splitList( data ): Promise<any[]> {
-    
-    return Promise.all([]);
-  }
-
   afterFindOne(data) {
     this.splitSchema( data )
+    return data;
   }
  
   afterFind(listName, data) {

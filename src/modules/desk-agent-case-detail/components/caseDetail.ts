@@ -4,12 +4,13 @@ import * as Immutable from 'immutable';
 
 import {getCaseById} from '../../desk/resources/case';
 import {IMacro} from '../../desk-agent-case-macros/states';
-import {getActiveCase, getAppliedMacros, getSnapCase, setEditCase, setSnapCase} from '../states';
+import {getActiveCase, getAppliedMacros, canUpdate, getSnapCase, setEditCase, setSnapCase} from '../states';
 
 const mapState = (state) => {
   return {
     appliedMacros: getAppliedMacros(state).toJS(),
-    kase: getActiveCase(state).toJS()
+    kase: getActiveCase(state).toJS(),
+    canUpdate: canUpdate(state)
   };
 }
 
@@ -63,6 +64,8 @@ export const CaseDetailComponent:ng.IComponentOptions = {
       </ng-form>
       <span>Status: {{$ctrl.kase.status}}</span>
       <span>Type: {{$ctrl.kase.type}}</span>
+      <div>
+        <button class='btn btn-primary' ng-click='$ctrl.save($ctrl.kase)' ng-show="$ctrl.canUpdate">Save API</button>
       <div>
         <h4>Applied Macros</h4>
         <span ng-if='!$ctrl.appliedMacros.length'>No macros</span>

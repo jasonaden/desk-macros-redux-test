@@ -18,12 +18,32 @@ export interface ICase {
 }
 
 export class Case extends Resource<ICase> {
-  url = '/cases';
+  public url = '/cases';
   public className = NAME;
   
+  private defaultParams;
+
   constructor(public $ngRedux, ApiV2Adapter) {
     super($ngRedux, ApiV2Adapter, caseSchema);
+
+    this.defaultConfig = {
+      url: this.url,
+      baseUrl: this.adapter.baseUrl
+    }
   }
+
+  getDefaultConfig (id, config) {
+    return {
+      url: this.url + '/' + id,
+      baseUrl: this.adapter.baseUrl,
+      className: this.className 
+    };
+  }
+
+  beforeFindOne(id, config = {}) {
+    return Promise.all([this.getDefaultConfig(id, config)]);
+  }
+
   
 }
 
@@ -36,6 +56,10 @@ export const getCases = (state) => {
 }
 
 export const getCaseById = (state, id) => {
+  return state.entities.case.items.find((kase) => kase.get('id') == id);
+}
+
+export const getCaseByURI = (state, id) => {
   return state.entities.case.items.get(id);
 }
 

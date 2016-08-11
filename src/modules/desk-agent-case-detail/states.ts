@@ -3,6 +3,7 @@ import {Reducer, combineReducers} from 'redux';
 import {Action} from 'flux-standard-action';
 import {take, put, call, fork, cancel} from 'redux-saga/effects';
 import * as Immutable from 'immutable';
+import * as diff from 'immutablediff';
 
 import {FIND_ONE} from '../../resources/constants';
 import {Case} from '../desk/resources/case';
@@ -27,6 +28,7 @@ export const SET_ACTIVE_CASE_ID = 'SET_ACTIVE_CASE_ID';
 export const SET_CASE_DETAIL = 'SET_CASE_DETAIL';
 export const SET_SNAP_CASE = 'SET_SNAP_CASE';
 export const SET_EDIT_CASE = 'SET_EDIT_CASE';
+export const SET_CAN_UPDATE = 'SET_CAN_UPDATE';
 export const SET_SELECTED_MACRO = 'SET_SELECTED_MACRO';
 export const APPLY_MACRO = 'APPLY_MACRO';
 export const APPLY_MACRO_TO_CASE = 'APPLY_MACRO_TO_CASE';
@@ -38,6 +40,8 @@ export const caseStore:Reducer = (state = new CaseDetails(), action:Action<any>)
       return state.mergeIn(['cases', action.payload.caseId], action.payload.detail);
     case SET_ACTIVE_CASE_ID:
       return state.set('activeCaseId', action.payload);
+    case SET_CAN_UPDATE:
+      return state.mergeIn(['cases', state.activeCaseId, 'canUpdate'], action.payload);
     case SET_SNAP_CASE:
       return state.mergeIn(['cases', action.payload.get('id'), 'snapCase'], action.payload);
     case SET_EDIT_CASE:
@@ -50,8 +54,18 @@ export const caseStore:Reducer = (state = new CaseDetails(), action:Action<any>)
       return state;
   }
 }
-export function setEditCase(payload:Object): Action<Object> {
-  return { type: SET_EDIT_CASE, payload };
+export function setEditCase(payload:Object){
+  return (dispatch, getState) => {
+    let state = getState();
+    if (!canUpdate(state)) {
+      let snapCase = getSnapCase(getState()) != null
+      if(snapCase && diff(snapCase, payload).size) {
+        dispatch({ type: SET_CAN_UPDATE, payload: true });
+      }
+    }
+    return dispatch({ type: SET_EDIT_CASE, payload });
+  };
+  
 }
 export function setSnapCase(payload:Object): Action<Object> {
   return { type: SET_SNAP_CASE, payload };
@@ -79,10 +93,9 @@ export const getActiveCaseId = (state) => state.caseStore.activeCaseId;
 export const getSnapCase = (state) => getActiveCaseDetail(state).get('snapCase');
 export const getCaseDetail = (state, id) => state.caseStore.cases.get(id);
 export const getActiveCaseDetail = (state) => state.caseStore.cases.get(state.caseStore.activeCaseId);
-export const getActiveCase = (state) => {
-  return getActiveCaseDetail(state).get('editCase');
-}
+export const getActiveCase = (state) => getActiveCaseDetail(state).get('editCase');
 export const getAppliedMacros = (state) => getActiveCaseDetail(state).get('appliedMacros');
+export const canUpdate = (state) => getActiveCaseDetail(state).get('canUpdate');
 
 export function* applyMacroSaga (getState) {
   while (true) {

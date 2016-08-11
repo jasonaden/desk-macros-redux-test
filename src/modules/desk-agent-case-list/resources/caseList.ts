@@ -2,7 +2,7 @@ import {Action} from 'flux-standard-action';
 import * as Immutable from 'immutable';
 import {appSchema} from '../../desk/resources/config/schemas';
 import {ResourceList, defaultListReducer, $httpPersistor} from 'restore';
-import {getCaseById} from '../../desk/resources/case';
+import {getCaseByURI} from '../../desk/resources/case';
 
 import * as ng from 'angular';
 
@@ -39,6 +39,6 @@ export const CaseListReducer = defaultListReducer(NAME);
 
 export const getCases = (state) => {
   return state.caseListStore.result.map( (r) => {
-    return getCaseById(state, r);
+    return getCaseByURI(state, r);
   });
 }
