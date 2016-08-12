@@ -1,6 +1,6 @@
 import {caseListMod} from '../module';
 import {setItems} from '../states';
-import {getCases} from '../resources/caseList';
+import {getListCases} from '../../desk/resources/case';
 import {Filter, setFilter, setActiveFilterId} from '../states';
 
 export const routes = ($stateProvider, $urlRouterProvider) => {
@@ -17,17 +17,17 @@ export const routes = ($stateProvider, $urlRouterProvider) => {
 
   $stateProvider.state('desk.agent.case.list', {
     resolve: {
-      resolvedFilter: ($ngRedux, Case, CaseListResource) => {
-        let cases = getCases($ngRedux.getState());
+      resolvedFilter: ($ngRedux, Case) => {
+        let cases = getListCases($ngRedux.getState());
         
         if (cases.size) {
       
           setupFilterDetails($ngRedux, cases);
         
         } else {
-          return CaseListResource.find().then(() => {
+          return Case.find().then(() => {
             
-            let cases = getCases($ngRedux.getState());
+            let cases = getListCases($ngRedux.getState());
             
             return setupFilterDetails($ngRedux, cases);
 

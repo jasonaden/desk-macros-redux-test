@@ -10,17 +10,17 @@ import {deskMod} from './module';
 import {macroFilter} from '../desk-agent-case-macros/states';
 import {filterStore} from '../desk-agent-case-list/states';
 import {caseStore} from '../desk-agent-case-detail/states';
-import {entitiesReducer} from './resources/root';
+import {entitiesReducer, listsReducer} from './resources/root';
 import {failedToApplySaga, setMacros} from '../desk-agent-case-macros/states';
 import {applyMacroSaga} from '../desk-agent-case-detail/states';
 import {macroList} from '../../data/macros';
-import {CaseListReducer} from '../desk-agent-case-list/resources/caseList';
+import {CaseListReducer} from '../desk/resources/case';
 
 export const rootReducer = combineReducers({
   router,
   entities: entitiesReducer,
+  lists: listsReducer,
   deskAgentCaseMacros: macroFilter,
   caseStore,
-  caseListStore: CaseListReducer,
   filterStore
 });

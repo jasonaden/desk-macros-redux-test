@@ -77,6 +77,7 @@ export class ApiV2Adapter extends BaseAdapter {
     if ( data.changed ) {
       
     } else {
+
       let entries = data._embedded.entries;
 
       let count = data.total_entries;

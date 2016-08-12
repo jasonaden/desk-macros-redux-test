@@ -37,7 +37,7 @@ export const replySchema = new Schema('reply', getOptions());
 export const customerSchema = new Schema('customer', getOptions());
 
 export const caseChangesSchema = new Schema('changes', getOptions());
-export const caseListSchema = new Schema('caseList', getOptions({idAttribute: () => 'caseList'}));
+export const caseListSchema = new Schema('CASELIST', getOptions({idAttribute: () => 'CASELIST'}));
 
 
 interactionSchema.define({
@@ -78,5 +78,5 @@ export const appSchema = {
   reply: replySchema,
   customer: customerSchema,
   changes: caseChangesSchema,
-  caseList: caseListSchema
+  CASELIST: caseListSchema
 }

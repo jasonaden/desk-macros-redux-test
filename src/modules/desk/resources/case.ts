@@ -1,7 +1,7 @@
 import {Action} from 'flux-standard-action';
 import * as Immutable from 'immutable';
 
-import {Resource, defaultReducer} from 'restore';
+import {Resource, defaultReducer, defaultListReducer} from 'restore';
 import {caseSchema} from './config/schemas';
 import {ApiV2Adapter} from './config/apiv2-adapter';
 
@@ -9,6 +9,7 @@ import {ApiV2Adapter} from './config/apiv2-adapter';
  * Module name
  */
 export const NAME = "CASE";
+const LIST = "CASELIST";
 
 export interface ICase {
   id: number,
@@ -42,15 +43,31 @@ export class Case extends Resource<ICase> {
     return this.getDefaultConfig(id, config);
   }
 
+  beforeFind(config = {}) {
+    config.params = Object.assign({}, {url:this.url}, config.params)
+    config.listName = LIST;
+    return config;
+  }
+
   
 }
 
 export const CaseReducer = defaultReducer(NAME);
+export const CaseListReducer = defaultListReducer(LIST);
 
-
-export const getCases = (state) => {
+export const getAllCases = (state) => {
   let entities = state.entities.case;
   return entities.items.toList();
+}
+
+export const getListCases = (state) => {
+  if (state.lists.CASELIST.page && state.lists.CASELIST.result.get(state.lists.CASELIST.page)){
+    return state.lists.CASELIST.result.get(state.lists.CASELIST.page).map( (r) => {
+      return getCaseByURI(state, r);
+    });
+  } else {
+    return Immutable.List();
+  }
 }
 
 export const getCaseById = (state, id) => {
