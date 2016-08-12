@@ -17,7 +17,7 @@ export const routes = ($stateProvider, $urlRouterProvider) => {
 
   $stateProvider.state('desk.agent.case.list', {
     resolve: {
-      resolvedFilter: ($ngRedux, Case, CaseList) => {
+      resolvedFilter: ($ngRedux, Case, CaseListResource) => {
         let cases = getCases($ngRedux.getState());
         
         if (cases.size) {
@@ -25,8 +25,7 @@ export const routes = ($stateProvider, $urlRouterProvider) => {
           setupFilterDetails($ngRedux, cases);
         
         } else {
-          
-          return CaseList.find().then(() => {
+          return CaseListResource.find().then(() => {
             
             let cases = getCases($ngRedux.getState());
             

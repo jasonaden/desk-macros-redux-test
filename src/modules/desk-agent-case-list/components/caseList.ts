@@ -26,14 +26,14 @@ const mapDispatchToThis = (dispatch) => {
 export class CaseList {
   private _poller;
   
-  constructor ($scope, $ngRedux, Case, RxPoller) {
+  constructor ($scope, $ngRedux, CaseListResource, RxPoller) {
     let unsubscribe = $ngRedux.connect(mapStateToThis, mapDispatchToThis)(this);
     
     // restore paused poller
     this._poller = RxPoller.getPoller('case-list');
     if (!this._poller) {
       this._poller = new RxPoller('case-list', { interval:20000 });
-      this._poller.setAction(() => Case.find());
+      this._poller.setAction(() => CaseList.find());
     }
     this._poller.start();
 

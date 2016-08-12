@@ -7,7 +7,7 @@ import {
   appSchema
 } from './resources/config/schemas';
 
-import {$httpPersistor} from 'restore';
+import {$httpPersistor, $httpPersistorConfig} from 'restore';
 
 import '../desk-agent/module';
 import '../desk-agent-case/module';
@@ -76,7 +76,7 @@ deskMod
       $get: ($http, $q) => {
         $httpPersistor.setHttp($http);
         $httpPersistor.setQ($q);
-        return new $httpPersistor();
+        return new $httpPersistor(new $httpPersistorConfig({baseUrl: 'http://localhost:8888/api/v2'}));
       }
     };
   })

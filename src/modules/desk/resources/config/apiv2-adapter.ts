@@ -74,32 +74,30 @@ export class ApiV2Adapter extends BaseAdapter {
   }
  
   afterFind(listName, data) {
-    let entries = data._embedded.entries;
+    if ( data.changed ) {
+      
+    } else {
+      let entries = data._embedded.entries;
 
-    let count = data.total_entries;
-    let page = data.page;
+      let count = data.total_entries;
+      let page = data.page;
 
-    // store relevant entities
-    let split = normalize( data, this.schema[listName] );
+      // store relevant entities
+      let split = normalize( data, this.schema[listName] );
 
-    // get result id sequence
-    let result = split.entities[listName][listName]._embedded.entries;
-    delete split.entities[listName];
-    
-    this.handleAdapterData(split);
+      // get result id sequence
+      let result = split.entities[listName][listName]._embedded.entries;
+      delete split.entities[listName];
+      
+      this.handleAdapterData(split);
 
-    // push actual resources into store
-    /*for(let i in entries) {
-      result.push(entries[i]._links.self.href);
-      this.splitSchema(entries[i]);
-    }*/
+      // push meta into list store
+      this.store.dispatch({type: 'SET_LIST_COUNT_'+listName.toUpperCase(), payload: count});
+      this.store.dispatch({type: 'SET_LIST_PAGE_'+listName.toUpperCase(), payload: page});
+      this.store.dispatch({type: 'SET_LIST_RESULT_'+listName.toUpperCase(), payload: result});
 
-    // push meta into list store
-    this.store.dispatch({type: 'SET_LIST_COUNT_'+listName.toUpperCase(), payload: count});
-    this.store.dispatch({type: 'SET_LIST_PAGE_'+listName.toUpperCase(), payload: page});
-    this.store.dispatch({type: 'SET_LIST_RESULT_'+listName.toUpperCase(), payload: result});
-
-    return data;
+      return data;
+    }
   }
 
   generateSlug (entity: any) {

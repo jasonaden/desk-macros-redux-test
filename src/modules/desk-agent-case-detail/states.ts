@@ -65,7 +65,6 @@ export function setEditCase(payload:Object){
     }
     return dispatch({ type: SET_EDIT_CASE, payload });
   };
-  
 }
 export function setSnapCase(payload:Object): Action<Object> {
   return { type: SET_SNAP_CASE, payload };

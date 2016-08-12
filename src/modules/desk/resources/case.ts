@@ -21,27 +21,25 @@ export class Case extends Resource<ICase> {
   public url = '/cases';
   public className = NAME;
   
-  private defaultParams;
+  private defaultConfig;
 
   constructor(public $ngRedux, ApiV2Adapter) {
-    super($ngRedux, ApiV2Adapter, caseSchema);
+    super($ngRedux, ApiV2Adapter);
 
     this.defaultConfig = {
-      url: this.url,
-      baseUrl: this.adapter.baseUrl
+      url: this.url
     }
   }
 
   getDefaultConfig (id, config) {
     return {
       url: this.url + '/' + id,
-      baseUrl: this.adapter.baseUrl,
       className: this.className 
     };
   }
 
   beforeFindOne(id, config = {}) {
-    return Promise.all([this.getDefaultConfig(id, config)]);
+    return this.getDefaultConfig(id, config);
   }
 
   
