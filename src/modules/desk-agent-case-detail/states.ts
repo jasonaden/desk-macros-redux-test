@@ -28,6 +28,7 @@ export const SET_ACTIVE_CASE_ID = 'SET_ACTIVE_CASE_ID';
 export const SET_CASE_DETAIL = 'SET_CASE_DETAIL';
 export const SET_SNAP_CASE = 'SET_SNAP_CASE';
 export const SET_EDIT_CASE = 'SET_EDIT_CASE';
+export const PATCHED_CASE = 'PATCHED_CASE';
 export const SET_CAN_UPDATE = 'SET_CAN_UPDATE';
 export const SET_SELECTED_MACRO = 'SET_SELECTED_MACRO';
 export const APPLY_MACRO = 'APPLY_MACRO';
@@ -42,6 +43,8 @@ export const caseStore:Reducer = (state = new CaseDetails(), action:Action<any>)
       return state.set('activeCaseId', action.payload);
     case SET_CAN_UPDATE:
       return state.mergeIn(['cases', state.activeCaseId, 'canUpdate'], action.payload);
+    case PATCHED_CASE:
+      return state.mergeIn(['cases', state.activeCaseId, 'canUpdate'], false);
     case SET_SNAP_CASE:
       return state.mergeIn(['cases', action.payload.get('id'), 'snapCase'], action.payload);
     case SET_EDIT_CASE:

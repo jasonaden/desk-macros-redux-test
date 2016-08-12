@@ -2,7 +2,7 @@ import * as Immutable from 'immutable';
 import * as diff from 'immutablediff';
 import * as patch from 'immutablepatch';
 import {stateGo} from 'redux-ui-router';
-import {getActiveCaseId, getActiveCase, getSnapCase, setEditCase, setSnapCase} from '../states';
+import {getActiveCaseId, getActiveCase, getSnapCase, setCanUpdate, setEditCase, setSnapCase} from '../states';
 import {RxPoller} from 'rx-poller';
 import {getCaseById} from '../../desk/resources/case';
 
@@ -46,6 +46,21 @@ export class CaseDetailService implements ICaseDetailService {
     this.Case = Case;
     this.ReduxWatch = ReduxWatch;
     $ngRedux.connect(null, mapDispatch)(this);
+  }
+
+  save(kase) {
+    const editCase = getActiveCase(this.ngRedux.getState());
+    const snapCase = getSnapCase(this.ngRedux.getState());
+    const delta = diff(snapCase, editCase); 
+
+    let patch = {};
+    let path;
+    delta.forEach((d) => {
+      path = d.get('path');
+      path = path.replace('/','');
+      patch[path] = d.get('value');
+    });
+    this.Case.update(kase.id, patch);
   }
   
   unsync () {

@@ -39,25 +39,48 @@ export class Case extends Resource<ICase> {
     };
   }
 
-  beforeFindOne(id, config = {}) {
-    return this.getDefaultConfig(id, config);
+  beforeFindOne(id, persistorConfig = {}) {
+    persistorConfig.url = this.url + '/' + id;
+    return [persistorConfig];
   }
 
-  beforeFind(config = {}) {
-    config.params = Object.assign({}, {url:this.url}, config.params)
-    config.listName = LIST;
+  beforeUpdate(id, patch, config = {}) {
+    config = this.getDefaultConfig(id, config);
+    config.data = patch;
     return config;
   }
 
+  list(persistorConfig = {}, adapterConfig = {}) {
+    adapterConfig.listName = LIST;
+    persistorConfig = Object.assign({}, {url:this.url}, persistorConfig)
+    return this.find(persistorConfig, adapterConfig);
+  }
+
+  changes(persistorConfig = {}, adapterConfig = {}) {
+    adapterConfig.listName = 'CHANGES';
+    persistorConfig = Object.assign({}, {url:'filters/11/cases/changes?cflpt=1471022097&cids=&embed=customer&filter_id=11&page=1&per_page=50&sort_direction=desc&sort_field=updated_at'}, persistorConfig)
+    return this.find(persistorConfig, adapterConfig);
+  }
   
 }
 
 export const CaseReducer = defaultReducer(NAME);
 export const CaseListReducer = defaultListReducer(LIST);
+export const ChangesReducer = defaultListReducer('CHANGES');
 
 export const getAllCases = (state) => {
   let entities = state.entities.case;
   return entities.items.toList();
+}
+
+export const getChangesCases = (state) => {
+  if (state.lists.CHANGES.page && state.lists.CHANGES.result.get(state.lists.CHANGES.page)){
+    return state.lists.CHANGES.result.get(state.lists.CHANGES.page).map( (r) => {
+      return getCaseById(state, r);
+    });
+  } else {
+    return Immutable.List();
+  }
 }
 
 export const getListCases = (state) => {

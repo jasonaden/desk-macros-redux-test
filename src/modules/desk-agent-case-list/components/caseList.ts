@@ -30,10 +30,10 @@ export class CaseList {
     let unsubscribe = $ngRedux.connect(mapStateToThis, mapDispatchToThis)(this);
     
     // restore paused poller
-    this._poller = RxPoller.getPoller('case-list');
+    this._poller = RxPoller.getPoller('changes');
     if (!this._poller) {
-      this._poller = new RxPoller('case-list', { interval:20000 });
-      this._poller.setAction(() => Case.find());
+      this._poller = new RxPoller('changes', { interval:20000 });
+      this._poller.setAction(() => Case.changes());
     }
     this._poller.start();
 

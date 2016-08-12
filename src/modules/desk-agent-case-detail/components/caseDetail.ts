@@ -5,12 +5,14 @@ import * as Immutable from 'immutable';
 import {getCaseById} from '../../desk/resources/case';
 import {IMacro} from '../../desk-agent-case-macros/states';
 import {getActiveCase, getAppliedMacros, canUpdate, getSnapCase, setEditCase, setSnapCase} from '../states';
+import {getUsers} from '../../desk/resources/user';
 
 const mapState = (state) => {
   return {
     appliedMacros: getAppliedMacros(state).toJS(),
     kase: getActiveCase(state).toJS(),
-    canUpdate: canUpdate(state)
+    canUpdate: canUpdate(state),
+    users: getUsers(state).toJS()
   };
 }
 
@@ -34,6 +36,7 @@ export class CaseDetailController {
   kase;
   autoSaveCallback;
   storeChanges;
+  save;
 
   constructor ($scope, $ngRedux, CaseDetailService) {
     // allow forms to keep redux in sync with UI    
@@ -45,6 +48,11 @@ export class CaseDetailController {
     // connect redux items to controller
     let unsubscribe = $ngRedux.connect(mapState, mapDispatch)(this);
     $scope.$on('$destroy', () => { unsubscribe(); });   
+
+    this.save = (kase) => {
+      this.storeChanges(kase);
+      CaseDetailService.save(kase);
+    }
    
   }
   

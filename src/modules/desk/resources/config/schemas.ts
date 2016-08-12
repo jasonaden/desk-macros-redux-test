@@ -35,9 +35,12 @@ export const replySchema = new Schema('reply', getOptions());
  * Schema setup for Customer
  */
 export const customerSchema = new Schema('customer', getOptions());
+export const userSchema = new Schema('user', getOptions());
+export const userListSchema = new Schema('USERLIST', getOptions({idAttribute: () => 'USERLIST'}));
 
 export const caseChangesSchema = new Schema('changes', getOptions());
 export const caseListSchema = new Schema('CASELIST', getOptions({idAttribute: () => 'CASELIST'}));
+export const changesSchema = new Schema('CHANGES', getOptions({idAttribute: () => 'CHANGES'}));
 
 
 interactionSchema.define({
@@ -55,7 +58,7 @@ caseSchema.define({
     message: messageSchema, 
     replies: arrayOf(interactionSchema),
     foober: customerSchema
-  },  
+  }  
 });
 
 caseChangesSchema.define( {
@@ -70,6 +73,17 @@ caseListSchema.define( {
   }
 });
 
+userListSchema.define( {
+  _embedded: {
+    entries: arrayOf(userSchema)
+  }
+});
+
+changesSchema.define({
+  changed: arrayOf(caseSchema),
+  new: arrayOf(caseSchema)
+});
+
 export const appSchema = {
   case: caseSchema, 
   interaction: interactionSchema, 
@@ -78,5 +92,8 @@ export const appSchema = {
   reply: replySchema,
   customer: customerSchema,
   changes: caseChangesSchema,
-  CASELIST: caseListSchema
+  CASELIST: caseListSchema,
+  CHANGES: changesSchema,
+  USERLIST: userListSchema,
+  user: userSchema
 }

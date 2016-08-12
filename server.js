@@ -5,7 +5,7 @@ var config = require('./config.json');
 
 var allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,PATCH,POST,DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
 
     next();
@@ -24,7 +24,13 @@ app.get('/api/*', function (req, res) {
   proxy.web(req, res, {
     target: config.server
   })
-})
+});
+
+app.patch('/api/*', function (req, res) {
+  proxy.web(req, res, {
+    target: config.server
+  });
+});
 
 app.listen(8888, function () {
   console.log('Example app listening on 8888!');

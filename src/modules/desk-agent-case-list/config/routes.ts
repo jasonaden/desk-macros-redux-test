@@ -1,6 +1,6 @@
 import {caseListMod} from '../module';
 import {setItems} from '../states';
-import {getListCases} from '../../desk/resources/case';
+import {getListCases, getChangesCases} from '../../desk/resources/case';
 import {Filter, setFilter, setActiveFilterId} from '../states';
 
 export const routes = ($stateProvider, $urlRouterProvider) => {
@@ -25,9 +25,9 @@ export const routes = ($stateProvider, $urlRouterProvider) => {
           setupFilterDetails($ngRedux, cases);
         
         } else {
-          return Case.find().then(() => {
-            
-            let cases = getListCases($ngRedux.getState());
+          return Case.changes().then(() => {
+
+            let cases = getChangesCases($ngRedux.getState());
             
             return setupFilterDetails($ngRedux, cases);
 

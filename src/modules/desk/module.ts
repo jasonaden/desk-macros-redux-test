@@ -1,7 +1,8 @@
 import {
   Case,
   Customer,
-  ApiV2Adapter
+  ApiV2Adapter,
+  User
 } from './resources';
 import {
   appSchema
@@ -71,6 +72,7 @@ deskMod
   .service('ReduxWatch', ReduxWatch)
   .service('Case', Case)
   .service('Customer', Customer)
+  .service('User', User)
   .provider('$httpPersistor', () => {
     return {
       $get: ($http, $q) => {

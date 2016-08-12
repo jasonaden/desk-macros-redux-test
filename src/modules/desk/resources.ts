@@ -5,6 +5,7 @@ export {ApiV2Adapter} from './resources/config/apiv2-adapter';
 
 export {Case, getCases, getCaseById} from './resources/case';
 export {Customer} from './resources/customer';
+export {User} from './resources/user';
 // export {Interaction} from './resources/interaction';
 
 

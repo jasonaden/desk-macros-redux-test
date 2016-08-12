@@ -68,14 +68,29 @@ export class ApiV2Adapter extends BaseAdapter {
     return Promise.all([split]); 
   }
 
+  afterUpdate(data) {
+    this.splitSchema( data );
+
+    return data;
+  }
+
   afterFindOne(data) {
     this.splitSchema( data )
     return data;
   }
  
-  afterFind(listName, data) {
+  afterFind(data, adapterConfig) {
     if ( data.changed ) {
-      
+
+      let positions = data.positions;
+      let split = normalize( data, this.schema[adapterConfig.listName] );
+      delete split.entities[adapterConfig.listName];
+      this.handleAdapterData(split);
+
+      this.store.dispatch({type: 'SET_LIST_PAGE_'+adapterConfig.listName.toUpperCase(), payload: 1});
+      this.store.dispatch({type: 'SET_LIST_RESULT_'+adapterConfig.listName.toUpperCase(), payload: positions});
+
+      return data;
     } else {
 
       let entries = data._embedded.entries;
@@ -84,18 +99,18 @@ export class ApiV2Adapter extends BaseAdapter {
       let page = data.page;
 
       // store relevant entities
-      let split = normalize( data, this.schema[listName] );
-
+      let split = normalize( data, this.schema[adapterConfig.listName] );
+      console.log(split);
       // get result id sequence
-      let result = split.entities[listName][listName]._embedded.entries;
-      delete split.entities[listName];
+      let result = split.entities[adapterConfig.listName][adapterConfig.listName]._embedded.entries;
+      delete split.entities[adapterConfig.listName];
       
       this.handleAdapterData(split);
 
       // push meta into list store
-      this.store.dispatch({type: 'SET_LIST_COUNT_'+listName.toUpperCase(), payload: count});
-      this.store.dispatch({type: 'SET_LIST_PAGE_'+listName.toUpperCase(), payload: page});
-      this.store.dispatch({type: 'SET_LIST_RESULT_'+listName.toUpperCase(), payload: result});
+      this.store.dispatch({type: 'SET_LIST_COUNT_'+adapterConfig.listName.toUpperCase(), payload: count});
+      this.store.dispatch({type: 'SET_LIST_PAGE_'+adapterConfig.listName.toUpperCase(), payload: page});
+      this.store.dispatch({type: 'SET_LIST_RESULT_'+adapterConfig.listName.toUpperCase(), payload: result});
 
       return data;
     }
