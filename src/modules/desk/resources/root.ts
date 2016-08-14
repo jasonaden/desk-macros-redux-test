@@ -1,3 +1,7 @@
+
+// TODO: Should this be renamed to 'states.ts' because all the other 
+//  reducers are in files called 'states.ts'?
+
 import {combineReducers} from 'redux';
 import {CaseReducer, CaseListReducer, ChangesReducer} from './case';
 import {customer} from './customer';

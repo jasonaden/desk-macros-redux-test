@@ -5,10 +5,17 @@ import {take, put, call, fork, cancel} from 'redux-saga/effects';
 import * as Immutable from 'immutable';
 import * as diff from 'immutablediff';
 
-import {FIND_ONE} from '../../resources/constants';
 import {Case} from '../desk/resources/case';
 import {setMacroApplyError} from '../desk-agent-case-macros/states';
 
+// TODO: I added some TODO's to this just to remind us to talk about 
+//  whether some of this should be moved into individual files. 
+//  I don't want to go crazy about splitting things up because at 
+//  some point that makes it harder to find and fix things. But 
+//  we can go too far in keeping things in one place.
+
+// TODO: Should we move these record definitions to a ./constants file?
+// *** Data structures 
 export const CaseDetails = Immutable.Record({
   activeCaseId: -1,
   cases: Immutable.Map()
@@ -23,7 +30,15 @@ export const CaseDetail = Immutable.Record({
   appliedMacros: Immutable.Set(),
   actions: Immutable.List()
 });
+// *** End data structures
 
+// TODO: Wondering 2 things about these action constants - 
+//  1) Should we move them to a ./constants file? 
+//  2) Should they be moved to a top level actionConstants file (or something like that)? 
+//    since that might make it easier to know if we're re-using the same name somewhere 
+//    else. Just wondering this since any action is potentially called whenever 
+//    any action is dispatched. 
+// Action names
 export const SET_ACTIVE_CASE_ID = 'SET_ACTIVE_CASE_ID';
 export const SET_CASE_DETAIL = 'SET_CASE_DETAIL';
 export const SET_SNAP_CASE = 'SET_SNAP_CASE';
@@ -34,7 +49,9 @@ export const SET_SELECTED_MACRO = 'SET_SELECTED_MACRO';
 export const APPLY_MACRO = 'APPLY_MACRO';
 export const APPLY_MACRO_TO_CASE = 'APPLY_MACRO_TO_CASE';
 export const UPDATE_CASE = 'UPDATE_CASE';
+// End action names
 
+// Reducer
 export const caseStore:Reducer = (state = new CaseDetails(), action:Action<any>) => {
   switch(action.type) {
     case SET_CASE_DETAIL:
@@ -57,6 +74,10 @@ export const caseStore:Reducer = (state = new CaseDetails(), action:Action<any>)
       return state;
   }
 }
+// End Reducer
+
+// TODO: Same question about actionCreators -- should they be in a separate file? 
+// Action Creators
 export function setEditCase(payload:Object){
   return (dispatch, getState) => {
     let state = getState();
@@ -90,7 +111,11 @@ export function applyMacroToCase(payload: Object): Action<Object> {
 export function setSelectedMacro(payload: number): Action<Object> {
   return { type: SET_SELECTED_MACRO, payload };
 }
+// End Action creators
 
+// TODO: Similar question about the selectors, should they be in 
+//  their own file? 
+// Selectors
 export const getActiveCaseId = (state) => state.caseStore.activeCaseId;
 export const getSnapCase = (state) => getActiveCaseDetail(state).get('snapCase');
 export const getCaseDetail = (state, id) => state.caseStore.cases.get(id);
@@ -98,6 +123,7 @@ export const getActiveCaseDetail = (state) => state.caseStore.cases.get(state.ca
 export const getActiveCase = (state) => getActiveCaseDetail(state).get('editCase');
 export const getAppliedMacros = (state) => getActiveCaseDetail(state).get('appliedMacros');
 export const canUpdate = (state) => getActiveCaseDetail(state).get('canUpdate');
+// End selectors
 
 export function* applyMacroSaga (getState) {
   while (true) {

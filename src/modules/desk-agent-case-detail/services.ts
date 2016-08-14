@@ -1,0 +1,1 @@
+export {CaseDetailService} from './services/caseDetailService';
