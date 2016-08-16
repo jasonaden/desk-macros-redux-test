@@ -93,7 +93,7 @@ export const appSchema = {
   customer: customerSchema,
   changes: caseChangesSchema,
   CASELIST: caseListSchema,
-  CHANGES: changesSchema,
+  CHANGESLIST: changesSchema,
   USERLIST: userListSchema,
   user: userSchema
 }

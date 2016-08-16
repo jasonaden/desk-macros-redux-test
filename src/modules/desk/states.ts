@@ -9,7 +9,7 @@ import createSagaMiddleware from 'redux-saga';
 import {deskMod} from './module';
 import {macroFilter} from '../desk-agent-case-macros/states';
 import {filterStore} from '../desk-agent-case-list/states';
-import {caseStore} from '../desk-agent-case-detail/states';
+import {caseDetailStore} from '../desk-agent-case-detail/states';
 import {entitiesReducer, listsReducer} from './resources/root';
 import {failedToApplySaga, setMacros} from '../desk-agent-case-macros/states';
 import {applyMacroSaga} from '../desk-agent-case-detail/states';
@@ -21,6 +21,6 @@ export const rootReducer = combineReducers({
   entities: entitiesReducer,
   lists: listsReducer,
   deskAgentCaseMacros: macroFilter,
-  caseStore,
+  caseDetailStore,
   filterStore
 });

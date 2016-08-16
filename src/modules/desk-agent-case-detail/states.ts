@@ -18,7 +18,7 @@ import {setMacroApplyError} from '../desk-agent-case-macros/states';
 // *** Data structures 
 export const CaseDetails = Immutable.Record({
   activeCaseId: -1,
-  cases: Immutable.Map()
+  caseDetails: Immutable.Map()
 });
 
 export const CaseDetail = Immutable.Record({
@@ -52,22 +52,22 @@ export const UPDATE_CASE = 'UPDATE_CASE';
 // End action names
 
 // Reducer
-export const caseStore:Reducer = (state = new CaseDetails(), action:Action<any>) => {
+export const caseDetailStore:Reducer = (state = new CaseDetails(), action:Action<any>) => {
   switch(action.type) {
     case SET_CASE_DETAIL:
-      return state.mergeIn(['cases', action.payload.caseId], action.payload.detail);
+      return state.mergeIn(['caseDetails', action.payload.caseId], action.payload.detail);
     case SET_ACTIVE_CASE_ID:
       return state.set('activeCaseId', action.payload);
     case SET_CAN_UPDATE:
-      return state.mergeIn(['cases', state.activeCaseId, 'canUpdate'], action.payload);
+      return state.mergeIn(['caseDetails', state.activeCaseId, 'canUpdate'], action.payload);
     case PATCHED_CASE:
-      return state.mergeIn(['cases', state.activeCaseId, 'canUpdate'], false);
+      return state.mergeIn(['caseDetails', state.activeCaseId, 'canUpdate'], false);
     case SET_SNAP_CASE:
-      return state.mergeIn(['cases', action.payload.get('id'), 'snapCase'], action.payload);
+      return state.mergeIn(['caseDetails', action.payload.get('id'), 'snapCase'], action.payload);
     case SET_EDIT_CASE:
-      return state.mergeIn(['cases', action.payload.get('id'), 'editCase'], action.payload);
+      return state.mergeIn(['caseDetails', action.payload.get('id'), 'editCase'], action.payload);
     case APPLY_MACRO_TO_CASE:
-      return state.updateIn(['cases', state.activeCaseId, 'appliedMacros'], function(macros) {
+      return state.updateIn(['caseDetails', state.activeCaseId, 'appliedMacros'], function(macros) {
         return macros.add(action.payload);
       });
     default:
@@ -116,10 +116,10 @@ export function setSelectedMacro(payload: number): Action<Object> {
 // TODO: Similar question about the selectors, should they be in 
 //  their own file? 
 // Selectors
-export const getActiveCaseId = (state) => state.caseStore.activeCaseId;
+export const getActiveCaseId = (state) => state.caseDetailStore.activeCaseId;
 export const getSnapCase = (state) => getActiveCaseDetail(state).get('snapCase');
-export const getCaseDetail = (state, id) => state.caseStore.cases.get(id);
-export const getActiveCaseDetail = (state) => state.caseStore.cases.get(state.caseStore.activeCaseId);
+export const getCaseDetail = (state, id) => state.caseDetailStore.caseDetails.get(id);
+export const getActiveCaseDetail = (state) => state.caseDetailStore.caseDetails.get(state.caseDetailStore.activeCaseId);
 export const getActiveCase = (state) => getActiveCaseDetail(state).get('editCase');
 export const getAppliedMacros = (state) => getActiveCaseDetail(state).get('appliedMacros');
 export const canUpdate = (state) => getActiveCaseDetail(state).get('canUpdate');

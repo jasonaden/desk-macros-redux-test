@@ -56,7 +56,7 @@ export const UserListReducer = defaultListReducer(LIST);
 export const getUsers = (state) => {
   if (state.lists[LIST].page && state.lists[LIST].result.get(state.lists[LIST].page)){
     return state.lists[LIST].result.get(state.lists[LIST].page).map( (r) => {
-      return getUserById(state, r);
+      return getUserByURI(state, r);
     });
   } else {
     return Immutable.List();
@@ -69,6 +69,6 @@ export const getUserById = (state, id) => {
 }
 
 export const getUserByURI = (state, id) => {
-  return state.entities.case.items.get(id);
+  return state.entities.user.items.get(id);
 }
 

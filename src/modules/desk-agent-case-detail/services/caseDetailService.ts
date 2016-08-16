@@ -8,6 +8,8 @@ import {getCaseById} from '../../desk/resources/case';
 
 export interface ICaseDetailService {
   sync(): any;
+  unsync(): any;
+  save(): any;
 }
 
 const mapDispatch = (dispatch) => {
@@ -28,31 +30,26 @@ const mapDispatch = (dispatch) => {
 }
 
 export class CaseDetailService implements ICaseDetailService {
-  activeCaseId;
-  Case;
-  rootScope: ng.IRootScopeService;
-  ngRedux;
-  RxPoller;
-  caseDetailPoller;
-  setEditCase;
-  setSnapCase;
-  ReduxWatch;
 
-  static $inject = ['$rootScope', '$ngRedux', 'RxPoller', 'ReduxWatch', 'Case'];
-  constructor ($rootScope, $ngRedux, RxPoller, ReduxWatch, Case) {
-    this.rootScope = $rootScope;
-    this.ngRedux = $ngRedux;
-    this.RxPoller = RxPoller;
-    this.Case = Case;
-    this.ReduxWatch = ReduxWatch;
+  constructor (public $rootScope, public $ngRedux, public RxPoller, public ReduxWatch, public Case) {
     $ngRedux.connect(null, mapDispatch)(this);
   }
 
-  save(kase) {
-    const editCase = getActiveCase(this.ngRedux.getState());
-    const snapCase = getSnapCase(this.ngRedux.getState());
+  save (kase) {
+    const editCase = Immutable.fromJS(kase);
+    //this.$ngRedux.dispatch(setEditCase(editCase));
+    const snapCase = getSnapCase(this.$ngRedux.getState());
     const delta = diff(snapCase, editCase); 
-
+    
+    // when a change is made, but gets
+    // manually reverted, there is no diff
+    // so just clear the flag and make it
+    // look like the save happened
+    if (delta.size === 0) {
+      this.$ngRedux.dispatch(setCanUpdate(false));
+      return;
+    }
+    
     let patch = {};
     let path;
     delta.forEach((d) => {
@@ -68,9 +65,9 @@ export class CaseDetailService implements ICaseDetailService {
     this.caseDetailPoller.stop();
   }
   sync (stashFn) {
-    this.activeCaseId = getActiveCaseId(this.ngRedux.getState());
+    this.activeCaseId = getActiveCaseId(this.$ngRedux.getState());
     // save unsaved changes when navigating away
-    let watchExit = this.rootScope.$on('$stateChangeStart', (event) => {
+    let watchExit = this.$rootScope.$on('$stateChangeStart', (event) => {
       stashFn();
       this.unsync();
     });
@@ -86,7 +83,7 @@ export class CaseDetailService implements ICaseDetailService {
     this.ReduxWatch.watch('activeCase', 
     // selector
     () => {
-      return getCaseById(this.ngRedux.getState(), this.activeCaseId);
+      return getCaseById(this.$ngRedux.getState(), this.activeCaseId);
     }, 
     // comparator
     (a, b) => {
@@ -95,7 +92,7 @@ export class CaseDetailService implements ICaseDetailService {
     // diff callback
     () => {
       // get state after stashing local changes
-      const state = this.ngRedux.getState();
+      const state = this.$ngRedux.getState();
       
       // snapshot of case where we initially forked for editing
       const snapCase = getSnapCase(state);

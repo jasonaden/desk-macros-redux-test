@@ -4,7 +4,14 @@ import * as Immutable from 'immutable';
 
 import {getCaseById} from '../../desk/resources/case';
 import {IMacro} from '../../desk-agent-case-macros/states';
-import {getActiveCase, getAppliedMacros, canUpdate, getSnapCase, setEditCase, setSnapCase} from '../states';
+import {
+  getActiveCase, 
+  getAppliedMacros, 
+  canUpdate, 
+  getSnapCase, 
+  setEditCase, 
+  setSnapCase
+} from '../states';
 import {getUsers} from '../../desk/resources/user';
 
 const mapState = (state) => {
@@ -44,16 +51,13 @@ export class CaseDetailController {
 
     // make local copy from case detail
     CaseDetailService.sync(this.autoSaveCallback);
-
+    this.save = (kase) => {
+      return CaseDetailService.save(kase);
+    }
+    
     // connect redux items to controller
     let unsubscribe = $ngRedux.connect(mapState, mapDispatch)(this);
     $scope.$on('$destroy', () => { unsubscribe(); });   
-
-    this.save = (kase) => {
-      this.storeChanges(kase);
-      CaseDetailService.save(kase);
-    }
-   
   }
   
 };
@@ -69,9 +73,15 @@ export const CaseDetailComponent:ng.IComponentOptions = {
       <h3>{{$ctrl.kase.subject}}</h3>
       <ng-form class='row' name='caseDetailForm' auto-save-form='$ctrl.autoSaveCallback'>
         <input class='col-md-12' type="text" ng-model="$ctrl.kase.subject">
+        <div>
+          <select ng-model='$ctrl.kase._links.assigned_user.href'>
+            <option ng-repeat='user in $ctrl.users' value='{{::user.href}}'>{{::user.name}}</option>
+          </select>
+        </div>
       </ng-form>
       <span>Status: {{$ctrl.kase.status}}</span>
       <span>Type: {{$ctrl.kase.type}}</span>
+      
       <div>
         <button class='btn btn-primary' ng-click='$ctrl.save($ctrl.kase)' ng-show="$ctrl.canUpdate">Save API</button>
       <div>

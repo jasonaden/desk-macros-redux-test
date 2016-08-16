@@ -19,6 +19,6 @@ export const entitiesReducer = combineReducers({
 
 export const listsReducer = combineReducers({
   CASELIST: CaseListReducer,
-  CHANGES: ChangesReducer,
+  CHANGESLIST: ChangesReducer,
   USERLIST: UserListReducer
 });

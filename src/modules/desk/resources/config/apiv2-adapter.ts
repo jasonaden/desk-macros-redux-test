@@ -80,12 +80,18 @@ export class ApiV2Adapter extends BaseAdapter {
   }
  
   afterFind(data, adapterConfig) {
+    debugger;
     if ( data.changed ) {
 
       let positions = data.positions;
       let split = normalize( data, this.schema[adapterConfig.listName] );
       delete split.entities[adapterConfig.listName];
       this.handleAdapterData(split);
+
+      /*let uris = []
+      positions.map( (p) => {
+        uris.push(getURI(getCaseById(p)));
+      });*/
 
       this.store.dispatch({type: 'SET_LIST_PAGE_'+adapterConfig.listName.toUpperCase(), payload: 1});
       this.store.dispatch({type: 'SET_LIST_RESULT_'+adapterConfig.listName.toUpperCase(), payload: positions});
@@ -100,7 +106,7 @@ export class ApiV2Adapter extends BaseAdapter {
 
       // store relevant entities
       let split = normalize( data, this.schema[adapterConfig.listName] );
-      console.log(split);
+
       // get result id sequence
       let result = split.entities[adapterConfig.listName][adapterConfig.listName]._embedded.entries;
       delete split.entities[adapterConfig.listName];

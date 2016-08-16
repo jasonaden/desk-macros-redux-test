@@ -8,8 +8,9 @@ import {ApiV2Adapter} from './config/apiv2-adapter';
 /**
  * Module name
  */
-export const NAME = "CASE";
-const LIST = "CASELIST";
+export const CLASS_NAME = "CASE";
+export const LIST_NAME = "CASELIST";
+const CHANGES = "CHANGESLIST";
 
 export interface ICase {
   id: number,
@@ -20,23 +21,10 @@ export interface ICase {
 
 export class Case extends Resource<ICase> {
   public url = '/cases';
-  public className = NAME;
+  public className = CLASS_NAME;
   
-  private defaultConfig;
-
   constructor(public $ngRedux, ApiV2Adapter) {
     super($ngRedux, ApiV2Adapter);
-
-    this.defaultConfig = {
-      url: this.url
-    }
-  }
-
-  getDefaultConfig (id, config) {
-    return {
-      url: this.url + '/' + id,
-      className: this.className 
-    };
   }
 
   beforeFindOne(id, persistorConfig = {}) {
@@ -44,29 +32,29 @@ export class Case extends Resource<ICase> {
     return persistorConfig;
   }
 
-  beforeUpdate(id, patch, config = {}) {
-    config = this.getDefaultConfig(id, config);
-    config.data = patch;
-    return config;
+  beforeUpdate(id, patch, persistorConfig = {}, adapterConfig = {}) {
+    persistorConfig.url = this.url + '/' + id;
+    persistorConfig.data = patch;
+    return [persistorConfig, adapterConfig];
   }
 
   list(persistorConfig = {}, adapterConfig = {}) {
-    adapterConfig.listName = LIST;
+    adapterConfig.listName = LIST_NAME;
     persistorConfig = Object.assign({}, {url:this.url}, persistorConfig)
     return this.find(persistorConfig, adapterConfig);
   }
 
   changes(persistorConfig = {}, adapterConfig = {}) {
-    adapterConfig.listName = 'CHANGES';
+    adapterConfig.listName = CHANGES;
     persistorConfig = Object.assign({}, {url:'filters/11/cases/changes?cflpt=1471022097&cids=&embed=customer&filter_id=11&page=1&per_page=50&sort_direction=desc&sort_field=updated_at'}, persistorConfig)
     return this.find(persistorConfig, adapterConfig);
   }
   
 }
 
-export const CaseReducer = defaultReducer(NAME);
-export const CaseListReducer = defaultListReducer(LIST);
-export const ChangesReducer = defaultListReducer('CHANGES');
+export const CaseReducer = defaultReducer(CLASS_NAME);
+export const CaseListReducer = defaultListReducer(LIST_NAME);
+export const ChangesReducer = defaultListReducer(CHANGES);
 
 export const getAllCases = (state) => {
   let entities = state.entities.case;
@@ -74,8 +62,8 @@ export const getAllCases = (state) => {
 }
 
 export const getChangesCases = (state) => {
-  if (state.lists.CHANGES.page && state.lists.CHANGES.result.get(state.lists.CHANGES.page)){
-    return state.lists.CHANGES.result.get(state.lists.CHANGES.page).map( (r) => {
+  if (state.lists.CHANGESLIST.page && state.lists.CHANGESLIST.result.get(state.lists.CHANGESLIST.page)){
+    return state.lists.CHANGESLIST.result.get(state.lists.CHANGESLIST.page).map( (r) => {
       return getCaseById(state, r);
     });
   } else {
