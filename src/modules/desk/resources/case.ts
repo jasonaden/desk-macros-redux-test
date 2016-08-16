@@ -41,7 +41,7 @@ export class Case extends Resource<ICase> {
 
   beforeFindOne(id, persistorConfig = {}) {
     persistorConfig.url = this.url + '/' + id;
-    return [persistorConfig];
+    return persistorConfig;
   }
 
   beforeUpdate(id, patch, config = {}) {

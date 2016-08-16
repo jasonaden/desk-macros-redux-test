@@ -9,7 +9,7 @@ export const routes = ($stateProvider, $urlRouterProvider, $locationProvider) =>
   $stateProvider.state('desk.agent.case.detail', {
     url: '/case/:id',
     resolve: {
-      resolveCaseDetail: ($stateParams, $ngRedux, $q, Case, User) => {
+      resolveCaseDetail: ($stateParams, $ngRedux, Case, User) => {
         const state = $ngRedux.getState();
         const id = parseInt($stateParams.id);
         const detail = getCaseDetail(state, id);
@@ -20,7 +20,8 @@ export const routes = ($stateProvider, $urlRouterProvider, $locationProvider) =>
           const kase = getCaseById($ngRedux.getState(), id);
           const users = getUsers($ngRedux.getState());
 
-          return $q.all([kase || Case.findOne(id), users.size || User.list()]).then(()=>{
+          return Promise.all( [kase || Case.findOne(id), users.size || User.list()] )
+          .then(()=>{
             return setupCaseDetail(getCaseById($ngRedux.getState(), id))
           });
 

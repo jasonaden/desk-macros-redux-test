@@ -10,7 +10,7 @@ import {UserReducer, UserListReducer} from './user';
 // import {customers} from './customer';
 
 export const entitiesReducer = combineReducers({
-  case: CaseReducer
+  case: CaseReducer,
   customer,
   interaction,
   user: UserReducer
