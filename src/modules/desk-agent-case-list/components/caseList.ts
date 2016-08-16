@@ -26,7 +26,7 @@ const mapDispatchToThis = (dispatch) => {
 export class CaseList {
   private _poller;
   
-  constructor ($scope, $ngRedux, Case, RxPoller) {
+  constructor ($scope, public $ngRedux, public Case, RxPoller) {
     let unsubscribe = $ngRedux.connect(mapStateToThis, mapDispatchToThis)(this);
     
     // restore paused poller
@@ -42,6 +42,27 @@ export class CaseList {
       this._poller.stop();
     });
   }
+
+  delete (id) {
+    this.Case.destroy(id);
+  }
+
+  createCase () {
+    this.Case.add({
+      message: {
+        status: 'draft',
+        direction: 'out',
+        to: 'jmumm@salesforce.com'
+      },
+      status: 'new',
+      type: 'email',
+      _links: {
+        locked_by: this.filteredItems[0]._links.assigned_user,
+        customer: this.filteredItems[0]._links.customer,
+      }
+    });
+  }
+
   
   getCaseDisplay (kase) {
     return kase.subject;
@@ -66,6 +87,9 @@ export const CaseListComponent = {
           item-name="$ctrl.getCaseDisplay(item)"></filter-list>
       </list>
     </filter-list-selector>
+    <input type="button" class="btn btn-primary" ng-click="$ctrl.createCase()" value="Create New Case"/>
     <input type="button" class="btn btn-primary" ng-show="$ctrl.filter.selectedId > -1" ng-click="$ctrl.goToCase($ctrl.filter.selectedId)" value="Go To Case"/>
+    <input type="button" class="btn btn-primary" ng-show="$ctrl.filter.selectedId > -1" ng-click="$ctrl.delete($ctrl.filter.selectedId)" value="Delete Case"/>
+    
 	`
 }

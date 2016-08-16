@@ -27,6 +27,12 @@ export class Case extends Resource<ICase> {
     super($ngRedux, ApiV2Adapter);
   }
 
+  beforeAdd(payload, persistorConfig = {}, adapterConfig = {}) {
+    persistorConfig.url = this.url;
+    persistorConfig.data = payload;
+    return [persistorConfig, adapterConfig];
+  }
+
   beforeFindOne(id, persistorConfig = {}) {
     persistorConfig.url = this.url + '/' + id;
     return persistorConfig;
@@ -35,6 +41,11 @@ export class Case extends Resource<ICase> {
   beforeUpdate(id, patch, persistorConfig = {}, adapterConfig = {}) {
     persistorConfig.url = this.url + '/' + id;
     persistorConfig.data = patch;
+    return [persistorConfig, adapterConfig];
+  }
+
+  beforeDestroy(id, persistorConfig = {}, adapterConfig = {}) {
+    persistorConfig.url = this.url + '/' + id;
     return [persistorConfig, adapterConfig];
   }
 

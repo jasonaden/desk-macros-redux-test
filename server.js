@@ -32,6 +32,18 @@ app.patch('/api/*', function (req, res) {
   });
 });
 
+app.delete('/api/*', function (req, res) {
+  proxy.web(req, res, {
+    target: config.server
+  });
+});
+
+app.post('/api/*', function (req, res) {
+  proxy.web(req, res, {
+    target: config.server
+  });
+});
+
 app.listen(8888, function () {
   console.log('Example app listening on 8888!');
 });
