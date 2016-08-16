@@ -35,9 +35,8 @@ export class CaseDetailService implements ICaseDetailService {
     $ngRedux.connect(null, mapDispatch)(this);
   }
 
-  save (kase) {
-    const editCase = Immutable.fromJS(kase);
-    //this.$ngRedux.dispatch(setEditCase(editCase));
+  save () {
+    const editCase = getActiveCase(this.$ngRedux.getState());
     const snapCase = getSnapCase(this.$ngRedux.getState());
     const delta = diff(snapCase, editCase); 
     
@@ -49,15 +48,31 @@ export class CaseDetailService implements ICaseDetailService {
       this.$ngRedux.dispatch(setCanUpdate(false));
       return;
     }
-    
-    let patch = {};
-    let path;
+
+    let payload = {};
+    let path, pathKeys;
     delta.forEach((d) => {
+      // d = {op, path, value}
       path = d.get('path');
+      // remove leading slash of path (/subject, /_links/...)
       path = path.replace('/','');
-      patch[path] = d.get('value');
+      // split path on '/' for deep object references
+      pathKeys = path.split('/');
+
+      // if we have a deep path
+      if(pathKeys.length > 1) {
+        // "touch" path, ensure the payload has a full path for requested change
+        pathKeys.reduce((obj, key) => obj[key] = obj[key] || {}, payload);
+        
+        // convert current payload to immutable and patch it and return to js
+        payload = patch(Immutable.fromJS(payload), Immutable.List([d])).toJS();
+      
+      // otherwise not a deep path, set key to value
+      } else {
+        payload[path] = d.get('value');
+      }
     });
-    this.Case.update(kase.id, patch);
+    this.Case.update(editCase.get('id'), payload);
   }
   
   unsync () {

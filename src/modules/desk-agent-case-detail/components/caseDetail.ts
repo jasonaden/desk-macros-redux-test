@@ -52,7 +52,8 @@ export class CaseDetailController {
     // make local copy from case detail
     CaseDetailService.sync(this.autoSaveCallback);
     this.save = (kase) => {
-      return CaseDetailService.save(kase);
+      this.storeChanges(kase);
+      return CaseDetailService.save();
     }
     
     // connect redux items to controller
@@ -75,7 +76,7 @@ export const CaseDetailComponent:ng.IComponentOptions = {
         <input class='col-md-12' type="text" ng-model="$ctrl.kase.subject">
         <div>
           <select ng-model='$ctrl.kase._links.assigned_user.href'>
-            <option ng-repeat='user in $ctrl.users' value='{{::user.href}}'>{{::user.name}}</option>
+            <option ng-repeat='user in $ctrl.users' value='{{::user._links.self.href}}'>{{::user.name}}</option>
           </select>
         </div>
       </ng-form>

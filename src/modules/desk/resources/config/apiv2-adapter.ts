@@ -80,7 +80,6 @@ export class ApiV2Adapter extends BaseAdapter {
   }
  
   afterFind(data, adapterConfig) {
-    debugger;
     if ( data.changed ) {
 
       let positions = data.positions;
