@@ -74,9 +74,11 @@ export class ApiV2Adapter extends BaseAdapter {
     return data;
   }
 
+  // This splits to update the store and returns a promise of the data
+  //  which rolls back up to the resource after. 
   afterFindOne(data) {
-    this.splitSchema( data )
-    return data;
+    return this.splitSchema( data )
+    // return data;
   }
  
   afterFind(data, adapterConfig) {

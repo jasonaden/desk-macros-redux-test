@@ -19,6 +19,12 @@ export interface ICase {
   macros: Number[]
 }
 
+// TODO: Temporarily brought over from Restore
+export function action<T> (type: string, suffix: string, payload?: any): Action<T> {
+  return {type: `${type}_${suffix}`, payload};
+}
+
+
 export class Case extends Resource<ICase> {
   public url = '/cases';
   public className = CLASS_NAME;
@@ -33,9 +39,17 @@ export class Case extends Resource<ICase> {
     return [persistorConfig, adapterConfig];
   }
 
+  // NOTE: The Resource before and after take care of 
+  //  notifying the store something has started/finished
   beforeFindOne(id, persistorConfig = {}) {
+    this.$ngRedux.dispatch(action("FINDING_ONE", this.className));
     persistorConfig.url = this.url + '/' + id;
     return [persistorConfig];
+  }
+  afterFindOne(data: any): (PromiseLike<any[]> | Array<any>) {
+    this.$ngRedux.dispatch(action("FOUND_ONE", this.className));
+    console.log("Resource afterFindOne")
+    return Promise.all([data]);
   }
 
   beforeUpdate(id, patch, persistorConfig = {}, adapterConfig = {}) {

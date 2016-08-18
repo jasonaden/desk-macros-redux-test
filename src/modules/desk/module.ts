@@ -42,6 +42,11 @@ export const deskMod = angular.module('desk', [
   'rx'
 ]);
 
+// NOTE: I have an updated version of Saga which 
+//  requires doing this differently. To run for now
+//  you could revert this section. 
+const sagaMiddleware = createSagaMiddleware()
+
 deskMod.config($ngReduxProvider => {
 
   const store = $ngReduxProvider.createStoreWith(
@@ -50,12 +55,14 @@ deskMod.config($ngReduxProvider => {
       thunk,
       createLogger(),
       'ngUiRouterMiddleware',
-      createSagaMiddleware(applyMacroSaga, failedToApplySaga)
+      sagaMiddleware
     ]
   );
 })
 .run(($ngRedux) => {
   $ngRedux.dispatch(setMacros(macroList));
+  sagaMiddleware.run(applyMacroSaga, failedToApplySaga)
+
 });
 
 deskMod
