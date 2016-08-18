@@ -2,7 +2,7 @@
 
 export class FilterListSelector {};
 
-export const FilterListSelectorComponent = {
+export const FilterListSelectorComponent: ng.IComponentOptions = {
   controller: FilterListSelector,
   bindings: {
     title: '@',

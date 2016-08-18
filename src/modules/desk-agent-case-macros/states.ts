@@ -2,11 +2,12 @@ import {createSelector} from 'reselect';
 import {Reducer, combineReducers} from 'redux';
 import {Action} from 'flux-standard-action';
 import {take, put, call, fork, cancel} from 'redux-saga/effects';
-import {takeLatest, SagaCancellationException} from 'redux-saga';
+import {takeLatest} from 'redux-saga';
 import * as Immutable from 'immutable';
 
 import {APPLY_MACRO, MACRO_APPLY_ERROR} from '../desk-agent-case-detail/states';
-import {getOpenCaseId} from '../desk-agent-case-detail/states';
+// TODO: 'getOpenCaseId' doesn't exist, perhaps a remnant
+// import {getOpenCaseId} from '../desk-agent-case-detail/states';
 import {getCaseById} from '../desk/resources/case';
 
 export interface IMacro {
@@ -109,9 +110,12 @@ function* clearError() {
     yield call(delay, 3000);
     yield put(clearMacroApplyError());
   } catch (error) {
-    if(error instanceof SagaCancellationException) {
+    // TODO: add error handling. It looks like SagaCancellationException
+    //  no longer exists. Error handling described at: 
+    // https://github.com/yelouafi/redux-saga/blob/master/docs/basics/ErrorHandling.md
+    //if(error instanceof SagaCancellationException) {
       //event was canceled either by cancel or takeLatest
-    }
+    //}
   }
 }
 

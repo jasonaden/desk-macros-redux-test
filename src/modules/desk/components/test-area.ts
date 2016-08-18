@@ -6,14 +6,14 @@ export class TestArea {
   
   constructor (public Case: Case) {}
   
-  getCase (id) {
+  getCase (id: number) {
     this.Case.findOne(id)
     .then(kase => this.case = kase);
   }
   
 }
 
-export const TestAreaComponent = {
+export const TestAreaComponent: ng.IComponentOptions = {
   controller: TestArea,
   template: `
     <div>

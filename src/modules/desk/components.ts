@@ -3,4 +3,4 @@ export {FilterListSelectorComponent} from './components/filterListSelector';
 export {FilterListFilterComponent} from './components/filterListFilter';
 export {FilterListComponent} from './components/filterList';
 export {TestAreaComponent} from './components/test-area';
-export {autoSaveForm, autoSaveFormProperty, autoSaveFormProvider} from './components/autoSave';
+export {autoSaveForm, autoSaveFormProperty, autoSaveFormDefaultsProvider} from './components/autoSave';

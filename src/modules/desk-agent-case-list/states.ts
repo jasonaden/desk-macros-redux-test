@@ -3,7 +3,8 @@ import {Reducer, combineReducers} from 'redux';
 import {Action} from 'flux-standard-action';
 import * as Immutable from 'immutable';
 
-import {ICase, getCases} from '../desk/resources/case';
+// import {ICase, getCases} from '../desk/resources/case';
+import {ICase} from '../desk/resources/case';
 
 export const Filters = Immutable.Record({
   activeFilterId: -1,
@@ -39,11 +40,11 @@ export const filterStore:Reducer = (state = new Filters(), action:Action<any>) =
     case SET_ACTIVE_FILTER_ID:
       return state.set('activeFilterId', action.payload);
     case SET_SELECTED_ID:
-      return state.setIn(['filters', state.activeFilterId, 'selectedId'], action.payload);
+      return state.setIn(['filters', state.get('activeFilterId'), 'selectedId'], action.payload);
     case SET_FILTER_TEXT:
-      return state.setIn(['filters', state.activeFilterId, 'filterText'], action.payload);
+      return state.setIn(['filters', state.get('activeFilterId'), 'filterText'], action.payload);
     case SET_ITEMS:
-      return state.mergeIn(['filters', state.activeFilterId, 'items'], action.payload);
+      return state.mergeIn(['filters', state.get('activeFilterId'), 'items'], action.payload);
     default:
       return state;
   }

@@ -48,6 +48,7 @@ export const SET_CAN_UPDATE = 'SET_CAN_UPDATE';
 export const SET_SELECTED_MACRO = 'SET_SELECTED_MACRO';
 export const APPLY_MACRO = 'APPLY_MACRO';
 export const APPLY_MACRO_TO_CASE = 'APPLY_MACRO_TO_CASE';
+export const MACRO_APPLY_ERROR = 'MACRO_APPLY_ERROR';
 export const UPDATE_CASE = 'UPDATE_CASE';
 // End action names
 
@@ -59,15 +60,15 @@ export const caseDetailStore:Reducer = (state = new CaseDetails(), action:Action
     case SET_ACTIVE_CASE_ID:
       return state.set('activeCaseId', action.payload);
     case SET_CAN_UPDATE:
-      return state.mergeIn(['caseDetails', state.activeCaseId, 'canUpdate'], action.payload);
+      return state.mergeIn(['caseDetails', state.get('activeCaseId'), 'canUpdate'], action.payload);
     case PATCHED_CASE:
-      return state.mergeIn(['caseDetails', state.activeCaseId, 'canUpdate'], false);
+      return state.mergeIn(['caseDetails', state.get('activeCaseId'), 'canUpdate'], action.payload);
     case SET_SNAP_CASE:
       return state.mergeIn(['caseDetails', action.payload.get('id'), 'snapCase'], action.payload);
     case SET_EDIT_CASE:
       return state.mergeIn(['caseDetails', action.payload.get('id'), 'editCase'], action.payload);
     case APPLY_MACRO_TO_CASE:
-      return state.updateIn(['caseDetails', state.activeCaseId, 'appliedMacros'], function(macros) {
+      return state.updateIn(['caseDetails', state.get('activeCaseId'), 'appliedMacros'], function(macros) {
         return macros.add(action.payload);
       });
     default:
@@ -92,6 +93,9 @@ export function setEditCase(payload:Object){
 }
 export function setSnapCase(payload:Object): Action<Object> {
   return { type: SET_SNAP_CASE, payload };
+}
+export function setCanUpdate(payload:Object): Action<Object> {
+  return { type: SET_CAN_UPDATE, payload: true };
 }
 export function updateCase(payload:Object): Action<Object> {
   return { type: UPDATE_CASE, payload };
@@ -125,6 +129,8 @@ export const getAppliedMacros = (state) => getActiveCaseDetail(state).get('appli
 export const canUpdate = (state) => getActiveCaseDetail(state).get('canUpdate');
 // End selectors
 
+// TODO: Saga seems to want to have consistentcy between the types
+//  returned from the yield statements
 export function* applyMacroSaga (getState) {
   while (true) {
     // wait for this action to be dispatched

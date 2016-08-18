@@ -25,6 +25,7 @@ const mapDispatchToThis = (dispatch) => {
 
 export class CaseList {
   private _poller;
+  public filteredItems;
   
   constructor ($scope, public $ngRedux, public Case, RxPoller) {
     let unsubscribe = $ngRedux.connect(mapStateToThis, mapDispatchToThis)(this);

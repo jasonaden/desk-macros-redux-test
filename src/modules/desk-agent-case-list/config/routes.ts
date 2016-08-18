@@ -12,7 +12,7 @@ export const routes = ($stateProvider, $urlRouterProvider) => {
       items
     });
     store.dispatch(setFilter(filter));
-    store.dispatch(setActiveFilterId(filter.filterId));  
+    store.dispatch(setActiveFilterId(filter.get('filterId')));  
   }
 
   $stateProvider.state('desk.agent.case.list', {

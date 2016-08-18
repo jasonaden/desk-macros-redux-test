@@ -2,6 +2,7 @@ import {Action} from 'flux-standard-action';
 import * as Immutable from 'immutable';
 
 import {Resource, defaultReducer, defaultListReducer} from 'restore';
+import { IPersistorConfig, IAdapterConfig } from '../../../restore';
 import {userSchema} from './config/schemas';
 import {ApiV2Adapter} from './config/apiv2-adapter';
 
@@ -11,7 +12,7 @@ import {ApiV2Adapter} from './config/apiv2-adapter';
 export const NAME = "USER";
 const LIST = "USERLIST";
 
-export class User extends Resource<any> {
+export class User extends Resource {
   public url = '/users';
   public className = NAME;
   
@@ -32,18 +33,18 @@ export class User extends Resource<any> {
     };
   }
 
-  beforeFindOne(id, persistorConfig = {}) {
+  beforeFindOne(id, persistorConfig: IPersistorConfig): Array<any> {
     persistorConfig.url = this.url + '/' + id;
     return [persistorConfig];
   }
 
-  beforeUpdate(id, patch, config = {}) {
-    config = this.getDefaultConfig(id, config);
-    config.data = patch;
-    return config;
+  beforeUpdate(id, patch, persistorConfig: IPersistorConfig, adapterConfig: IAdapterConfig): Array<any> {
+    persistorConfig.url = this.url + '/' + id;
+    persistorConfig.data = patch;
+    return [persistorConfig, adapterConfig];
   }
 
-  list(persistorConfig = {}, adapterConfig = {}) {
+  list(persistorConfig: IPersistorConfig = {}, adapterConfig: IAdapterConfig = {}) {
     adapterConfig.listName = LIST;
     persistorConfig = Object.assign({}, {url:this.url}, persistorConfig)
     return this.find(persistorConfig, adapterConfig);

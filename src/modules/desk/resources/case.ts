@@ -2,6 +2,7 @@ import {Action} from 'flux-standard-action';
 import * as Immutable from 'immutable';
 
 import {Resource, defaultReducer, defaultListReducer} from 'restore';
+import { IPersistorConfig, IAdapterConfig } from '../../../restore';
 import {caseSchema} from './config/schemas';
 import {ApiV2Adapter} from './config/apiv2-adapter';
 
@@ -19,7 +20,7 @@ export interface ICase {
   macros: Number[]
 }
 
-export class Case extends Resource<ICase> {
+export class Case extends Resource {
   public url = '/cases';
   public className = CLASS_NAME;
   
@@ -27,35 +28,35 @@ export class Case extends Resource<ICase> {
     super($ngRedux, ApiV2Adapter);
   }
 
-  beforeAdd(payload, persistorConfig = {}, adapterConfig = {}) {
+  beforeAdd(payload, persistorConfig: IPersistorConfig, adapterConfig: IAdapterConfig): Array<any> {
     persistorConfig.url = this.url;
     persistorConfig.data = payload;
     return [persistorConfig, adapterConfig];
   }
 
-  beforeFindOne(id, persistorConfig = {}) {
+  beforeFindOne(id, persistorConfig: IPersistorConfig): Array<any> {
     persistorConfig.url = this.url + '/' + id;
     return [persistorConfig];
   }
 
-  beforeUpdate(id, patch, persistorConfig = {}, adapterConfig = {}) {
+  beforeUpdate(id, patch, persistorConfig: IPersistorConfig, adapterConfig: IAdapterConfig): Array<any> {
     persistorConfig.url = this.url + '/' + id;
     persistorConfig.data = patch;
     return [persistorConfig, adapterConfig];
   }
 
-  beforeDestroy(id, persistorConfig = {}, adapterConfig = {}) {
+  beforeDestroy(id, persistorConfig: IPersistorConfig, adapterConfig: IAdapterConfig): Array<any> {
     persistorConfig.url = this.url + '/' + id;
     return [persistorConfig, adapterConfig];
   }
 
-  list(persistorConfig = {}, adapterConfig = {}) {
+  list(persistorConfig: IPersistorConfig = {}, adapterConfig: IAdapterConfig = {}) {
     adapterConfig.listName = LIST_NAME;
     persistorConfig = Object.assign({}, {url:this.url}, persistorConfig)
     return this.find(persistorConfig, adapterConfig);
   }
 
-  changes(persistorConfig = {}, adapterConfig = {}) {
+  changes(persistorConfig: IPersistorConfig = {}, adapterConfig: IAdapterConfig= {}) {
     adapterConfig.listName = CHANGES;
     persistorConfig = Object.assign({}, {url:'filters/11/cases/changes?cflpt=1471022097&cids=&embed=customer&filter_id=11&page=1&per_page=50&sort_direction=desc&sort_field=updated_at'}, persistorConfig)
     return this.find(persistorConfig, adapterConfig);

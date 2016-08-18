@@ -2,14 +2,22 @@ import * as Immutable from 'immutable';
 import * as diff from 'immutablediff';
 import * as patch from 'immutablepatch';
 import {stateGo} from 'redux-ui-router';
-import {getActiveCaseId, getActiveCase, getSnapCase, setCanUpdate, setEditCase, setSnapCase} from '../states';
+import {
+  getActiveCaseId, 
+  getActiveCase, 
+  getSnapCase, 
+  setCanUpdate, 
+  setEditCase, 
+  setSnapCase} from '../states';
 import {RxPoller} from 'rx-poller';
 import {getCaseById} from '../../desk/resources/case';
 
 export interface ICaseDetailService {
-  sync(): any;
-  unsync(): any;
-  save(): any;
+  activeCaseId: number;
+  
+  sync( stashFn: any ): void;
+  unsync(): void;
+  save(): void;
 }
 
 const mapDispatch = (dispatch) => {
@@ -31,11 +39,16 @@ const mapDispatch = (dispatch) => {
 
 export class CaseDetailService implements ICaseDetailService {
 
+  public setSnapCase;
+  public setEditCase;
+  public activeCaseId: number = null;
+  public caseDetailPoller = null;
+
   constructor (public $rootScope, public $ngRedux, public RxPoller, public ReduxWatch, public Case) {
     $ngRedux.connect(null, mapDispatch)(this);
   }
 
-  save () {
+  save (): void {
     const editCase = getActiveCase(this.$ngRedux.getState());
     const snapCase = getSnapCase(this.$ngRedux.getState());
     const delta = diff(snapCase, editCase); 
@@ -75,11 +88,11 @@ export class CaseDetailService implements ICaseDetailService {
     this.Case.update(editCase.get('id'), payload);
   }
   
-  unsync () {
+  unsync (): void {
     this.ReduxWatch.unwatch('activeCase');
     this.caseDetailPoller.stop();
   }
-  sync (stashFn) {
+  sync (stashFn): void {
     this.activeCaseId = getActiveCaseId(this.$ngRedux.getState());
     // save unsaved changes when navigating away
     let watchExit = this.$rootScope.$on('$stateChangeStart', (event) => {

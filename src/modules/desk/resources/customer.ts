@@ -18,12 +18,12 @@ export interface ICustomers extends Map<String, any> {
   loading: boolean;
 }
 
-export class Customer extends Resource<ICustomer> {
+export class Customer extends Resource {
   url = '/customers';
   public className: string = NAME;
   
-  constructor(public $ngRedux, public $http, public $q, ApiV2Adapter) {
-    super($ngRedux, $http, $q, ApiV2Adapter, customerSchema);
+  constructor(public $ngRedux, ApiV2Adapter) {
+    super($ngRedux, ApiV2Adapter);
   }
   
   get state () {

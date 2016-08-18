@@ -1,0 +1,8 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "/dev_exclusions/desk-macros-redux-test/node_modules/rx/ts/rx.all.d.ts",
+    "raw": "npm:rx/ts/rx.all.d.ts",
+    "typings": "/dev_exclusions/desk-macros-redux-test/node_modules/rx/ts/rx.all.d.ts"
+  }
+}

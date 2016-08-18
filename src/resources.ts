@@ -1,3 +1,5 @@
+// TODO: Remove if confirmed it is no longer used.
+/*
 // Resource class
 export {
   Resource
@@ -29,3 +31,5 @@ export {
   parseJson, 
   transform
 } from './resources/utils';
+
+*/

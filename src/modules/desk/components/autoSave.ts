@@ -1,4 +1,4 @@
-export class autoSaveFormProvider implements ng.IServiceProvider{
+export class autoSaveFormDefaultsProvider implements ng.IServiceProvider{
   private debounce = 500;
   private autoSaveMode = true;
 
@@ -36,12 +36,12 @@ export class autoSaveForm implements ng.IDirective {
       if (angular.isUndefined(saveFormDebounce)) {
         saveFormDebounce = this.autoSaveFormDefaults.debounce;
       }
-      let debounce = _.debounce(getChangedControls, saveFormDebounce);
+      let debounced = _.debounce(getChangedControls, saveFormDebounce);
       scope.$watch(function () {
         return formModel.$dirty && formModel.$valid;
       }, function (newValue) {
         if (newValue) {
-          debounce();
+          debounced('newFormValueDebouncing');
           formModel.$valid = false;
         }
       });

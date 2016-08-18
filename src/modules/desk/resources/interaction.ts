@@ -16,14 +16,14 @@ export interface IInteractions extends Map<String, any> {
   loading: boolean;
 }
 
-export class Interaction extends Resource<IInteraction> {
+export class Interaction extends Resource {
   url = '/interactions';
   public className: string = NAME;
   
-  constructor(public $ngRedux, public $http, public $q, ApiV2Adapter) {
-    super($ngRedux, $http, $q, ApiV2Adapter, interactionSchema);
+  constructor(public $ngRedux, ApiV2Adapter) {
+    super($ngRedux, ApiV2Adapter);
   }
-  
+
   get state () {
     return this.store.getState().entities.interaction;
   }

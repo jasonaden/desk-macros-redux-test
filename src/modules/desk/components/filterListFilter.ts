@@ -4,7 +4,7 @@ export class FilterListFilter {
   constructor() {}  
 }
 
-export const FilterListFilterComponent = {
+export const FilterListFilterComponent: ng.IComponentOptions = {
   controller: FilterListFilter,
   bindings: {
     filterChange: '&',

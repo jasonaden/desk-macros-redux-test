@@ -1,6 +1,6 @@
 export class FilterListItem {}
 
-export const FilterListItemComponent = {
+export const FilterListItemComponent: ng.IComponentOptions = {
   controller: FilterListItem,
   bindings: {
     itemName: '&'

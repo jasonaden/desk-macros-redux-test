@@ -1,6 +1,8 @@
-export class FilterList {}
+export class FilterList {
+  constructor() {}  
+}
 
-export const FilterListComponent = {
+export const FilterListComponent: ng.IComponentOptions = {
   controller: FilterList,
   bindings: {
     listItems: '<',

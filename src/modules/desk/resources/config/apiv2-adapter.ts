@@ -8,8 +8,7 @@ import {
   IPersistor, 
   BaseAdapter, 
   flattenEmbedded, 
-  $httpPersistor,
-  buildAction
+  $httpPersistor
 } from 'restore';
 
 /*
