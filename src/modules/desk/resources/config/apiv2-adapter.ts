@@ -73,9 +73,8 @@ export class ApiV2Adapter extends BaseAdapter {
     return data;
   }
 
-  afterFindOne(data) {
-    this.splitSchema( data )
-    return data;
+  afterFindOne(data): PromiseLike<any[]> {
+    return this.splitSchema( data )
   }
  
   afterFind(data, adapterConfig) {

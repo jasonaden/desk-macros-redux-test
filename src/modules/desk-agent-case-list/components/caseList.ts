@@ -53,7 +53,8 @@ export class CaseList {
       message: {
         status: 'draft',
         direction: 'out',
-        to: 'jmumm@salesforce.com'
+        to: 'jmumm@salesforce.com',
+        subject: 'Brand New Case ' + new Date().toDateString()
       },
       status: 'new',
       type: 'email',
@@ -63,7 +64,6 @@ export class CaseList {
       }
     });
   }
-
   
   getCaseDisplay (kase) {
     return kase.subject;
