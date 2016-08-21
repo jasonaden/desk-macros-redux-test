@@ -1,9 +1,13 @@
 import {
   Case,
+  uiCase,
   Customer,
+  uiCustomer,
   ApiV2Adapter,
   User
 } from './resources';
+
+
 import {
   appSchema
 } from './resources/config/schemas';
@@ -109,7 +113,9 @@ deskMod
   .factory('RxPoller', RxPollerFactory)
   .service('ReduxWatch', ReduxWatch)
   .service('Case', Case)
+  .service('uiCase', uiCase)
   .service('Customer', Customer)
+  .service('uiCustomer', uiCustomer)
   .service('User', User)
   .provider('$httpPersistor', () => {
     return {
