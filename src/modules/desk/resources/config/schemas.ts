@@ -42,6 +42,7 @@ export const caseChangesSchema = new Schema('changes', getOptions());
 export const caseListSchema = new Schema('CASELIST', getOptions({idAttribute: () => 'CASELIST'}));
 export const changesSchema = new Schema('CHANGES', getOptions({idAttribute: () => 'CHANGES'}));
 
+export const noteSchema = new Schema('note', getOptions());
 
 interactionSchema.define({
   case: caseSchema
@@ -95,5 +96,6 @@ export const appSchema = {
   CASELIST: caseListSchema,
   CHANGESLIST: changesSchema,
   USERLIST: userListSchema,
-  user: userSchema
+  user: userSchema,
+  note: noteSchema
 }

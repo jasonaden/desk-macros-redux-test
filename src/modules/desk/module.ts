@@ -4,7 +4,8 @@ import {
   Customer,
   uiCustomer,
   ApiV2Adapter,
-  User
+  User,
+  Note
 } from './resources';
 
 
@@ -117,6 +118,7 @@ deskMod
   .service('Customer', Customer)
   .service('uiCustomer', uiCustomer)
   .service('User', User)
+  .service('Note', Note)
   .provider('$httpPersistor', () => {
     return {
       $get: ($http, $q) => {

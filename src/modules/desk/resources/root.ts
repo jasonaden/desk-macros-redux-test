@@ -7,13 +7,15 @@ import {CaseReducer, CaseListReducer, ChangesReducer} from './case';
 import {customer} from './customer';
 import {interaction} from './interaction';
 import {UserReducer, UserListReducer} from './user';
+import {NoteReducer, NoteListReducer} from './note';
 // import {customers} from './customer';
 
 export const entitiesReducer = combineReducers({
   case: CaseReducer,
   customer,
   interaction,
-  user: UserReducer
+  user: UserReducer,
+  note: NoteReducer
   // customers
 });
 

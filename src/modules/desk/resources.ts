@@ -9,6 +9,7 @@ export { uiCase } from './uiResources/uiCase';
 export {Customer} from './resources/customer';
 export { uiCustomer } from './uiResources/uiCustomer';
 export {User} from './resources/user';
+export {Note} from './resources/note';
 // export {Interaction} from './resources/interaction';
 
 

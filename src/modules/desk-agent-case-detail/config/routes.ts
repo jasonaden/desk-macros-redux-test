@@ -11,7 +11,7 @@ export const routes = ($stateProvider, $urlRouterProvider, $locationProvider) =>
     url: '/case/:id',
     resolve: {
       // TODO: Adding uiCase just for testing purposes
-      resolveCaseDetail: ($stateParams, $ngRedux, Case, User, uiCase) => {
+      resolveCaseDetail: ($stateParams, $ngRedux, Case, User, uiCase, Note) => {
         const state = $ngRedux.getState();
         const id = parseInt($stateParams.id);
         const detail = getCaseDetail(state, id);
@@ -25,6 +25,8 @@ export const routes = ($stateProvider, $urlRouterProvider, $locationProvider) =>
           return Promise.all( [kase || Case.findOne(id), users.size || User.list()] )
           .then(()=>{
 
+            // Note.findOne( id, 1)
+
             // TODO: commented out original to test populateRelated() function
             // return setupCaseDetail(getCaseById($ngRedux.getState(), id))
 
@@ -35,6 +37,7 @@ export const routes = ($stateProvider, $urlRouterProvider, $locationProvider) =>
               console.log("**** about to synchronously get the related customer", data)
 
               let tCustomer = uiCase.getRelated(id, 'customer');
+
               console.log("**** get Related customer", tCustomer.toJS()) 
 
               return setupCaseDetail( uiCase.get(id) )

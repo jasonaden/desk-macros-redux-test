@@ -12,6 +12,10 @@ export const caseRelateds = {
     user: {
         class: 'User',
         uiResource: 'uiUser'
+    },
+    notes: {
+        class: 'Note',
+        uiResource: 'uiNote'
     }
 }
 

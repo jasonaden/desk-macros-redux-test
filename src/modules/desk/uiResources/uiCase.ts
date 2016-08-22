@@ -72,6 +72,17 @@ export class uiCase extends uiResource {
     return super.populateRelated( baseItem, relateds, relName );
   }
 
+  // TODO: Make this work so it will get a list of items
+  //  and put them into store.list.NOTESLIST['default'? | URI].
+  populateRelatedList(id: string, relName: string, params: Object): PromiseLike<any> {
+    if( ! id || ! relName ) return;
+
+    let baseItem = this.get(id)
+    //TODO: Not done, just put in as an idea of what might go here.
+    return super.populateRelatedList( baseItem, relateds, relName, params );
+  }
+
+
   populateGetRelated(id: string, relName: string): PromiseLike<any> {
     if( ! id || ! relName ) return;
 

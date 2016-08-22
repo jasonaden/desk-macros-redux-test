@@ -29,6 +29,7 @@ export const CaseDetail = Immutable.Record({
   canSend: false,
   appliedMacros: Immutable.Set(),
   actions: Immutable.List()
+
 });
 // *** End data structures
 

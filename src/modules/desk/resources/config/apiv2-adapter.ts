@@ -60,7 +60,7 @@ export class ApiV2Adapter extends BaseAdapter {
       Promise.reject(`No schema exists for: ${type}`)
     }
 
-    let split = normalize( data, this.schema[type] )   
+    let split = normalize( data, this.schema[type] )
     
     this.handleAdapterData(split);
 

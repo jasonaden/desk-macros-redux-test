@@ -85,6 +85,23 @@ export class uiResource {
     let relResource = this.$injector.get( relateds[relClass].class );
     let relId = relHref.split('/').pop()
 
+    // TODO: Check here if it is in store and only findOne() if it isn't
+    return relResource.findOne( relId )
+  }
+
+  // TODO: Just copied as an example of what might be done, not coded.
+  populateRelatedList( baseItem, relateds: Object, relName, params): PromiseLike<any[]> {
+
+    let {'class': relClass, 'href': relHref} = baseItem.get('_links').toJS()[relName];
+    if( ! relHref  ) {
+      throw new Error(`No relationship ${relName} exists on case with id: ${baseItem.id}` )
+    }
+
+    // get the Resource for the related item
+    let relResource = this.$injector.get( relateds[relClass].class );
+    let relId = relHref.split('/').pop()
+
+    // TODO: Check here if it is in store and only findOne() if it isn't'
     return relResource.findOne( relId )
     
   }
