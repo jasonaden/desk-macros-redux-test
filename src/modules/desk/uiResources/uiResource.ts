@@ -58,6 +58,18 @@ export class uiResource {
     return relUiResource.get( relId );
   }
 
+  // TODO: implement set() method and popget() method.
+  // Implement methods for populating (asynch) and getting (synch) lists. 
+  // Expland the populateRelated() method so it can handle getting multiple
+  //  properties including properties of lists.
+
+  // TODO: implement the set method -- bring over the update stuff 
+  //  that is being done elsewhere
+  // Determine if it should remain as a synch or if it should be async 
+  //  since it will kick off an asynch action.
+  set( id, value ) {
+    
+  }
 
   /**** 
    * Async interface 
@@ -70,7 +82,6 @@ export class uiResource {
     }
 
     // get the Resource for the related item
-    // let relResource = this.$injector.get( relatedToClass[relClass] );
     let relResource = this.$injector.get( relateds[relClass].class );
     let relId = relHref.split('/').pop()
 

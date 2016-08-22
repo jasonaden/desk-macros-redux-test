@@ -25,11 +25,10 @@ export const routes = ($stateProvider, $urlRouterProvider, $locationProvider) =>
           return Promise.all( [kase || Case.findOne(id), users.size || User.list()] )
           .then(()=>{
 
-            // TODO: Testing area, commented out original to test populateRelated() function
+            // TODO: commented out original to test populateRelated() function
             // return setupCaseDetail(getCaseById($ngRedux.getState(), id))
 
-            console.log("*** about to do the populate");
-
+            // TODO: testing populateRelated()
             return uiCase.populateRelated(id, 'customer')
             .then( (data) => {
 
@@ -38,10 +37,20 @@ export const routes = ($stateProvider, $urlRouterProvider, $locationProvider) =>
               let tCustomer = uiCase.getRelated(id, 'customer');
               console.log("**** get Related customer", tCustomer.toJS()) 
 
+              return setupCaseDetail( uiCase.get(id) )
+            })
+
+            // TODO: Example that combines populateRelated() and getRelated()
+            /*
+            return uiCase.populateGetRelated(id, 'customer')
+            .then( (data) => {
+
+              console.log("**** get Related customer", data.toJS()) 
+
               // Using uiCase to get the case because we know it will be in the store
               return setupCaseDetail( uiCase.get(id) )
-              
             })
+            */
 
 
           });

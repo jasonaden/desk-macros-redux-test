@@ -1,6 +1,5 @@
 import {Action} from 'flux-standard-action';
 import * as Immutable from 'immutable';
-// import { uiResource } from 'restore';
 import { uiResource } from './uiResource';
 import { Store } from 'redux';
 import { relatedToClass } from './relatedToClass';
@@ -27,7 +26,7 @@ export interface uiCase {
 }
 
 export class uiCase extends uiResource {
-  // public url = '/cases';
+
   public className = CLASS_NAME;
   public type: string = 'case';
   public store: Store;
@@ -37,7 +36,10 @@ export class uiCase extends uiResource {
   }
 
   /***** 
-   * Synchronous interface 
+   * Synchronous interface
+   * 
+   *  All methods in the synch interface return synchronous data by directly
+   *  selecting from the server store.
   * */
 
   // TODO: Provide an interface for the case object -- also need to update
@@ -54,6 +56,10 @@ export class uiCase extends uiResource {
 
   /***** 
    * Asynchronous interface 
+   * 
+   * All methods in the asych interface return promises. They are used to 
+   * populate the server store or to combine populating the server store
+   * with synchronously requesting the data put into the server store.
   **/
 
   // Gets the case and the href for the specified related item.
@@ -64,6 +70,16 @@ export class uiCase extends uiResource {
 
     let baseItem = this.get(id)
     return super.populateRelated( baseItem, relateds, relName );
+  }
+
+  populateGetRelated(id: string, relName: string): PromiseLike<any> {
+    if( ! id || ! relName ) return;
+
+    let baseItem = this.get(id)
+    return super.populateRelated( baseItem, relateds, relName )
+    .then( () => {
+      return Promise.resolve( this.getRelated( id, relName ) );
+    })
   }
 
 

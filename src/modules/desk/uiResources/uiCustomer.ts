@@ -3,7 +3,7 @@ import * as Immutable from 'immutable';
 // import { uiResource } from 'restore';
 import { uiResource } from './uiResource';
 import { Store } from 'redux';
-import { relatedToClass } from './relatedToClass';
+import { customerRelateds as relateds } from './relatedToClass';
 
 // import {Resource, defaultReducer, defaultListReducer} from 'restore';
 // import { IPersistorConfig, IAdapterConfig } from '../../../restore';
@@ -46,30 +46,19 @@ export class uiCustomer extends uiResource {
   }
 
   getRelated( id: (number | string), relName: string ): Array<any> {
-    return super.getRelated( this.type, id, relName);
+    let baseItem = this.get( id );
+    return super.getRelated( baseItem, relateds, relName );
   }
 
   /***** 
    * Asynchronous interface 
   * */
-  
+
   populateRelated(id: string, relName: string): PromiseLike<any> {
     if( ! id || ! relName ) return;
 
     let baseItem = this.get(id)
-    let {'class': relClass, 'href': relHref} = baseItem.get('_links').toJS()[relName];
-    
-    if( ! relHref  ) {
-      throw new Error(`No relationship ${relName} exists on case with id: ${baseItem.id}` )
-    }
-
-    // get the Resource for the related item
-    let relResource = this.$injector.get( relatedToClass[relClass] );
-    // TOOD: For now, extract the ID, but may want to expand the Resource.findOne() 
-    //  and other methods to accept either a numeric ID or a URI
-    let relId = relHref.split('/').pop()
-
-    return relResource.findOne( relId )
+    return super.populateRelated( baseItem, relateds, relName );
   }
 
 
