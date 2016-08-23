@@ -2,6 +2,8 @@ import {createSelector} from 'reselect';
 import {Store, Reducer, combineReducers} from 'redux';
 import {Action} from 'flux-standard-action';
 import * as Immutable from 'immutable';
+import {Resource} from 'restore';
+
 import { relatedToClass } from './relatedToClass';
 // import {identity} from 'lodash';
 
@@ -14,11 +16,13 @@ import { relatedToClass } from './relatedToClass';
 /**
  * 
  */
-export class uiResource {
+export class uiResource extends Resource {
   
   public type: string;
   
-  constructor(public $ngRedux, public $injector) {}  
+  constructor(public $ngRedux, ApiV2Adapter, public $injector) {
+    super($ngRedux, ApiV2Adapter)
+  }  
   
   /**** 
    * Sync interface 
@@ -28,7 +32,9 @@ export class uiResource {
   //  the return type, likely to an Immutable.Map
   // get a case from server store
   get( type: string, id: (number | string) ): Object {
-    if( ! type || ! id ) return;
+    if( ! type || ! id ) {
+      throw new Error(`uiResource.get: 'type' and 'id' are required but were ${type} and ${id} `);
+    };
 
     // in some case a numeric id may come in as a string
     if( typeof id === 'string') {

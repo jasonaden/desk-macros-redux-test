@@ -2,10 +2,15 @@ import {Action} from 'flux-standard-action';
 import {normalize, Schema, arrayOf} from 'normalizr';
 
 import {Resource, defaultReducer} from 'restore';
+import { uiResource } from './uiResource';
 
 import {customerSchema} from './config/schemas';
+import { customerRelateds as relateds } from './relatedToClass';
+
 
 export const NAME = "CUSTOMER";
+export const CLASS_NAME = "CUSTOMER";
+export const LIST_NAME = "CUSTOMERLIST";
 
 export interface ICustomer {
   id: number
@@ -18,20 +23,51 @@ export interface ICustomers extends Map<String, any> {
   loading: boolean;
 }
 
-export class Customer extends Resource {
+export class Customer extends uiResource {
   url = '/customers';
   public className: string = NAME;
+  public type = CLASS_NAME.toLowerCase();
+
   
-  constructor(public $ngRedux, ApiV2Adapter) {
-    super($ngRedux, ApiV2Adapter);
+  constructor(public $ngRedux, ApiV2Adapter, $injector) {
+    super($ngRedux, ApiV2Adapter, $injector);
   }
   
   get state () {
     return this.store.getState().entities.customer;
   }
   
-  // ADD METHODS TO GET DATA OUT OF THE RESOURCE.
+/*** 
+ * Interface for backend data store interactions
+ *  
+ */
+  // TODO 
+
+  /***** 
+   * Synchronous interface 
+  * */
+
+  get( id: (number | string) ): Object {
+    return super.get( this.type, id );
+  }
+
+  getRelated( id: (number | string), relName: string ): Array<any> {
+    let baseItem = this.get( id );
+    return super.getRelated( baseItem, relateds, relName );
+  }
+
+  /***** 
+   * Asynchronous interface 
+  * */
+
+  populateRelated(id: string, relName: string): PromiseLike<any> {
+    if( ! id || ! relName ) return;
+
+    let baseItem = this.get(id)
+    return super.populateRelated( baseItem, relateds, relName );
+  }
   
+
 }
 
 export const customer = defaultReducer(NAME);

@@ -1,8 +1,6 @@
 import {
   Case,
-  uiCase,
   Customer,
-  uiCustomer,
   ApiV2Adapter,
   User,
   Note
@@ -114,9 +112,7 @@ deskMod
   .factory('RxPoller', RxPollerFactory)
   .service('ReduxWatch', ReduxWatch)
   .service('Case', Case)
-  .service('uiCase', uiCase)
   .service('Customer', Customer)
-  .service('uiCustomer', uiCustomer)
   .service('User', User)
   .service('Note', Note)
   .provider('$httpPersistor', () => {

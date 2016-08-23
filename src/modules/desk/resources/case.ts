@@ -2,9 +2,11 @@ import {Action} from 'flux-standard-action';
 import * as Immutable from 'immutable';
 
 import {Resource, defaultReducer, defaultListReducer} from 'restore';
+import { uiResource } from './uiResource';
 import { IPersistorConfig, IAdapterConfig } from '../../../restore';
 import {caseSchema} from './config/schemas';
 import {ApiV2Adapter} from './config/apiv2-adapter';
+import { caseRelateds as relateds } from './relatedToClass';
 
 /**
  * Module name
@@ -20,14 +22,19 @@ export interface ICase {
   macros: Number[]
 }
 
-export class Case extends Resource {
+export class Case extends uiResource {
   public url = '/cases';
   public className = CLASS_NAME;
+  public type = CLASS_NAME.toLowerCase();
   
-  constructor(public $ngRedux, ApiV2Adapter) {
-    super($ngRedux, ApiV2Adapter);
+  constructor(public $ngRedux, ApiV2Adapter, $injector) {
+    super($ngRedux, ApiV2Adapter, $injector);
   }
 
+/*** 
+ * Interface for backend data store interactions
+ *  
+ */
   beforeAdd(payload, persistorConfig: IPersistorConfig, adapterConfig: IAdapterConfig): Array<any> {
     persistorConfig.url = this.url;
     persistorConfig.data = payload;
@@ -61,7 +68,54 @@ export class Case extends Resource {
     persistorConfig = Object.assign({}, {url:'filters/11/cases/changes?cflpt=1471022097&cids=&embed=customer&filter_id=11&page=1&per_page=50&sort_direction=desc&sort_field=updated_at'}, persistorConfig)
     return this.find(persistorConfig, adapterConfig);
   }
-  
+
+  /***** 
+   * Synchronous interface for Redux store
+   * 
+   *  All methods in the synch interface return synchronous data by directly
+   *  selecting from the server store.
+  * */
+
+  // TODO: Provide an interface for the case object -- also need to update
+  //  the return type, likely to an Immutable.Map
+  // get a case from server store
+  get( id: (number | string) ): Object {
+    return super.get( this.type, id );
+  }
+
+  getRelated( id: (number | string), relName: string ): Array<any> {
+    let baseItem = this.get( id );
+    return super.getRelated( baseItem, relateds, relName );
+  }
+
+  /***** 
+   * Asynchronous interface 
+   * 
+   * All methods in the asych interface return promises. They are used to 
+   * populate the server store or to combine populating the server store
+   * with synchronously requesting the data put into the server store.
+  **/
+
+  // Gets the case and the href for the specified related item.
+  // Then invokes the appropriate resource's findOne or find to 
+  // get the data and populate the server store 
+  populateRelated(id: string, relName: string): PromiseLike<any> {
+    if( ! id || ! relName ) return;
+    let baseItem = this.get(id)
+    return super.populateRelated( baseItem, relateds, relName );
+  }
+
+  populateGetRelated(id: string, relName: string): PromiseLike<any> {
+    if( ! id || ! relName ) return;
+
+    let baseItem = this.get(id)
+    return super.populateRelated( baseItem, relateds, relName )
+    .then( () => {
+      return Promise.resolve( this.getRelated( id, relName ) );
+    })
+  }
+
+
 }
 
 export const CaseReducer = defaultReducer(CLASS_NAME);

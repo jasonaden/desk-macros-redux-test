@@ -7,15 +7,15 @@ import {User} from '../resources/user';
 export const caseRelateds = {
     customer: {
         class: 'User',
-        uiResource: 'uiCustomer',
+        uiResource: 'Customer',
     },
     user: {
         class: 'User',
-        uiResource: 'uiUser'
+        uiResource: 'User'
     },
     notes: {
         class: 'Note',
-        uiResource: 'uiNote'
+        uiResource: 'Note'
     }
 }
 
