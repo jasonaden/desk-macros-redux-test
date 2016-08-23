@@ -30,6 +30,11 @@ export const routes = ($stateProvider, $urlRouterProvider, $locationProvider) =>
             // TODO: commented out original to test populateRelated() function
             // return setupCaseDetail(getCaseById($ngRedux.getState(), id))
 
+            Case.populateRelatedList(id, 'notes')
+            .then( (data) => {
+              console.log("***** Got the related notes", data);
+            })
+
             return Case.populateRelated(id, 'customer')
             .then( (data) => {
 

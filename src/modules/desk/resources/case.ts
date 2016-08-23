@@ -115,6 +115,31 @@ export class Case extends uiResource {
     })
   }
 
+  populateRelatedList(id: string, relName: string): PromiseLike<any> {
+    if( ! id || ! relName ) return;
+
+    let baseItem = this.get(id)
+
+    let {'class': relClass, 'href': relHref} = baseItem.get('_links').toJS()[relName];
+    if( ! relHref || ! relClass ) {
+      throw new Error(`No proper relationship ${relName} exists on ${this.type} with id: ${baseItem.id}` )
+    }
+    // get the URI of the related item
+    // let relId = relHref.split('/').pop()
+    let relUri = '/cases/17/notes';
+
+    // Get the appropriate uiResource
+    // let relUiResource = this.$injector.get( relateds[relClass].uiResource );
+    let relUiResource = this.$injector.get( relateds[relClass].uiResource );
+
+    return Promise.resolve("GOT IT")
+
+    // return super.populateRelated( baseItem, relateds, relName )
+    // .then( () => {
+    //   return Promise.resolve( this.getRelated( id, relName ) );
+    // })
+  }
+
 
 }
 
