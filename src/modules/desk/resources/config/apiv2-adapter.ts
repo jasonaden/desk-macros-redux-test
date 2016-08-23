@@ -128,7 +128,7 @@ export class ApiV2Adapter extends BaseAdapter {
 
       let count = data.total_entries;
       let page = data.page;
-      debugger;
+
       let schemaName = adapterConfig.schemaName || 'GENERICLIST';
 
       // store relevant entities

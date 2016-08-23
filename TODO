@@ -1,0 +1,12 @@
+SINGLE RESOURCE REDUCER
+
+related schemas solution
+  where do we define them
+  how to get them for populate related list
+
+base url standardize pattern
+  switch httpPersistorConfig to use non-api-v2 baseURL
+
+
+
+
