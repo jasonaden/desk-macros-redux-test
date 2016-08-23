@@ -25,10 +25,9 @@ export const routes = ($stateProvider, $urlRouterProvider) => {
           setupFilterDetails($ngRedux, cases);
         
         } else {
-          return Case.changes().then(() => {
+          return Case.list().then(() => {
 
-            let cases = getChangesCases($ngRedux.getState());
-            
+            let cases = Case.getList();         
             return setupFilterDetails($ngRedux, cases);
 
           });

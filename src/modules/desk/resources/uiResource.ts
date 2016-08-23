@@ -51,6 +51,27 @@ export class uiResource extends Resource {
     }
   }
 
+  
+  getById(id) {
+    return this.$ngRedux.getState().entities[this.type].items.find((item) => item.get('id') == id);
+  }
+
+  getByURI(uri) {
+    return this.$ngRedux.getState().entities[this.type].items.get(uri);
+  }
+
+  getList() {
+    let uri = this.url;
+    let list = this.$ngRedux.getState().list.get(uri);
+    debugger;
+    let results = list.result.get(list.page);
+    return list.result.get(list.page).map((id) => {
+      return this.getByURI(id);
+    });
+  }
+
+
+
   getRelated( baseItem, relateds: Object, relName: string ): Array<any> {
     let {'class': relClass, 'href': relHref} = baseItem.get('_links').toJS()[relName];
     if( ! relHref || ! relClass ) {
@@ -95,6 +116,21 @@ export class uiResource extends Resource {
     return relResource.findOne( relId )
   }
 
+  populateRelatedList(id: string, relName: string, persistorConfig: any = {}): PromiseLike<any> {
+    if( ! id || ! relName ) return;
+
+    let baseItem = this.getById(id);
+    let baseLinks = baseItem.get('_links').toJS();
+    let link = baseLinks[relName];
+
+    if( !link ) {
+      throw new Error(`No proper relationship ${relName} exists on ${this.type} with id: ${id}` )
+    }
+
+    this.find(Object.assign({url: link.href, baseUrl: 'http://localhost:8888'}, persistorConfig) , {uri: link.href});
+  }
+  /*
+
   // TODO: Just copied as an example of what might be done, not coded.
   populateRelatedList( baseItem, relateds: Object, relName, params): PromiseLike<any[]> {
 
@@ -110,6 +146,7 @@ export class uiResource extends Resource {
     // TODO: Check here if it is in store and only findOne() if it isn't'
     return relResource.findOne( relId )
     
-  }
+  }*/
+
 
 }

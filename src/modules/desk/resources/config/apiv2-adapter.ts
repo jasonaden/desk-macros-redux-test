@@ -94,7 +94,7 @@ export class ApiV2Adapter extends BaseAdapter {
       this.store.dispatch({type: 'SET_LIST_RESULT_'+adapterConfig.listName.toUpperCase(), payload: positions});
 
       return data;
-    } else {
+    } else if (adapterConfig.listName) {
 
       let entries = data._embedded.entries;
 
@@ -116,7 +116,45 @@ export class ApiV2Adapter extends BaseAdapter {
       this.store.dispatch({type: 'SET_LIST_RESULT_'+adapterConfig.listName.toUpperCase(), payload: result});
 
       return data;
-    }
+    } else {
+      // generic list parsing
+      // assumes structure as 
+      //   total_entities
+      //   page
+      //   _embedded.entries
+
+      let entries = data._embedded.entries;
+      let mainClass = entries[0]._links.self.class;
+
+      let count = data.total_entries;
+      let page = data.page;
+      debugger;
+      let schemaName = adapterConfig.schemaName || 'GENERICLIST';
+
+      // store relevant entities
+      let split = normalize( data, this.schema[schemaName] );
+
+      // get result id sequence
+      let result = split.entities[schemaName][schemaName]._embedded.entries;
+      
+      
+      //let nonGenericSplit = normalize(split.entities.generic, this.schema[(mainClass + 'List').toUpperCase()]);
+
+      delete split.entities[schemaName];
+
+      //split.entities[mainClass] = split.entities['generic'];
+      
+      //delete split.entities['generic'];
+      
+      this.handleAdapterData(split);
+
+      // push meta into list store
+      this.store.dispatch({type: 'SET_LIST_COUNT', meta: {uri:adapterConfig.uri}, payload: count});
+      this.store.dispatch({type: 'SET_LIST_PAGE', meta: {uri:adapterConfig.uri}, payload: page});
+      this.store.dispatch({type: 'SET_LIST_RESULT', meta: {uri:adapterConfig.uri}, payload: result});
+
+      return data;
+    } 
   }
 
   generateSlug (entity: any) {

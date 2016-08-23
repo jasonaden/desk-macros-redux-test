@@ -8,6 +8,7 @@ import {customer} from './customer';
 import {interaction} from './interaction';
 import {UserReducer, UserListReducer} from './user';
 import {NoteReducer, NoteListReducer} from './note';
+import {defaultGenericListReducer} from 'restore';
 // import {customers} from './customer';
 
 export const entitiesReducer = combineReducers({
@@ -24,3 +25,5 @@ export const listsReducer = combineReducers({
   CHANGESLIST: ChangesReducer,
   USERLIST: UserListReducer
 });
+
+export const listReducer = defaultGenericListReducer();

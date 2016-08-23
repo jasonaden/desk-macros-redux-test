@@ -22,8 +22,10 @@ export const routes = ($stateProvider, $urlRouterProvider, $locationProvider) =>
           const kase = getCaseById($ngRedux.getState(), id);
           const users = getUsers($ngRedux.getState());
 
-          return Promise.all( [kase || Case.findOne(id), users.size || User.list()] )
-          .then(()=>{
+          return Promise.all( [kase || Case.findOne(id), users.size || User.list()] ).then(()=>{          
+            setupCaseDetail( Case.get(id) )
+          });
+          /*.then(()=>{
 
             // Note.findOne( id, 1)
 
@@ -55,7 +57,7 @@ export const routes = ($stateProvider, $urlRouterProvider, $locationProvider) =>
             //   // Using uiCase to get the case because we know it will be in the store
             //   return setupCaseDetail( Case.get(id) )
             // })
-          });
+          });*/
 
         }
         

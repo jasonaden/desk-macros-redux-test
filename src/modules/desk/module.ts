@@ -97,6 +97,7 @@ deskMod.config($ngReduxProvider => {
 .run(($ngRedux) => {
   sagaMiddleware.run( applyMacroSaga, failedToApplySaga )
   $ngRedux.dispatch(setMacros(macroList));
+  window.$ngRedux = $ngRedux;
 });
 
 deskMod

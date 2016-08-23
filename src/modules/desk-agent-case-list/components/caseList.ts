@@ -31,12 +31,12 @@ export class CaseList {
     let unsubscribe = $ngRedux.connect(mapStateToThis, mapDispatchToThis)(this);
     
     // restore paused poller
-    this._poller = RxPoller.getPoller('changes');
+    this._poller = RxPoller.getPoller('case-list');
     if (!this._poller) {
-      this._poller = new RxPoller('changes', { interval:20000 });
-      this._poller.setAction(() => Case.changes());
+      this._poller = new RxPoller('case-list', { interval:20000 });
+      this._poller.setAction(() => Case.list());
     }
-    this._poller.start();
+    //this._poller.start();
 
     $scope.$on('$destroy', () => {
       unsubscribe();

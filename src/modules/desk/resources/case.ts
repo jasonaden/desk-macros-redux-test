@@ -23,13 +23,19 @@ export interface ICase {
 }
 
 export class Case extends uiResource {
-  public url = '/cases';
+  public url = '/api/v2/cases';
   public className = CLASS_NAME;
   public type = CLASS_NAME.toLowerCase();
   
   constructor(public $ngRedux, ApiV2Adapter, $injector) {
     super($ngRedux, ApiV2Adapter, $injector);
+
+    /*this.relatedSchemaNames = {
+      notes: 'notesListSchema',
+      customer: 'customerSchema'
+    }*/
   }
+
 
 /*** 
  * Interface for backend data store interactions
@@ -58,9 +64,23 @@ export class Case extends uiResource {
   }
 
   list(persistorConfig: IPersistorConfig = {}, adapterConfig: IAdapterConfig = {}) {
-    adapterConfig.listName = LIST_NAME;
-    persistorConfig = Object.assign({}, {url:this.url}, persistorConfig)
-    return this.find(persistorConfig, adapterConfig);
+    return this.find(
+      Object.assign(
+        {
+          url: this.url, 
+          baseUrl: 'http://localhost:8888', 
+          params: {embed: 'customer'}
+        }, 
+        persistorConfig
+      ), 
+      Object.assign(
+        {
+          uri: this.url,
+          schemaName: 'CASELIST'
+        },
+        adapterConfig
+      )
+    );
   }
 
   changes(persistorConfig: IPersistorConfig = {}, adapterConfig: IAdapterConfig= {}) {
@@ -115,30 +135,6 @@ export class Case extends uiResource {
     })
   }
 
-  populateRelatedList(id: string, relName: string): PromiseLike<any> {
-    if( ! id || ! relName ) return;
-
-    let baseItem = this.get(id)
-
-    let {'class': relClass, 'href': relHref} = baseItem.get('_links').toJS()[relName];
-    if( ! relHref || ! relClass ) {
-      throw new Error(`No proper relationship ${relName} exists on ${this.type} with id: ${baseItem.id}` )
-    }
-    // get the URI of the related item
-    // let relId = relHref.split('/').pop()
-    let relUri = '/cases/17/notes';
-
-    // Get the appropriate uiResource
-    // let relUiResource = this.$injector.get( relateds[relClass].uiResource );
-    let relUiResource = this.$injector.get( relateds[relClass].uiResource );
-
-    return Promise.resolve("GOT IT")
-
-    // return super.populateRelated( baseItem, relateds, relName )
-    // .then( () => {
-    //   return Promise.resolve( this.getRelated( id, relName ) );
-    // })
-  }
 
 
 }

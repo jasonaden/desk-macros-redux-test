@@ -45,7 +45,7 @@ export class CaseDetailController {
   storeChanges;
   save;
 
-  constructor ($scope, $ngRedux, CaseDetailService) {
+  constructor ($scope, $ngRedux, CaseDetailService, Case) {
     // allow forms to keep redux in sync with UI    
     this.autoSaveCallback = () => this.storeChanges(this.kase); 
 
@@ -58,7 +58,15 @@ export class CaseDetailController {
     
     // connect redux items to controller
     let unsubscribe = $ngRedux.connect(mapState, mapDispatch)(this);
-    $scope.$on('$destroy', () => { unsubscribe(); });   
+    $scope.$on('$destroy', () => { unsubscribe(); });
+
+
+
+
+    // populate related test
+    Case.populateRelatedList(this.kase.id, 'notes');
+
+
   }
   
 };
