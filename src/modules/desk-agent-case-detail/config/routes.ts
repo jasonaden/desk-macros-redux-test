@@ -19,10 +19,11 @@ export const routes = ($stateProvider, $urlRouterProvider, $locationProvider) =>
         if (detail) {
           $ngRedux.dispatch(setActiveCaseId(id));
         } else {
+          // TODO: Convert to using Case.get()
           const kase = getCaseById($ngRedux.getState(), id);
           const users = getUsers($ngRedux.getState());
 
-          return Promise.all( [kase || Case.findOne(id), users.size || User.list()] ).then(()=>{          
+          return Promise.all( [kase || Case.findOne(id), users.size || User.list()] ).then(()=>{
             setupCaseDetail( Case.get(id) )
           });
           /*.then(()=>{

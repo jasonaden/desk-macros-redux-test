@@ -44,6 +44,9 @@ export class CaseDetailController {
   autoSaveCallback;
   storeChanges;
   save;
+  notes;
+  user;
+  labels;
 
   constructor ($scope, $ngRedux, CaseDetailService, Case) {
     // allow forms to keep redux in sync with UI    
@@ -60,17 +63,27 @@ export class CaseDetailController {
     let unsubscribe = $ngRedux.connect(mapState, mapDispatch)(this);
     $scope.$on('$destroy', () => { unsubscribe(); });
 
+    /** ************
+     * TESTS to pull related items
+     * 
+     */
+    Case.populateRelatedList(this.kase.id, 'notes')
+    .then( () => {
+      this.notes = Case.getRelatedList(this.kase.id, 'notes').toJS()
+    })
 
+    Case.populateRelated(this.kase.id, 'assigned_user')
+    .then( () => {
+      this.user = Case.getRelated( this.kase.id, 'assigned_user' ).toJS();
+    })
 
-
-    // populate related test
-    Case.populateRelatedList(this.kase.id, 'notes');
-
+    Case.populateRelatedList(this.kase.id, 'labels')
+    .then( () => {
+      this.labels = Case.getRelatedList(this.kase.id, 'labels').toJS()
+    })
 
   }
-  
 };
-
 
 export const CaseDetailComponent:ng.IComponentOptions = {
   controller: CaseDetailController,
@@ -93,12 +106,32 @@ export const CaseDetailComponent:ng.IComponentOptions = {
       
       <div>
         <button class='btn btn-primary' ng-click='$ctrl.save($ctrl.kase)' ng-show="$ctrl.canUpdate">Save API</button>
+      </div>
       <div>
         <h4>Applied Macros</h4>
         <span ng-if='!$ctrl.appliedMacros.length'>No macros</span>
         <ul ng-if='$ctrl.appliedMacros.length'>
           <li ng-repeat='macro in $ctrl.appliedMacros'>{{macro.name}}</li>
         </ul>
+      </div>
+      <div>
+        <h4>Notes</h4>
+        <span ng-if='!$ctrl.notes.length'>No Notes</span>
+        <ul ng-if='$ctrl.notes.length'>
+          <li ng-repeat='note in $ctrl.notes'>{{note.body}}</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Labels</h4>
+        <span ng-if='!$ctrl.labels.length'>No Labels</span>
+        <ul ng-if='$ctrl.labels.length'>
+          <li ng-repeat='label in $ctrl.labels'>{{label.name}}</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Assigned User</h4>
+        <span ng-if='!$ctrl.user'>No Assigned User</span>
+        <span ng-if='$ctrl.user'>{{$ctrl.user.name}}</span>
       </div>
     </div>
     <macro-list></macro-list>

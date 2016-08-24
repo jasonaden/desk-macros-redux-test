@@ -6,7 +6,6 @@ import { uiResource } from './uiResource';
 import { IPersistorConfig, IAdapterConfig } from '../../../restore';
 import {caseSchema} from './config/schemas';
 import {ApiV2Adapter} from './config/apiv2-adapter';
-import { caseRelateds as relateds } from './relatedToClass';
 
 /**
  * Module name
@@ -22,18 +21,34 @@ export interface ICase {
   macros: Number[]
 }
 
+// Case _link items
+const relateds = {
+  customer: {
+      className: 'User'
+  },
+  assigned_user: {
+      className: 'user',
+      schemaName: 'user'
+  },
+  notes: {
+      className: 'note',
+      listSchemaName: "NOTESLIST" 
+  },
+  labels: {
+    className: 'label',
+    listSchemaName: "LABELSLIST"
+  }
+}
+
+
 export class Case extends uiResource {
   public url = '/api/v2/cases';
-  public className = CLASS_NAME;
+  public className = CLASS_NAME.toLowerCase();
   public type = CLASS_NAME.toLowerCase();
+  public relateds = relateds;
   
   constructor(public $ngRedux, ApiV2Adapter, $injector) {
     super($ngRedux, ApiV2Adapter, $injector);
-
-    /*this.relatedSchemaNames = {
-      notes: 'notesListSchema',
-      customer: 'customerSchema'
-    }*/
   }
 
 
@@ -63,24 +78,17 @@ export class Case extends uiResource {
     return [persistorConfig, adapterConfig];
   }
 
-  list(persistorConfig: IPersistorConfig = {}, adapterConfig: IAdapterConfig = {}) {
-    return this.find(
-      Object.assign(
-        {
-          url: this.url, 
-          baseUrl: 'http://localhost:8888', 
-          params: {embed: 'customer'}
-        }, 
-        persistorConfig
-      ), 
-      Object.assign(
-        {
-          uri: this.url,
-          schemaName: 'CASELIST'
-        },
-        adapterConfig
-      )
-    );
+  // Gets the default list of cases
+  list(persistorConfig: IPersistorConfig = {}, adapterConfig: IAdapterConfig = {}): PromiseLike<any> {
+    persistorConfig = Object.assign(
+      {url: this.url, params: {embed: 'customer'}}, 
+      persistorConfig
+    )
+    adapterConfig = Object.assign(
+      {uri: this.url, schemaName: 'CASELIST'},
+      adapterConfig
+    )
+    return this.find( persistorConfig, adapterConfig );
   }
 
   changes(persistorConfig: IPersistorConfig = {}, adapterConfig: IAdapterConfig= {}) {
@@ -96,18 +104,6 @@ export class Case extends uiResource {
    *  selecting from the server store.
   * */
 
-  // TODO: Provide an interface for the case object -- also need to update
-  //  the return type, likely to an Immutable.Map
-  // get a case from server store
-  get( id: (number | string) ): Object {
-    return super.get( this.type, id );
-  }
-
-  getRelated( id: (number | string), relName: string ): Array<any> {
-    let baseItem = this.get( id );
-    return super.getRelated( baseItem, relateds, relName );
-  }
-
   /***** 
    * Asynchronous interface 
    * 
@@ -115,27 +111,6 @@ export class Case extends uiResource {
    * populate the server store or to combine populating the server store
    * with synchronously requesting the data put into the server store.
   **/
-
-  // Gets the case and the href for the specified related item.
-  // Then invokes the appropriate resource's findOne or find to 
-  // get the data and populate the server store 
-  populateRelated(id: string, relName: string): PromiseLike<any> {
-    if( ! id || ! relName ) return;
-    let baseItem = this.get(id)
-    return super.populateRelated( baseItem, relateds, relName );
-  }
-
-  populateGetRelated(id: string, relName: string): PromiseLike<any> {
-    if( ! id || ! relName ) return;
-
-    let baseItem = this.get(id)
-    return super.populateRelated( baseItem, relateds, relName )
-    .then( () => {
-      return Promise.resolve( this.getRelated( id, relName ) );
-    })
-  }
-
-
 
 }
 

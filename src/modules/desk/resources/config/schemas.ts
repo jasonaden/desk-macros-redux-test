@@ -45,6 +45,9 @@ export const changesSchema = new Schema('CHANGES', getOptions({idAttribute: () =
 export const noteSchema = new Schema('note', getOptions());
 export const noteListSchema = new Schema('NOTESLIST', getOptions({idAttribute: () => 'NOTESLIST'}));
 
+export const labelSchema = new Schema('label', getOptions());
+export const labelListSchema = new Schema('LABELSLIST', getOptions({idAttribute: () => 'LABELSLIST'}));
+
 export const genericSchema = new Schema('generic', getOptions());
 export const genericListSchema = new Schema('GENERICLIST', getOptions({idAttribute: () => 'GENERICLIST'}));
 genericListSchema.define({
@@ -56,6 +59,12 @@ genericListSchema.define({
 noteListSchema.define({
   _embedded: {
     entries: arrayOf(noteSchema)
+  }
+});
+
+labelListSchema.define({
+  _embedded: {
+    entries: arrayOf(labelSchema)
   }
 });
 
@@ -113,6 +122,8 @@ export const appSchema = {
   user: userSchema,
   note: noteSchema,
   NOTESLIST: noteListSchema,
+  label: labelSchema,
+  LABELSLIST: labelListSchema,
   generic: genericSchema,
   GENERICLIST: genericListSchema
 }

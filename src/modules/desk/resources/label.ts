@@ -9,12 +9,12 @@ import {ApiV2Adapter} from './config/apiv2-adapter';
 /**
  * Module name
  */
-export const NAME = "USER";
-const LIST = "USERLIST";
+export const NAME = "LABEL";
+const LIST = "LABELLIST";
 
-export class User extends Resource {
-  public url = '/api/v2/users';
-  public className = NAME;
+export class Label extends Resource {
+  public url = '/api/v2/labels';
+  public className = NAME.toLowerCase();
   
   private defaultConfig;
 
@@ -26,18 +26,12 @@ export class User extends Resource {
     }
   }
 
-  getDefaultConfig (id, config) {
-    return {
-      url: this.url + '/' + id,
-      className: this.className 
-    };
-  }
-
-  beforeFindOne(id, persistorConfig: IPersistorConfig): Array<any> {
-    persistorConfig.url = this.url + '/' + id;
+  beforeFindOne(caseId, id, persistorConfig: IPersistorConfig): Array<any> {
+    persistorConfig.url = this.url + '/' + caseId + '/labels/' + id;
     return [persistorConfig];
   }
 
+  // TODO: Confirm the URL for updating a note and fix this
   beforeUpdate(id, patch, persistorConfig: IPersistorConfig, adapterConfig: IAdapterConfig): Array<any> {
     persistorConfig.url = this.url + '/' + id;
     persistorConfig.data = patch;
@@ -50,32 +44,32 @@ export class User extends Resource {
       persistorConfig
     )
     adapterConfig = Object.assign(
-      {uri: this.url, schemaName: 'USERLIST'},
+      {uri: this.url, schemaName: 'LABELLIST'},
       adapterConfig
     )
     return this.find( persistorConfig, adapterConfig );
   }
-  
+
 }
 
-export const UserReducer = defaultReducer(NAME);
-export const UserListReducer = defaultListReducer(LIST);
-export const getUsers = (state) => {
-  if (state.lists[LIST].page && state.lists[LIST].result.get(state.lists[LIST].page)){
-    return state.lists[LIST].result.get(state.lists[LIST].page).map( (r) => {
-      return getUserByURI(state, r);
-    });
-  } else {
-    return Immutable.List();
-  }
-}
+export const LabelReducer = defaultReducer(NAME);
+// export const NoteListReducer = defaultListReducer(LIST);
+// export const getUsers = (state) => {
+//   if (state.lists[LIST].page && state.lists[LIST].result.get(state.lists[LIST].page)){
+//     return state.lists[LIST].result.get(state.lists[LIST].page).map( (r) => {
+//       return getUserByURI(state, r);
+//     });
+//   } else {
+//     return Immutable.List();
+//   }
+// }
 
 
-export const getUserById = (state, id) => {
-  return state.entities.user.items.find((user) => user.get('id') == id);
-}
+// export const getUserById = (state, id) => {
+//   return state.entities.user.items.find((user) => user.get('id') == id);
+// }
 
-export const getUserByURI = (state, id) => {
-  return state.entities.user.items.get(id);
-}
+// export const getUserByURI = (state, id) => {
+//   return state.entities.user.items.get(id);
+// }
 

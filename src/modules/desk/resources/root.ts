@@ -8,6 +8,7 @@ import {customer} from './customer';
 import {interaction} from './interaction';
 import {UserReducer, UserListReducer} from './user';
 import {NoteReducer, NoteListReducer} from './note';
+import {LabelReducer} from './label';
 import {defaultGenericListReducer} from 'restore';
 // import {customers} from './customer';
 
@@ -16,7 +17,8 @@ export const entitiesReducer = combineReducers({
   customer,
   interaction,
   user: UserReducer,
-  note: NoteReducer
+  note: NoteReducer,
+  label: LabelReducer
   // customers
 });
 

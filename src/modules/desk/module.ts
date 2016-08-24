@@ -3,7 +3,8 @@ import {
   Customer,
   ApiV2Adapter,
   User,
-  Note
+  Note,
+  Label
 } from './resources';
 
 
@@ -116,12 +117,13 @@ deskMod
   .service('Customer', Customer)
   .service('User', User)
   .service('Note', Note)
+  .service('Label', Label)
   .provider('$httpPersistor', () => {
     return {
       $get: ($http, $q) => {
         $httpPersistor.setHttp($http);
         $httpPersistor.setQ($q);
-        return new $httpPersistor(new $httpPersistorConfig({baseUrl: 'http://localhost:8888/api/v2'}));
+        return new $httpPersistor(new $httpPersistorConfig({baseUrl: 'http://localhost:8888'}));
       }
     };
   })

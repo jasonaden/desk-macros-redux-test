@@ -13,7 +13,7 @@ export const NAME = "NOTE";
 const LIST = "NOTELIST";
 
 export class Note extends Resource {
-  public url = '/cases';
+  public url = '/api/v2/cases';
   public className = NAME;
   
   private defaultConfig;
@@ -25,13 +25,6 @@ export class Note extends Resource {
       url: this.url
     }
   }
-
-  // getDefaultConfig (caseId, id, config) {
-  //   return {
-  //     url: this.url + '/' + caseId + '/notes/' + id,
-  //     className: this.className 
-  //   };
-  // }
 
   beforeFindOne(caseId, id, persistorConfig: IPersistorConfig): Array<any> {
     persistorConfig.url = this.url + '/' + caseId + '/notes/' + id;
@@ -45,12 +38,18 @@ export class Note extends Resource {
     return [persistorConfig, adapterConfig];
   }
 
-  list(persistorConfig: IPersistorConfig = {}, adapterConfig: IAdapterConfig = {}) {
-    adapterConfig.listName = LIST;
-    persistorConfig = Object.assign({}, {url:this.url}, persistorConfig)
-    return this.find(persistorConfig, adapterConfig);
+  list(persistorConfig: IPersistorConfig = {}, adapterConfig: IAdapterConfig = {}): PromiseLike<any> {
+    persistorConfig = Object.assign(
+      {url: this.url}, 
+      persistorConfig
+    )
+    adapterConfig = Object.assign(
+      {uri: this.url, schemaName: 'NOTELIST'},
+      adapterConfig
+    )
+    return this.find( persistorConfig, adapterConfig );
   }
-  
+
 }
 
 export const NoteReducer = defaultReducer(NAME);

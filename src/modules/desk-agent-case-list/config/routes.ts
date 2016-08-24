@@ -18,20 +18,12 @@ export const routes = ($stateProvider, $urlRouterProvider) => {
   $stateProvider.state('desk.agent.case.list', {
     resolve: {
       resolvedFilter: ($ngRedux, Case) => {
-        let cases = getListCases($ngRedux.getState());
-        
-        if (cases.size) {
       
-          setupFilterDetails($ngRedux, cases);
-        
-        } else {
-          return Case.list().then(() => {
-
-            let cases = Case.getList();         
-            return setupFilterDetails($ngRedux, cases);
-
-          });
-        }
+        // Gets the existing list of cases or fetches if needed
+        return Case.getListAsync()
+        .then( (list) => {
+          return setupFilterDetails($ngRedux, list);
+        })
       }
     },
     url: '/cases',

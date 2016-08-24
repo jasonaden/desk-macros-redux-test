@@ -24,7 +24,7 @@ export interface ICustomers extends Map<String, any> {
 }
 
 export class Customer extends uiResource {
-  url = '/customers';
+  url = '/api/v2/customers';
   public className: string = NAME;
   public type = CLASS_NAME.toLowerCase();
 
