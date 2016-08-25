@@ -42,10 +42,14 @@ export class uiResource extends Resource {
     // in some case a numeric id may come in as a string
     id = Number.isNaN(parseInt(id, 10)) ? id : parseInt(id, 10);
 
-    if( typeof id === 'string') {
-      return this.$ngRedux.getState().entities[className].items.get(id);
+    let entityStore = this.$ngRedux.getState().entities.get(className);
+    
+    if ( !entityStore ) { return null; }
+
+    if ( typeof id === 'string') {
+      return  entityStore.items.get(id);
     } else if ( typeof id === 'number' ){
-      return this.$ngRedux.getState().entities[className].items.find((item) => item.get('id') == id);
+      return entityStore.items.find((item) => item.get('id') == id);
     }
   }
 
@@ -64,7 +68,7 @@ export class uiResource extends Resource {
   // By default gets a list of the current type
   getList(uri?: string, className?: string) {
     uri = uri || this.url;
-    let list = this.$ngRedux.getState().list.get(uri);
+    let list = this.$ngRedux.getState().lists.get(uri);
     if( list ) {
       return list.result.get(list.page).map((id) => {
         return this.get(id, className);
@@ -96,13 +100,13 @@ export class uiResource extends Resource {
 
   // Tries to get a list from server store and falls back to 
   //  making a request to the backend for it. 
-  getListAsync(): PromiseLike<any> {
-    let resourceList = this.getList();
+  getListAsync(uri?:string): PromiseLike<any> {
+    let resourceList = this.getList(uri || this.url);
     if( resourceList.size ) {
       return Promise.resolve( resourceList )
     }
     return this.list().then( () => {
-      return this.getList();
+      return this.getList(uri || this.url);
     })
   }
 

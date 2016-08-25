@@ -10,7 +10,6 @@ import {
   setEditCase, 
   setSnapCase} from '../states';
 import {RxPoller} from 'rx-poller';
-import {getCaseById} from '../../desk/resources/case';
 
 export interface ICaseDetailService {
   activeCaseId: number;
@@ -111,7 +110,7 @@ export class CaseDetailService implements ICaseDetailService {
     this.ReduxWatch.watch('activeCase', 
     // selector
     () => {
-      return getCaseById(this.$ngRedux.getState(), this.activeCaseId);
+      return this.Case.get(this.activeCaseId);
     }, 
     // comparator
     (a, b) => {
@@ -125,7 +124,7 @@ export class CaseDetailService implements ICaseDetailService {
       // snapshot of case where we initially forked for editing
       const snapCase = getSnapCase(state);
       // externally changed version of case
-      const entityCase = getCaseById(state, this.activeCaseId);
+      const entityCase = this.Case.get(this.activeCaseId);
       
       // how external changes differ from our fork point
       const remoteChanges = diff(snapCase, entityCase);

@@ -12,30 +12,7 @@ import {
   setEditCase, 
   setSnapCase
 } from '../states';
-import {getUsers} from '../../desk/resources/user';
-
-const mapState = (state) => {
-  return {
-    appliedMacros: getAppliedMacros(state).toJS(),
-    kase: getActiveCase(state).toJS(),
-    canUpdate: canUpdate(state),
-    users: getUsers(state).toJS()
-  };
-}
-
-const mapDispatch = (dispatch) => {
-  return {
-    storeChanges: (kase) => {
-      dispatch(setEditCase(Immutable.fromJS(kase)));
-    },
-    goBack: () => {
-      dispatch(stateGo('desk.agent.case.list'));
-    },
-    goToCase: (id) => {
-      dispatch(stateGo('desk.agent.case.detail', {id:id}));
-    }
-  };
-}
+//import {User} from '../../desk/resources/user';
 
 let watchExit = null;
 
@@ -48,7 +25,7 @@ export class CaseDetailController {
   user;
   labels;
 
-  constructor ($scope, $ngRedux, CaseDetailService, Case) {
+  constructor ($scope, $ngRedux, CaseDetailService, Case, User) {
     // allow forms to keep redux in sync with UI    
     this.autoSaveCallback = () => this.storeChanges(this.kase); 
 
@@ -60,6 +37,28 @@ export class CaseDetailController {
     }
     
     // connect redux items to controller
+    const mapState = (state) => {
+      return {
+        appliedMacros: getAppliedMacros(state).toJS(),
+        kase: getActiveCase(state).toJS(),
+        canUpdate: canUpdate(state),
+        users: User.getList().toJS()
+      };
+    }
+
+    const mapDispatch = (dispatch) => {
+      return {
+        storeChanges: (kase) => {
+          dispatch(setEditCase(Immutable.fromJS(kase)));
+        },
+        goBack: () => {
+          dispatch(stateGo('desk.agent.case.list'));
+        },
+        goToCase: (id) => {
+          dispatch(stateGo('desk.agent.case.detail', {id:id}));
+        }
+      };
+    }
     let unsubscribe = $ngRedux.connect(mapState, mapDispatch)(this);
     $scope.$on('$destroy', () => { unsubscribe(); });
 
@@ -67,7 +66,7 @@ export class CaseDetailController {
      * TESTS to pull related items
      * 
      */
-    Case.populateRelatedList(this.kase.id, 'notes')
+    /*Case.populateRelatedList(this.kase.id, 'notes')
     .then( () => {
       this.notes = Case.getRelatedList(this.kase.id, 'notes').toJS()
     })
@@ -80,7 +79,7 @@ export class CaseDetailController {
     Case.populateRelatedList(this.kase.id, 'labels')
     .then( () => {
       this.labels = Case.getRelatedList(this.kase.id, 'labels').toJS()
-    })
+    })*/
 
   }
 };

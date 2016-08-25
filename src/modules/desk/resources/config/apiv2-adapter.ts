@@ -43,7 +43,7 @@ export class ApiV2Adapter extends BaseAdapter {
       let entity = split.entities[key];
       // put each individual resource into the server store
       for (let eKey of Object.getOwnPropertyNames(entity)) {
-        this.store.dispatch( {type: 'SET_ONE_'+ key.toUpperCase(), payload: entity[eKey]});
+        this.store.dispatch( {type: 'SET_ONE', payload: entity[eKey]});
       }
     }
   }
