@@ -6,6 +6,7 @@ import { IPersistorConfig, IAdapterConfig } from '../../../restore';
 import {userSchema} from './config/schemas';
 import {ApiV2Adapter} from './config/apiv2-adapter';
 import {uiResource} from './uiResource';
+import {FINDING_ONE, FOUND_ONE, FINDING_LIST, FOUND_LIST} from '../../../restore';
 
 /**
  * Module name
@@ -26,6 +27,16 @@ export class User extends uiResource {
     persistorConfig.url = this.url + '/' + id;
     return [persistorConfig];
   }
+
+  beforeFind(persistorConfig: IPersistorConfig, adapterConfig: IAdapterConfig): Array<any> {
+    this.$ngRedux.dispatch( {type:FINDING_LIST, meta:{uri: adapterConfig.uri}} );
+    return [persistorConfig, adapterConfig];
+  }
+  afterFind(data: any, adapterConfig?: IAdapterConfig): (PromiseLike<any[]>) {
+    this.$ngRedux.dispatch( {type:FOUND_LIST, meta:{uri: adapterConfig.uri}} );
+    return this.promise.all([data])
+  }
+
 
   beforeUpdate(id, patch, persistorConfig: IPersistorConfig, adapterConfig: IAdapterConfig): Array<any> {
     persistorConfig.url = this.url + '/' + id;

@@ -6,7 +6,7 @@ import { uiResource } from './uiResource';
 import { IPersistorConfig, IAdapterConfig } from '../../../restore';
 import {caseSchema} from './config/schemas';
 import {ApiV2Adapter} from './config/apiv2-adapter';
-import {FINDING_ONE, FOUND_ONE} from '../../../restore';
+import {FINDING_ONE, FOUND_ONE, FINDING_LIST, FOUND_LIST} from '../../../restore';
 
 /**
  * Module name
@@ -61,6 +61,7 @@ export class Case extends uiResource {
     return [persistorConfig, adapterConfig];
   }
 
+  /** FINDONE */
   beforeFindOne(id, persistorConfig: IPersistorConfig): Array<any> {
     this.$ngRedux.dispatch( {type: FINDING_ONE, meta: {className:this.className}} );
     persistorConfig.url = this.url + '/' + id;
@@ -68,6 +69,18 @@ export class Case extends uiResource {
   }
   afterFindOne(data: any, adapterConfig?: Object): (PromiseLike<any[]>) {
     this.$ngRedux.dispatch( {type: FOUND_ONE, meta: {className:this.className}} );
+    return this.promise.all([data])
+  }
+
+  /** FIND */
+  beforeFind(persistorConfig: IPersistorConfig, adapterConfig: IAdapterConfig): Array<any> {
+    // this.$ngRedux.dispatch( {type: FINDING_LIST, meta: {className:this.className}} );
+    this.$ngRedux.dispatch( {type:FINDING_LIST, meta:{uri: adapterConfig.uri}} );
+    return [persistorConfig, adapterConfig];
+  }
+  afterFind(data: any, adapterConfig?: IAdapterConfig): (PromiseLike<any[]>) {
+    // this.$ngRedux.dispatch( {type: FOUND_LIST, meta: {className:this.className}} );
+    this.$ngRedux.dispatch( {type:FOUND_LIST, meta:{uri: adapterConfig.uri}} );
     return this.promise.all([data])
   }
 

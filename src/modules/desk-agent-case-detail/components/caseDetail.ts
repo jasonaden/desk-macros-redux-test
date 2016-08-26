@@ -66,7 +66,7 @@ export class CaseDetailController {
      * TESTS to pull related items
      * 
      */
-    /*Case.populateRelatedList(this.kase.id, 'notes')
+    Case.populateRelatedList(this.kase.id, 'notes')
     .then( () => {
       this.notes = Case.getRelatedList(this.kase.id, 'notes').toJS()
     })
@@ -79,7 +79,7 @@ export class CaseDetailController {
     Case.populateRelatedList(this.kase.id, 'labels')
     .then( () => {
       this.labels = Case.getRelatedList(this.kase.id, 'labels').toJS()
-    })*/
+    })
 
   }
 };
