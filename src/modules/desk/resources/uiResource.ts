@@ -15,7 +15,7 @@ export class uiResource extends Resource {
   public type: string;
   public relateds: Object;
   
-  constructor(public $ngRedux, ApiV2Adapter, public $injector) {
+  constructor(public $ngRedux, ApiV2Adapter) {
     super($ngRedux, ApiV2Adapter)
   }  
   
@@ -70,7 +70,7 @@ export class uiResource extends Resource {
     return this.get( relatedHref, this.relateds[relName].className )
   }
 
-  // Get a related List 
+  // Get a related List
   getRelatedList( id, relName: string ): Array<any> {
     if( ! id || ! relName ) return;
 
@@ -114,7 +114,7 @@ export class uiResource extends Resource {
       })
   }
 
-  // Populates a related list of items 
+  // Populates a related list of items
   populateRelatedList(id: string, relName: string, persistorConfig: any = {}): PromiseLike<any> {
     if( ! id || ! relName ) return Promise.resolve();
 
@@ -135,9 +135,9 @@ export class uiResource extends Resource {
   }
 
   /** ************
-   *  Methods for getting a resource or a list of resources 
+   *  Methods for getting a resource or a list of resources
    * *************/
-  // Returns a resource,  populating the server store if needed 
+  // Returns a resource,  populating the server store if needed
   getAsync( id: number ): PromiseLike<any> {
     let resource = this.get(id)
     if( resource ) {
@@ -160,7 +160,7 @@ export class uiResource extends Resource {
   }
 
   /** ************
-   *  Methods for getting a related resource or a list of related resources 
+   *  Methods for getting a related resource or a list of related resources
    * ************/
   // Returns a related item, populating the server store if needed
   getRelatedAsync( id: (number | string), relName: string ) {
@@ -175,8 +175,8 @@ export class uiResource extends Resource {
     }
   }
 
-  // Returns a list of related items, populating the server store if needed 
-  getRelatedListAsync( id, relName: string ): PromiseLike<any> {  
+  // Returns a list of related items, populating the server store if needed
+  getRelatedListAsync( id, relName: string ): PromiseLike<any> {
     let resourceRelatedList = this.getRelatedList( id, relName );
     if( resourceRelatedList.size ) {
       return Promise.resolve( resourceRelatedList )
@@ -186,7 +186,7 @@ export class uiResource extends Resource {
     })
   }
 
-  // TODO: Implement so it loops through all case's _links and 
+  // TODO: Implement so it loops through all case's _links and
   //  removes them from either the server store. Will need to go 
   //  though both 'list' and 'entities'
   destroy( id ) {}

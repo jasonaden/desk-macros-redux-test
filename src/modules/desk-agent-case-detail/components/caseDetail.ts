@@ -73,7 +73,7 @@ export class CaseDetailController {
     Case.getRelatedListAsync( this.kase.id, 'notes' )
     .then( (data) => {
       this.notes = data.toJS()
-    })    
+    })
 
     // Case.populateRelated(this.kase.id, 'assigned_user')
     // .then( () => {

@@ -42,8 +42,8 @@ export class Case extends uiResource {
   public type = CLASS_NAME.toLowerCase();
   public relateds = relateds;
   
-  constructor(public $ngRedux, ApiV2Adapter, $injector) {
-    super($ngRedux, ApiV2Adapter, $injector);
+  constructor(public $ngRedux, ApiV2Adapter) {
+    super($ngRedux, ApiV2Adapter);
   }
 
 /*** 

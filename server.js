@@ -15,9 +15,17 @@ app.use(allowCrossDomain);
 
 app.use(express.static('./'));
 
+app.disable('etag');
+
 var proxy = httpProxy.createProxyServer({
   changeOrigin: true,
   auth: config.username + ':' + config.password
+});
+
+proxy.on('error', function (err, req, res) {
+  console.log(err);
+
+  res.end('Something went wrong. And we are reporting a custom error message.');
 });
 
 app.get('/api/*', function (req, res) {

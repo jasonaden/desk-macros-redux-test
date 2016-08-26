@@ -5,14 +5,14 @@ import {Resource, defaultReducer, defaultListReducer} from 'restore';
 import { IPersistorConfig, IAdapterConfig } from '../../../restore';
 import {userSchema} from './config/schemas';
 import {ApiV2Adapter} from './config/apiv2-adapter';
+import {uiResource} from './uiResource';
 
 /**
  * Module name
  */
 export const NAME = "LABEL";
-const LIST = "LABELLIST";
 
-export class Label extends Resource {
+export class Label extends uiResource {
   public url = '/api/v2/labels';
   public className = NAME.toLowerCase();
   

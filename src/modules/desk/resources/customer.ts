@@ -29,45 +29,8 @@ export class Customer extends uiResource {
   public type = CLASS_NAME.toLowerCase();
 
   
-  constructor(public $ngRedux, ApiV2Adapter, $injector) {
-    super($ngRedux, ApiV2Adapter, $injector);
+  constructor(public $ngRedux, ApiV2Adapter) {
+    super($ngRedux, ApiV2Adapter);
   }
-  
-  get state () {
-    return this.store.getState().entities.customer;
-  }
-  
-/*** 
- * Interface for backend data store interactions
- *  
- */
-  // TODO 
-
-  /***** 
-   * Synchronous interface 
-  * */
-
-  get( id: (number | string) ): Object {
-    return super.get( this.type, id );
-  }
-
-  getRelated( id: (number | string), relName: string ): Array<any> {
-    let baseItem = this.get( id );
-    return super.getRelated( baseItem, relateds, relName );
-  }
-
-  /***** 
-   * Asynchronous interface 
-  * */
-
-  populateRelated(id: string, relName: string): PromiseLike<any> {
-    if( ! id || ! relName ) return;
-
-    let baseItem = this.get(id)
-    return super.populateRelated( baseItem, relateds, relName );
-  }
-  
 
 }
-
-export const customer = defaultReducer(NAME);

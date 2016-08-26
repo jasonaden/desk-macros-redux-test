@@ -18,8 +18,8 @@ export class User extends uiResource {
   
   private defaultConfig;
 
-  constructor(public $ngRedux, ApiV2Adapter, $injector) {
-    super($ngRedux, ApiV2Adapter, $injector);
+  constructor(public $ngRedux, ApiV2Adapter) {
+    super($ngRedux, ApiV2Adapter);
   }
 
   beforeFindOne(id, persistorConfig: IPersistorConfig): Array<any> {
