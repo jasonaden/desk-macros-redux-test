@@ -7,12 +7,6 @@ import { IPersistorConfig, IAdapterConfig } from '../../../restore';
 
 import { relatedToClass } from './relatedToClass';
 
-// import {IResourceAdapter,
-//   IResourceRequestConfig, 
-//   IEntityState, 
-//   IPersistorConfig, 
-//   IAdapterConfig} from './interfaces';
-
 /**
  * 
  */
@@ -25,17 +19,17 @@ export class uiResource extends Resource {
     super($ngRedux, ApiV2Adapter)
   }  
   
-  /**** 
+  /**** **********
    * Sync interface 
-   * 
-  * */
+  * ***************/
 
   // TODO: Write an interface for the case object -- also need to update
   //  the return type, likely to an Immutable.Map
   // get a case from server store
-  get( id: (number | string), className?: string ): Object {
+  // get( id: (number | string), className?: string ): Object {
+  get( id: (number | string), className?: string ): Map<K,V> {
     if( ! id ) {
-      throw new Error(`uiResource.get: 'type' and 'id' are required but were ${type} and ${id} `);
+      throw new Error(`uiResource.get: 'id' is required but were not set for a call to ${this.className}`);
     };
 
     className = className || this.className;
@@ -43,7 +37,6 @@ export class uiResource extends Resource {
     id = Number.isNaN(parseInt(id, 10)) ? id : parseInt(id, 10);
 
     let entityStore = this.$ngRedux.getState().entities.get(className);
-    
     if ( !entityStore ) { return null; }
 
     if ( typeof id === 'string') {
@@ -53,19 +46,7 @@ export class uiResource extends Resource {
     }
   }
 
-  // Gets an individual item related to the current resource
-  getRelated( id: (number | string), relName: string ) {
-    if( ! id || ! relName ) return;
-
-    let relatedHref = this._getRelatedHref(id, relName);
-    // all resources should be Immutable.Maps
-    if( ! relatedHref ) {
-      return Immutable.Map();
-    }
-    return this.get( id, this.relateds[relName].className )
-  }
-
-  // By default gets a list of the current type
+  // By default gets a list of the current types instances
   getList(uri?: string, className?: string) {
     uri = uri || this.url;
     let list = this.$ngRedux.getState().lists.get(uri);
@@ -77,13 +58,23 @@ export class uiResource extends Resource {
     return Immutable.List();
   }
 
+  // Gets an individual item related to the current resource
+  getRelated( id: (number | string), relName: string ) {
+    if( ! id || ! relName ) return;
+
+    let relatedHref = this._getRelatedHref(id, relName);
+    // all resources should be Immutable.Maps
+    if( ! relatedHref ) {
+      return Immutable.Map();
+    }
+    return this.get( relatedHref, this.relateds[relName].className )
+  }
+
   // Get a related List 
   getRelatedList( id, relName: string ): Array<any> {
     if( ! id || ! relName ) return;
 
-    let baseItem = this.get(id);
-    let relatedUri: string = (baseItem.get('_links').toJS())[relName].href;
-
+    let relatedUri = this._getRelatedHref(id, relName);
     return this.getList( relatedUri, this.relateds[relName].className );
   }
 
@@ -93,29 +84,16 @@ export class uiResource extends Resource {
   //  since it will kick off an asynch action.
   set( id, value ) {}
 
-  /**** 
+  /** *************
    * Async interface
-   *  
-  * */
-
-  // Tries to get a list from server store and falls back to 
-  //  making a request to the backend for it. 
-  getListAsync(uri?:string): PromiseLike<any> {
-    let resourceList = this.getList(uri || this.url);
-    if( resourceList.size ) {
-      return Promise.resolve( resourceList )
-    }
-    return this.list().then( () => {
-      return this.getList(uri || this.url);
-    })
-  }
+  * ***************/
 
   // NOTE: Override in resource classes
   list(persistorConfig?: IPersistorConfig, adapterConfig?: IAdapterConfig): PromiseLike<any> {
     return Promise.resolve();
   }
 
-  // Populates a related single items
+  // Populates a related single item
   populateRelated( id: string, relName: string): PromiseLike<any> {
 
     let relatedHref = this._getRelatedHref(id, relName);
@@ -123,7 +101,6 @@ export class uiResource extends Resource {
     if( ! relatedHref ) {
       return Promise.resolve();
     }
-
     let relatedId = relatedHref.split('/').pop();
 
     let persistorConfig = {url: relatedHref}; 
@@ -137,7 +114,7 @@ export class uiResource extends Resource {
       })
   }
 
-  // Populates a list in the server store for a resource's related lists
+  // Populates a related list of items 
   populateRelatedList(id: string, relName: string, persistorConfig: any = {}): PromiseLike<any> {
     if( ! id || ! relName ) return Promise.resolve();
 
@@ -155,6 +132,58 @@ export class uiResource extends Resource {
       schemaName: this.relateds[relName].listSchemaName
     }
     return this.find( persistorConfig, adapterConfig )
+  }
+
+  /** ************
+   *  Methods for getting a resource or a list of resources 
+   * *************/
+  // Returns a resource,  populating the server store if needed 
+  getAsync( id: number ): PromiseLike<any> {
+    let resource = this.get(id)
+    if( resource ) {
+      return Promise.resolve(resource)
+    } else {
+      return this.findOne(id).then( () => {
+        return this.get(id)
+      })
+    }
+  }
+  // Returns a list of the current resource, populating the server store if needed
+  getListAsync(uri?:string): PromiseLike<any> {
+    let resourceList = this.getList(uri || this.url);
+    if( resourceList.size ) {
+      return Promise.resolve( resourceList )
+    }
+    return this.list().then( () => {
+      return this.getList(uri || this.url);
+    })
+  }
+
+  /** ************
+   *  Methods for getting a related resource or a list of related resources 
+   * ************/
+  // Returns a related item, populating the server store if needed
+  getRelatedAsync( id: (number | string), relName: string ) {
+    let related = this.getRelated(id, relName);
+    if( related && related.size ) {
+      return Promise.resolve( related )
+    } else {
+      return this.populateRelated(id, relName)
+      .then( () => {
+        return this.getRelated(id, relName)
+      })
+    }
+  }
+
+  // Returns a list of related items, populating the server store if needed 
+  getRelatedListAsync( id, relName: string ): PromiseLike<any> {  
+    let resourceRelatedList = this.getRelatedList( id, relName );
+    if( resourceRelatedList.size ) {
+      return Promise.resolve( resourceRelatedList )
+    }
+    return this.populateRelatedList(id, relName).then( () => {
+      return this.getRelatedList( id, relName );
+    })
   }
 
   // TODO: Implement so it loops through all case's _links and 

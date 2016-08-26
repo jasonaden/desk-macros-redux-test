@@ -12,13 +12,6 @@ import {ApiV2Adapter} from './config/apiv2-adapter';
  */
 export const CLASS_NAME = "CASE";
 
-export interface ICase {
-  id: number,
-  subject: string,
-  adapter: any,
-  macros: Number[]
-}
-
 // Case _link items
 const relateds = {
   customer: {
@@ -28,6 +21,10 @@ const relateds = {
       className: 'user',
       schemaName: 'user'
   },
+  user: {
+      className: 'user',
+      schemaName: 'user'
+  },  
   notes: {
       className: 'note',
       listSchemaName: "NOTESLIST" 
@@ -49,7 +46,6 @@ export class Case extends uiResource {
     super($ngRedux, ApiV2Adapter, $injector);
   }
 
-
 /*** 
  * Interface for backend data store interactions
  *  
@@ -60,8 +56,8 @@ export class Case extends uiResource {
     return [persistorConfig, adapterConfig];
   }
 
-  beforeFindOne(id, persistorConfig: IPersistorConfig): Array<any> {
-    persistorConfig.url = this.url + '/' + id;
+  beforeFindOne(id, persistorConfig?: IPersistorConfig): Array<any> {
+    persistorConfig.url = persistorConfig.url || this.url + '/' + id;
     return [persistorConfig];
   }
 
@@ -76,6 +72,7 @@ export class Case extends uiResource {
     return [persistorConfig, adapterConfig];
   }
 
+  // TODO: May be able to get rid of this and just use find().
   // Gets the default list of cases
   list(persistorConfig: IPersistorConfig = {}, adapterConfig: IAdapterConfig = {}): PromiseLike<any> {
     persistorConfig = Object.assign(

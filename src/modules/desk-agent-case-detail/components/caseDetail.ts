@@ -66,20 +66,32 @@ export class CaseDetailController {
      * TESTS to pull related items
      * 
      */
-    /*Case.populateRelatedList(this.kase.id, 'notes')
-    .then( () => {
-      this.notes = Case.getRelatedList(this.kase.id, 'notes').toJS()
+    // Case.populateRelatedList(this.kase.id, 'notes')
+    // .then( () => {
+    //   this.notes = Case.getRelatedList(this.kase.id, 'notes').toJS()
+    // })
+    Case.getRelatedListAsync( this.kase.id, 'notes' )
+    .then( (data) => {
+      this.notes = data.toJS()
+    })    
+
+    // Case.populateRelated(this.kase.id, 'assigned_user')
+    // .then( () => {
+    //  this.user = Case.getRelated( this.kase.id, 'assigned_user' ).toJS();
+    // }
+    Case.getRelatedAsync( this.kase.id, 'assigned_user' )
+    .then( (data) => {
+      this.user = data.toJS();
     })
 
-    Case.populateRelated(this.kase.id, 'assigned_user')
-    .then( () => {
-      this.user = Case.getRelated( this.kase.id, 'assigned_user' ).toJS();
+    // Case.populateRelatedList(this.kase.id, 'labels')
+    // .then( () => {
+    //   this.labels = Case.getRelatedList(this.kase.id, 'labels').toJS()
+    // })
+    Case.getRelatedListAsync( this.kase.id, 'labels' )
+    .then( (data) => {
+      this.labels = data.toJS()
     })
-
-    Case.populateRelatedList(this.kase.id, 'labels')
-    .then( () => {
-      this.labels = Case.getRelatedList(this.kase.id, 'labels').toJS()
-    })*/
 
   }
 };
