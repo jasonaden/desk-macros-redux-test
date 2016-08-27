@@ -25,8 +25,8 @@ export class Customer extends uiResource {
   url = '/api/v2/customers';
   public className: string = NAME;
   
-  constructor(public $ngRedux, ApiV2Adapter, $injector) {
-    super($ngRedux, ApiV2Adapter, $injector);
+  constructor(public $ngRedux, ApiV2Adapter) {
+    super($ngRedux, ApiV2Adapter);
   }
   
 /*** 

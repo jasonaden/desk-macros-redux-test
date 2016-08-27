@@ -14,7 +14,7 @@ export class uiResource extends Resource {
   
   public relateds: Object;
   
-  constructor(public $ngRedux, ApiV2Adapter, public $injector) {
+  constructor(public $ngRedux, ApiV2Adapter) {
     super($ngRedux, ApiV2Adapter)
   }  
   
