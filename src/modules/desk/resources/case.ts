@@ -35,11 +35,9 @@ const relateds = {
   }
 }
 
-
 export class Case extends uiResource {
   public url = '/api/v2/cases';
   public className = CLASS_NAME.toLowerCase();
-  public type = CLASS_NAME.toLowerCase();
   public relateds = relateds;
   
   constructor(public $ngRedux, ApiV2Adapter) {
@@ -56,8 +54,13 @@ export class Case extends uiResource {
     return [persistorConfig, adapterConfig];
   }
 
-  beforeFindOne(id, persistorConfig?: IPersistorConfig): Array<any> {
-    persistorConfig.url = persistorConfig.url || this.url + '/' + id;
+  beforeFindOne(id: (number | string), persistorConfig?: IPersistorConfig): Array<any> {
+    // if the id is already a string with the url in it, then use it
+    if( typeof id === 'string' && (id.indexOf(this.url) > -1) ) {
+        persistorConfig.url = id;
+    } else {
+      persistorConfig.url = persistorConfig.url || this.url + '/' + id;
+    }
     return [persistorConfig];
   }
 
@@ -86,11 +89,21 @@ export class Case extends uiResource {
     return this.find( persistorConfig, adapterConfig );
   }
 
-  changes(persistorConfig: IPersistorConfig = {}, adapterConfig: IAdapterConfig= {}) {
-    adapterConfig.listName = CHANGES;
-    persistorConfig = Object.assign({}, {url:'filters/11/cases/changes?cflpt=1471022097&cids=&embed=customer&filter_id=11&page=1&per_page=50&sort_direction=desc&sort_field=updated_at'}, persistorConfig)
-    return this.find(persistorConfig, adapterConfig);
+  // TODO: Partially changed over but there are downstream issues in apiv2-adapter.ts,
+  //  see the note left there. 
+  changes(persistorConfig: IPersistorConfig = {}, adapterConfig: IAdapterConfig = {}): PromiseLike<any> {
+    let changesUrl = '/api/v2/filters/11/cases/changes?cflpt=1472243538&cids=&embed=customer,feedback&filter_id=11&page=1&per_page=50&sort_direction=desc&sort_field=updated_at';
+    persistorConfig = Object.assign(
+      {url: changesUrl}, 
+      persistorConfig
+    )
+    adapterConfig = Object.assign(
+      {uri: changesUrl, schemaName: 'CHANGESLIST'},
+      adapterConfig
+    )
+    return this.find( persistorConfig, adapterConfig );
   }
+
 
   /***** 
    * Synchronous interface for Redux store

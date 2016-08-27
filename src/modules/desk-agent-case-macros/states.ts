@@ -6,9 +6,6 @@ import {takeLatest} from 'redux-saga';
 import * as Immutable from 'immutable';
 
 import {APPLY_MACRO, MACRO_APPLY_ERROR} from '../desk-agent-case-detail/states';
-// TODO: 'getOpenCaseId' doesn't exist, perhaps a remnant
-// import {getOpenCaseId} from '../desk-agent-case-detail/states';
-import {getCaseById} from '../desk/resources/case';
 
 export interface IMacro {
   id: number,
@@ -105,7 +102,7 @@ export function* failedToApplySaga (getState) {
   yield* takeLatest(SET_MACRO_APPLY_ERROR, clearError);
 }
 
-function* clearError() {
+function* clearError(): any {
   try {
     yield call(delay, 3000);
     yield put(clearMacroApplyError());

@@ -132,7 +132,7 @@ export const canUpdate = (state) => getActiveCaseDetail(state).get('canUpdate');
 
 // TODO: Saga seems to want to have consistentcy between the types
 //  returned from the yield statements
-export function* applyMacroSaga (getState) {
+export function* applyMacroSaga (getState): any {
   while (true) {
     // wait for this action to be dispatched
     const action = yield take(APPLY_MACRO);

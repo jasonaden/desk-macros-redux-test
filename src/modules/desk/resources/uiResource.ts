@@ -12,10 +12,9 @@ import { relatedToClass } from './relatedToClass';
  */
 export class uiResource extends Resource {
   
-  public type: string;
   public relateds: Object;
   
-  constructor(public $ngRedux, ApiV2Adapter) {
+  constructor(public $ngRedux, ApiV2Adapter, public $injector) {
     super($ngRedux, ApiV2Adapter)
   }  
   
@@ -27,16 +26,18 @@ export class uiResource extends Resource {
   //  the return type, likely to an Immutable.Map
   // get a case from server store
   // get( id: (number | string), className?: string ): Object {
-  get( id: (number | string), className?: string ): Map<K,V> {
+  get<K,V>( id: (number | string), className?: string ): Immutable.Map<K,V> {
     if( ! id ) {
       throw new Error(`uiResource.get: 'id' is required but were not set for a call to ${this.className}`);
     };
 
     className = className || this.className;
     // in some case a numeric id may come in as a string
-    id = Number.isNaN(parseInt(id, 10)) ? id : parseInt(id, 10);
-
+    if( typeof id === 'string') {
+      id = Number.isNaN(parseInt(String(id), 10)) ? id : parseInt(String(id), 10);
+    }
     let entityStore = this.$ngRedux.getState().entities.get(className);
+    // TODO: Maybe: change this to return an empty Map
     if ( !entityStore ) { return null; }
 
     if ( typeof id === 'string') {
@@ -46,8 +47,9 @@ export class uiResource extends Resource {
     }
   }
 
-  // By default gets a list of the current types instances
-  getList(uri?: string, className?: string) {
+  // By default gets a list of the current types instances but can
+  //  get a list of other types
+  getList<T>(uri?: string, className?: string): Immutable.List<T> {
     uri = uri || this.url;
     let list = this.$ngRedux.getState().lists.get(uri);
     if( list ) {
@@ -55,27 +57,28 @@ export class uiResource extends Resource {
         return this.get(id, className);
       });
     }
-    return Immutable.List();
+    return Immutable.List<T>();
   }
 
   // Gets an individual item related to the current resource
-  getRelated( id: (number | string), relName: string ) {
+  getRelated<K,V>( id: (number | string), relName: string ): Immutable.Map<K,V> {
     if( ! id || ! relName ) return;
 
     let relatedHref = this._getRelatedHref(id, relName);
     // all resources should be Immutable.Maps
     if( ! relatedHref ) {
-      return Immutable.Map();
+      return Immutable.Map<K,V>();
     }
-    return this.get( relatedHref, this.relateds[relName].className )
+    return this.get<K,V>( relatedHref, this.relateds[relName].className )
   }
 
-  // Get a related List
-  getRelatedList( id, relName: string ): Array<any> {
+  // Get a related List 
+  // getRelatedList( id, relName: string ): Array<any> {
+  getRelatedList<T>( id: (number | string), relName: string ): Immutable.List<T> {
     if( ! id || ! relName ) return;
 
     let relatedUri = this._getRelatedHref(id, relName);
-    return this.getList( relatedUri, this.relateds[relName].className );
+    return this.getList<T>( relatedUri, this.relateds[relName].className );
   }
 
   // TODO: implement the set method -- bring over the update stuff 
@@ -94,14 +97,14 @@ export class uiResource extends Resource {
   }
 
   // Populates a related single item
-  populateRelated( id: string, relName: string): PromiseLike<any> {
+  populateRelated( id: (number | string), relName: string): PromiseLike<any> {
 
     let relatedHref = this._getRelatedHref(id, relName);
 
     if( ! relatedHref ) {
       return Promise.resolve();
     }
-    let relatedId = relatedHref.split('/').pop();
+    let relatedId = parseInt(relatedHref.split('/').pop(), 10);
 
     let persistorConfig = {url: relatedHref}; 
     let adapterConfig = {
@@ -109,13 +112,10 @@ export class uiResource extends Resource {
       schemaName: this.relateds[relName].schemaName
     }
     return this.findOne( relatedId, persistorConfig, adapterConfig )
-      .then( undefined, (err) => {
-        console.log("***** populateRelated failed: ", err)
-      })
   }
 
-  // Populates a related list of items
-  populateRelatedList(id: string, relName: string, persistorConfig: any = {}): PromiseLike<any> {
+  // Populates a related list of items 
+  populateRelatedList(id: (number | string), relName: string, persistorConfig: any = {}): PromiseLike<any> {
     if( ! id || ! relName ) return Promise.resolve();
 
     let relatedHref = this._getRelatedHref(id, relName);
@@ -135,10 +135,10 @@ export class uiResource extends Resource {
   }
 
   /** ************
-   *  Methods for getting a resource or a list of resources
+   *  Methods for getting a resource or a list of resources 
    * *************/
-  // Returns a resource,  populating the server store if needed
-  getAsync( id: number ): PromiseLike<any> {
+  // Returns a resource,  populating the server store if needed 
+  getAsync( id: (number | string) ): PromiseLike<any> {
     let resource = this.get(id)
     if( resource ) {
       return Promise.resolve(resource)
@@ -160,7 +160,7 @@ export class uiResource extends Resource {
   }
 
   /** ************
-   *  Methods for getting a related resource or a list of related resources
+   *  Methods for getting a related resource or a list of related resources 
    * ************/
   // Returns a related item, populating the server store if needed
   getRelatedAsync( id: (number | string), relName: string ) {
@@ -175,8 +175,8 @@ export class uiResource extends Resource {
     }
   }
 
-  // Returns a list of related items, populating the server store if needed
-  getRelatedListAsync( id, relName: string ): PromiseLike<any> {
+  // Returns a list of related items, populating the server store if needed 
+  getRelatedListAsync( id, relName: string ): PromiseLike<any> {  
     let resourceRelatedList = this.getRelatedList( id, relName );
     if( resourceRelatedList.size ) {
       return Promise.resolve( resourceRelatedList )
@@ -186,18 +186,21 @@ export class uiResource extends Resource {
     })
   }
 
-  // TODO: Implement so it loops through all case's _links and
+  // TODO: Implement so it loops through all case's _links and 
   //  removes them from either the server store. Will need to go 
   //  though both 'list' and 'entities'
-  destroy( id ) {}
+  destroy( id ): PromiseLike<any> {
+    // TODO: implement
+
+    return Promise.resolve();
+  }
 
   /** Internal functions
    * 
    */
-  _getRelatedHref(id, relName): string {
-    let baseItem = this.get(id);
-    let relatedLink = baseItem.get('_links').toJS()[relName];
-
+  _getRelatedHref<V>(id: (number | string), relName): string {
+    let baseItem: Immutable.Map<string,V> = this.get<string,V>(id);
+    let relatedLink: {href:string} = baseItem.get('_links').toJS()[relName];
     if( relatedLink ) {
       return relatedLink.href;
     } else {

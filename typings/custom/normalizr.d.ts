@@ -4,7 +4,7 @@ declare module Normalizr {
         define: (Object) => void;
     }
     export function arrayOf(obj: any);
-    export function normalize(obj: Object, schema: any);
+    export function normalize(obj: Object, schema: any): any;
 }
 
 declare module 'normalizr' {

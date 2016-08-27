@@ -85,15 +85,21 @@ export class ApiV2Adapter extends BaseAdapter {
   }
  
   afterFind(data, adapterConfig) {
+    // TODO: The changes handle is not working any more. I partially updated it to 
+    //  recent changes (8/26/16), but the handleAdapterData() doesn't work on it 
+    //  in the current form -- it doesn't understand the structure of what changes
+    //  returns in order to get the actual new items.  
     if ( data.changed ) {
 
+      debugger
       let positions = data.positions;
-      let split = normalize( data, this.schema[adapterConfig.listName] );
-      delete split.entities[adapterConfig.listName];
+      let split = normalize( data, this.schema[adapterConfig.schemaName] );
+      delete split.entities[adapterConfig.schemaName];
       this.handleAdapterData(split);
 
-      this.store.dispatch({type: 'SET_LIST_PAGE_'+adapterConfig.listName.toUpperCase(), payload: 1});
-      this.store.dispatch({type: 'SET_LIST_RESULT_'+adapterConfig.listName.toUpperCase(), payload: positions});
+      // this.store.dispatch({type: 'SET_LIST_COUNT', meta: {uri: adapterConfig.uri}, payload: count});
+      this.store.dispatch({type: 'SET_LIST_PAGE', meta: {uri: adapterConfig.uri}, payload: 1});
+      this.store.dispatch({type: 'SET_LIST_RESULT', meta: {uri: adapterConfig.uri}, payload: positions});
 
       return data;
     } else if (adapterConfig.listName) {

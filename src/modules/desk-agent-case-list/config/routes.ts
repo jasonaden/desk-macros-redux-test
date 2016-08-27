@@ -1,6 +1,5 @@
 import {caseListMod} from '../module';
 import {setItems} from '../states';
-import {getListCases, getChangesCases} from '../../desk/resources/case';
 import {Filter, setFilter, setActiveFilterId} from '../states';
 
 export const routes = ($stateProvider, $urlRouterProvider) => {
@@ -24,6 +23,14 @@ export const routes = ($stateProvider, $urlRouterProvider) => {
         .then( (list) => {
           return setupFilterDetails($ngRedux, list);
         })
+
+        // TODO: changes not currently working (8/26/16), not important
+        //  enought to muck with now. See note in apiv2-adapter for what needs to be 
+        //  looked at. 
+        // return Case.changes()
+        // .then( () => {
+        //   return setupFilterDetails($ngRedux, list);
+        // })
       }
     },
     url: '/cases',

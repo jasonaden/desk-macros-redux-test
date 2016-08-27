@@ -2,7 +2,6 @@ import {Store} from 'redux';
 import {stateGo} from 'redux-ui-router';
 import * as Immutable from 'immutable';
 
-import {getCaseById} from '../../desk/resources/case';
 import {IMacro} from '../../desk-agent-case-macros/states';
 import {
   getActiveCase, 

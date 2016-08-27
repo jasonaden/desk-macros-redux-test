@@ -3,9 +3,6 @@ import {Reducer, combineReducers} from 'redux';
 import {Action} from 'flux-standard-action';
 import * as Immutable from 'immutable';
 
-// import {ICase, getCases} from '../desk/resources/case';
-import {ICase} from '../desk/resources/case';
-
 export const Filters = Immutable.Record({
   activeFilterId: -1,
   filters: Immutable.Map()
